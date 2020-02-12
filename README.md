@@ -8,8 +8,16 @@ application to Kubernetes. This repository builds on the work accomplished
 by our [OpenShift deployment] and yields plays that can be run from an [AWX]
 server.
 
+## Building the documentation
+The documentation is written in [Sphinx] and is the source of this project's
+GitHub **PAGES**. For details of how this is done refer to the documentation
+[notes]  in our OKD Orchestrator project.
+
 ---
 
-[openshift deployment]: https://github.com/InformaticsMatters/dls-fragalysis-stack-openshift.git
 [awx]: https://github.com/ansible/awx
 [fragalysis stack]: https://github.com/xchem/fragalysis-stack.git
+[openshift deployment]: https://github.com/InformaticsMatters/dls-fragalysis-stack-openshift.git
+[sphinx]: https://pypi.org/project/Sphinx/
+[notes]: https://raw.githubusercontent.com/InformaticsMatters/okd-orchestrator/master/README-SPHINX.md
+
