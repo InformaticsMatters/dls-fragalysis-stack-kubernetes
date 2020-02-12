@@ -57,7 +57,7 @@ The by-product of each repository is: -
 fragalysis
     The output of the ``fragalysis`` repository is a small package of
     Python code, written to `PyPI`_ when the repository is tagged. The package
-    is part of the ``fragalsysi-backend`` image's Python *requirements*.
+    is part of the ``fragalysis-backend`` image's Python *requirements*.
 
 fragalysis-backend
     The output of the ``fragalysis-backend`` is a container image, written to
@@ -293,13 +293,13 @@ Individual developers...
     chooses. This works because she will have deployed her project to
     Kubernetes (now a developer responsibility) configured tso her cloud
     deployment's stack should run using the image ``xwz/stack-tina:1-defect``
-    (rather than the default ``xchem/fragalsysi-stack:latest``). **Tina**
+    (rather than the default ``xchem/fragalysis-stack:latest``). **Tina**
     can also select the version of the database she wants to use and the URL
     of the graph database. When she's done she destroys the Kubernetes project.
 
 The above places significant responsibility on the developer - they have to
 create the images, they have to push them, they have to create the Kubernetes
-deployments (subject of anotehr guide) and they have to understand the build
+deployments (subject of another guide) and they have to understand the build
 process.
 
 But, this is a significantly simpler and a relatively pain-free route to

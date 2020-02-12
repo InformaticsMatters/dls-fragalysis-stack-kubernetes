@@ -209,7 +209,7 @@ two images:</p>
 <dl class="simple">
 <dt>fragalysis</dt><dd><p>The output of the <code class="docutils literal notranslate"><span class="pre">fragalysis</span></code> repository is a small package of
 Python code, written to <a class="reference external" href="https://pypi.org/project/fragalysis/">PyPI</a> when the repository is tagged. The package
-is part of the <code class="docutils literal notranslate"><span class="pre">fragalsysi-backend</span></code> image’s Python <em>requirements</em>.</p>
+is part of the <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> image’s Python <em>requirements</em>.</p>
 </dd>
 <dt>fragalysis-backend</dt><dd><p>The output of the <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> is a container image, written to
 <a class="reference external" href="https://hub.docker.com/search?q=xchem&amp;type=image">Docker Hub</a>. This image is used as a <code class="docutils literal notranslate"><span class="pre">FROM</span></code> image in both the
@@ -405,13 +405,13 @@ or tag. <strong>Tina</strong> can push her image as <code class="docutils litera
 chooses. This works because she will have deployed her project to
 Kubernetes (now a developer responsibility) configured tso her cloud
 deployment’s stack should run using the image <code class="docutils literal notranslate"><span class="pre">xwz/stack-tina:1-defect</span></code>
-(rather than the default <code class="docutils literal notranslate"><span class="pre">xchem/fragalsysi-stack:latest</span></code>). <strong>Tina</strong>
+(rather than the default <code class="docutils literal notranslate"><span class="pre">xchem/fragalysis-stack:latest</span></code>). <strong>Tina</strong>
 can also select the version of the database she wants to use and the URL
 of the graph database. When she’s done she destroys the Kubernetes project.</p></li>
 </ol>
 <p>The above places significant responsibility on the developer - they have to
 create the images, they have to push them, they have to create the Kubernetes
-deployments (subject of anotehr guide) and they have to understand the build
+deployments (subject of another guide) and they have to understand the build
 process.</p>
 <p>But, this is a significantly simpler and a relatively pain-free route to
 supporting unlimited multi-developer deployments than could be achieved by
