@@ -181,14 +181,15 @@ GitHub projects.</p>
 <ul class="simple">
 <li><p><strong>Jenkins</strong> is indeed powerful but it relies on <em>Agents</em> in order to
 run Jobs. Setting these agents up requires effort. <strong>Travis</strong> runs in the
-cloud where it has agents, of all kinds, that simple and easy to configure.</p></li>
+cloud where it has agents, of all kinds, that are simple and easy to
+configure.</p></li>
 <li><p><strong>Jenkins</strong> is a complex service with a need for persistence (volumes)
 that would eat away at the Kubernetes cluster in both CPU, disk and cost.
 <strong>Travis</strong> does not require resources in the Kubernetes cluster</p></li>
-<li><p>Jobs control in <strong>Jenkins</strong> is defined through the Groovy language. It’s
+<li><p>Job control in <strong>Jenkins</strong> is defined through the Groovy language. It’s
 powerful but it’s <em>yet another language</em> and its syntax is not the easiest
 to master. <strong>Travis</strong> is programmed in YAML, a syntax many are already
-familiar. It is simple, and easy to read.</p></li>
+familiar with. It is simple, and easy to read.</p></li>
 <li><p>Management and configuration of the <strong>Jenkins</strong> server is not trivial
 and incurs management and maintenance costs. <strong>Travis</strong> needs no
 management.</p></li>
@@ -209,7 +210,7 @@ two images:</p>
 <dl class="simple">
 <dt>fragalysis</dt><dd><p>The output of the <code class="docutils literal notranslate"><span class="pre">fragalysis</span></code> repository is a small package of
 Python code, written to <a class="reference external" href="https://pypi.org/project/fragalysis/">PyPI</a> when the repository is tagged. The package
-is part of the <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> image’s Python <em>requirements</em>.</p>
+is part of the <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> image’s Python <em>requirements</em> <a class="footnote-reference brackets" href="#f1" id="id1">1</a>.</p>
 </dd>
 <dt>fragalysis-backend</dt><dd><p>The output of the <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> is a container image, written to
 <a class="reference external" href="https://hub.docker.com/search?q=xchem&amp;type=image">Docker Hub</a>. This image is used as a <code class="docutils literal notranslate"><span class="pre">FROM</span></code> image in both the
@@ -247,7 +248,7 @@ where the docker <em>user</em> is <code class="docutils literal notranslate"><sp
 and the tag is <code class="docutils literal notranslate"><span class="pre">latest</span></code> (the significance of these values will become
 important later).</p></li>
 <li><p>At the end of the build of <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> <strong>Travis</strong> is configured
-to <em>trigger</em> a build in the remote repository <code class="docutils literal notranslate"><span class="pre">fragalysis-stack</span></code> <a class="footnote-reference brackets" href="#f1" id="id1">1</a> .
+to <em>trigger</em> a build in the remote repository <code class="docutils literal notranslate"><span class="pre">fragalysis-stack</span></code> <a class="footnote-reference brackets" href="#f2" id="id2">2</a> .
 There’s a new <em>backend</em> image so the stack, which depends on it, is
 instructed to build.</p></li>
 <li><p>As the <em>Loader</em> also depends on the output of this build <strong>Travis</strong>
@@ -422,6 +423,10 @@ system would be enormously complex, fragile and costly to maintain.</p>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Publishing to PyPi does not currently result in a trigger of the
+backend. It is something we can contemplate in the new development.</p>
+</dd>
+<dt class="label" id="f2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
 <dd><p>This is achieved through a POST operation to the <strong>Travis</strong> REST API
 naming the _downstream_ repository and passing in some extra material.</p>
 </dd>

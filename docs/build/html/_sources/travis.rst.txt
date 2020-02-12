@@ -27,14 +27,15 @@ Why not use **Jenkins**?
 
 -   **Jenkins** is indeed powerful but it relies on *Agents* in order to
     run Jobs. Setting these agents up requires effort. **Travis** runs in the
-    cloud where it has agents, of all kinds, that simple and easy to configure.
+    cloud where it has agents, of all kinds, that are simple and easy to
+    configure.
 -   **Jenkins** is a complex service with a need for persistence (volumes)
     that would eat away at the Kubernetes cluster in both CPU, disk and cost.
     **Travis** does not require resources in the Kubernetes cluster
--   Jobs control in **Jenkins** is defined through the Groovy language. It's
+-   Job control in **Jenkins** is defined through the Groovy language. It's
     powerful but it's *yet another language* and its syntax is not the easiest
     to master. **Travis** is programmed in YAML, a syntax many are already
-    familiar. It is simple, and easy to read.
+    familiar with. It is simple, and easy to read.
 -   Management and configuration of the **Jenkins** server is not trivial
     and incurs management and maintenance costs. **Travis** needs no
     management.
@@ -57,7 +58,7 @@ The by-product of each repository is: -
 fragalysis
     The output of the ``fragalysis`` repository is a small package of
     Python code, written to `PyPI`_ when the repository is tagged. The package
-    is part of the ``fragalysis-backend`` image's Python *requirements*.
+    is part of the ``fragalysis-backend`` image's Python *requirements* [#f1]_.
 
 fragalysis-backend
     The output of the ``fragalysis-backend`` is a container image, written to
@@ -101,7 +102,7 @@ occur, in approximate order: -
     important later).
 
 2.  At the end of the build of ``fragalysis-backend`` **Travis** is configured
-    to *trigger* a build in the remote repository ``fragalysis-stack`` [#f1]_ .
+    to *trigger* a build in the remote repository ``fragalysis-stack`` [#f2]_ .
     There's a new *backend* image so the stack, which depends on it, is
     instructed to build.
 
@@ -312,7 +313,10 @@ system would be enormously complex, fragile and costly to maintain.
 
 .. rubric:: Footnotes
 
-.. [#f1] This is achieved through a POST operation to the **Travis** REST API
+.. [#f1] Publishing to PyPi does not currently result in a trigger of the
+         backend. It is something we can contemplate in the new development.
+
+.. [#f2] This is achieved through a POST operation to the **Travis** REST API
          naming the _downstream_ repository and passing in some extra material.
 
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
