@@ -276,18 +276,18 @@ above all, simple.
 
 Individual developers...
 
-4.  ...work on branches of the main repositories or on branches of
+3.  ...work on branches of the main repositories or on branches of
     *forks* of the main repos. No images are automatically produced from
     changes to branches or forks.
 
-5.  Developers are responsible for building their own container images
+4.  Developers are responsible for building their own container images
     and for pushing them to Docker Hub. **Tina** working on branch ``1-defect``
     in a *fork* of the ``fragalysis-frontend`` repository is responsible
     for producing the corresponding ``stack`` image by (ideally) also forking
     and manipulating the ``fragalysis-stack`` repository so that it clones her
     frontend code rather than the code from ``xchem/fragalysis-frontend``.
 
-6.  In order to deploy their project to Kubernetes (the subject of another Guide),
+5.  In order to deploy their project to Kubernetes (the subject of another Guide),
     users may push their container image to any Docker Hub namespace, project
     or tag. **Tina** can push her image as ``xwz/stack-tina:1-defect`` if she
     chooses. This works because she will have deployed her project to
