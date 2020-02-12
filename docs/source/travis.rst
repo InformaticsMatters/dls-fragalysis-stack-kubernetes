@@ -317,7 +317,7 @@ system would be enormously complex, fragile and costly to maintain.
          backend. It is something we can contemplate in the new development.
 
 .. [#f2] This is achieved through a POST operation to the **Travis** REST API
-         naming the _downstream_ repository and passing in some extra material.
+         naming the *downstream* repository and passing in some extra material.
 
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
 .. _travis: https://travis-ci.org/dashboard
