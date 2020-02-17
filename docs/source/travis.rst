@@ -1,10 +1,10 @@
-******
-Travis
-******
+**********************
+Travis and Development
+**********************
 
 .. epigraph::
 
-    The role of `Travis`_ in the Fragalysis Stack build process.
+    The role of `Travis`_ in the Fragalysis Stack *development* process.
 
 The OpenShift deployment of the Stack used **Jenkins** as the CI/CD build
 framework, relying on the container registry and build capabilities provided
@@ -404,10 +404,10 @@ and front-end implementation.
     (**A**)
 2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
     in order to make changes (**B**)
-4.  When a stack image needs to be tested the developer needs to build their
+3.  When a stack image needs to be tested the developer needs to build their
     own stack image, which is pushed to Docker hub (**C**) providing suitable
     *build-args*, as shown (**D**).
-5.  Upon conclusion of development  a *pull-request* on the stack repository
+4.  Upon conclusion of development  a *pull-request* on the stack repository
     propagates the changes back to the XChem repo.
 
 ..  _everything-example:

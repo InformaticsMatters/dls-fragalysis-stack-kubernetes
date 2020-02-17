@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
+  <title>AWX and Deployments &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
   
 
   
@@ -25,7 +25,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script src="_static/searchtools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -35,7 +34,8 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Travis and Development" href="travis.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +62,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -80,9 +80,9 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="travis.html">Travis and Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="awx.html">AWX and Deployments</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">AWX and Deployments</a></li>
 </ul>
 
             
@@ -128,12 +128,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Search</li>
+      <li>AWX and Deployments</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/awx.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -145,24 +147,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="awx-and-deployments">
+<h1>AWX and Deployments<a class="headerlink" href="#awx-and-deployments" title="Permalink to this headline">¶</a></h1>
+<blockquote class="epigraph">
+<div><p>The role of AWX in the Fragalysis Stack <em>deployment</em> process.</p>
+</div></blockquote>
+<p>The deployment of the Fragalysis Stack, i.e. it deployment
+to a cloud-based Kubernetes cluster will be managed by <a class="reference external" href="https://github.com/ansible/ansible">Ansible</a> playbooks
+(and Roles) located in the <cite>DLS Kubernetes</cite> GitHub project.</p>
+<p>A single playbook (Role) will be employed for both <em>official</em>
+(DEV and PROD) and <em>developer</em> stack deployments to Kubernetes with variables
+controlling the <em>flavour</em> of the deployment.</p>
+<p>Other playbooks will permit, for example, the simple deployment of Graph
+databases to the cluster.</p>
+<p>Deployments (plays) are likely to require a number of sensitive values
+(tokens, passwords and the like) which will need to be limited
+to specific <em>Teams</em> of <em>Users</em>. Management of this aspect of Ansible
+is complex but it is simplified through the use of <a class="reference external" href="https://github.com/ansible/awx">AWX</a>, a web-based user
+interface, REST API, and task engine built on top of <a class="reference external" href="https://github.com/ansible/ansible">Ansible</a>.</p>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="travis.html" class="btn btn-neutral float-left" title="Travis and Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -195,14 +211,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

@@ -7,3 +7,4 @@ Fragalysis Stack Orchestration (Kubernetes)
     :caption: Contents
 
     travis
+    awx
