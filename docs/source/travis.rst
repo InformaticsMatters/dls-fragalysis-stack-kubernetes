@@ -261,14 +261,14 @@ We need an altogether simpler approach.
 Development Recommendation
 ==========================
 
-For the main production images (latest and tagged) we...
+For the main production images for DEV (latest) and PRODUCTION (tagged) we...
 
 1.  ...utilise **Travis** build triggers in the main ``xchem`` repositories.
     The build triggers are used *exclusively* for the automatic production of
     ``latest`` images on the ``master`` branch.
 
-2.  Similarly, we build tagged images on the main ``xchem`` repositories based
-    on the presence of a release (or tag) in the repository.
+2.  Similarly, Travis builds tagged images on the main ``xchem`` repositories
+    based on the presence of a release (or tag) in the repository.
     ``fragalysis-backend:1.0.0`` is automatically produced when the owner
     applies the tag ``1.0.0`` to the ``fragalysis-backend`` repository.
 
@@ -278,17 +278,18 @@ above all, simple.
 Individual developers...
 
 3.  ...work on branches of the main repositories or on branches of
-    *forks* of the main repos. No images are automatically produced from
-    changes to branches or forks.
+    *forks* of the main repos.
 
-4.  Developers are responsible for building their own container images
+4.  No images are automatically produced from changes to branches or forks.
+
+5.  Developers are responsible for building their own container images
     and for pushing them to Docker Hub. **Tina** working on branch ``1-defect``
     in a *fork* of the ``fragalysis-frontend`` repository is responsible
     for producing the corresponding ``stack`` image by (ideally) also forking
     and manipulating the ``fragalysis-stack`` repository so that it clones her
     frontend code rather than the code from ``xchem/fragalysis-frontend``.
 
-5.  In order to deploy their project to Kubernetes (the subject of another Guide),
+6.  In order to deploy their project to Kubernetes (the subject of another Guide),
     users may push their container image to any Docker Hub namespace, project
     or tag. **Tina** can push her image as ``xwz/stack-tina:1-defect`` if she
     chooses. This works because she will have deployed her project to
@@ -324,6 +325,8 @@ container images using repository forks and branches, a few examples follow.
     and the ability to use build-time args in the FROM statement,
     i.e. Docker v17.05 or later.
 
+..  _fe-example:
+
 Developing Front-end (F/E) Code Example
 ---------------------------------------
 
@@ -337,11 +340,11 @@ and the existing stack implementation.
 2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
     in order to make changes (**B**)
 3.  The developer *clones* ``xchem/fragslysis-stack`` (**C**)
-4.  When a stack image is to be deployed the developer builds the stack
-    (locally). This will be achieved through the use of a build script [#f3]_)
-    where the developer provides a suitable set of *build-args*, as shown
-    (**D**).
-5.  Upon conclusion a *pull-request* on the f/e repository
+4.  When a stack image is to be tested the developer builds the stack
+    (locally) using Docker. This could be achieved through the use of a
+    build script [#f3]_) where the developer provides a suitable set of
+    *build-args*, as shown (**D**).
+5.  Upon conclusion of development a *pull-request* on the f/e repository
     propagates the changes back to the XChem repo.
 
 The produced *stack*, built from a tagged b/e and the code in
@@ -363,6 +366,8 @@ Notes: -
     This is essential in the example above because the user wishes to publish
     ``abc/fragalysis-stack:1-fix``, not ``abc/fragalysis-stack:latest``.
 
+..  _be-example:
+
 Developing Back-end (B/E) Code Example
 --------------------------------------
 
@@ -378,12 +383,14 @@ Here, in a less cluttered diagram: -
 2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
     in order to make changes (**B**)
 3.  The developer *clones* ``xchem/fragslysis-stack`` (**C**)
-4.  When a stack image is to be deployed the developer needs to build their own
+4.  When a stack image is to be tested the developer needs to build their own
     b/e image (**D**) (which they can optionally push to Docker hub) and then
     build the stack (locally), providing suitable *build-args*, as shown
     (**E**).
-5.  Upon conclusion a *pull-request* on the b/e repository
+5.  Upon conclusion of development a *pull-request* on the b/e repository
     propagates the changes back to the XChem repo.
+
+..  _stack-example:
 
 Developing Stack Code Example
 -----------------------------
@@ -397,11 +404,13 @@ and front-end implementation.
     (**A**)
 2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
     in order to make changes (**B**)
-4.  When a stack image needs to be deployed the developer needs to build their
+4.  When a stack image needs to be tested the developer needs to build their
     own stack image, which is pushed to Docker hub (**C**) providing suitable
     *build-args*, as shown (**D**).
-5.  Upon conclusion a *pull-request* on the stack repository
+5.  Upon conclusion of development  a *pull-request* on the stack repository
     propagates the changes back to the XChem repo.
+
+..  _everything-example:
 
 Developing Everything Example
 -----------------------------
@@ -417,14 +426,56 @@ This is essentially a combination of the three prior scenarios.
     clones that to make changes (**B**). In the diagram we have branches
     ``1-fix``, ``2-fix`` and ``4-feature`` for the f/e, b/e and stack
     respectively.
-3.  When a stack is to be deployed the developer first builds their own b/e
+3.  When a stack is to be tested the developer first builds their own b/e
     (**C**) using minimal build arguments [#f5]_. The user then builds their own
     stack, from a clone of their code branch. Here you can see the stack
     is configured to use the ``abc/fragalysis-backend:2-fix`` image
     and a clone of the f/e ``1-fix`` branch.
 4.  The pushed stack can then be deployed to the Kubernetes cluster.
-5.  Upon conclusion *pull-requests* for b/e, f/e and stack repositories
-    are made in order to propagate the changes back to the XChem repos.
+5.  Upon conclusion of development  *pull-requests* for b/e, f/e and stack
+    repositories are made in order to propagate the changes back to the XChem
+    repos.
+
+Impact on Build Process (Local)
+===============================
+
+The *fork*/*branch*/*clone* requirements should not impact on the `current`_
+development approach as they're required to sensibly develop code
+cooperatively anyway.
+
+The existing **Background**, **Prerequisites** and **Setup** do not change.
+
+The **Build the images locally** section changes a little, depending on what
+code you're modifying. In this case we can concentrate on the
+:ref:`fe-example` example.
+
+You will build ``fragalysis-backend`` and the ``fragalysis-loader`` as you
+do now.
+
+As the ``fragalysis-stack`` will be enhanced to use Docker's
+build arguments to identify the back-end container image and the
+source of the front-end code, we just need to add
+a small number of build arguments.
+
+Let's assume I've forked the front-end code to the ``alan`` GitHub account
+(i.e. ``alan/fragalysis-frontend``). I have also made (committed and pushed)
+changes to the ``1-fix`` branch in that fork. In order to build a stack
+using my code I just need to run the following slightly modified Docker
+build command::
+
+    pushd fragalysis-stack || exit
+    docker build . \
+        --build-arg FE_GIT_PROJECT=alan \
+        --build-arg FE_GIT_PROJECT_BRANCH=1-fix \
+        --pull \
+        -t xchem/fragalysis-stack:latest
+    popd || exit
+
+.. epigraph::
+
+    I cannot (normally) push this image because I don't have access to the ``xchem``
+    project in Docker Hub. I can push it to my own Docker Hub project if I
+    re-tag the image (or just use a different tag in the first place).
 
 .. rubric:: Footnotes
 
@@ -442,7 +493,8 @@ This is essentially a combination of the three prior scenarios.
 .. [#f5] Automation fo the image project from the project fork should be
          possible so the user may not have to specify anything in this case.
 
+.. _current: https://github.com/pavol-brunclik-m2ms/fragalysis-frontend/tree/develop
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
-.. _travis: https://travis-ci.org/dashboard
 .. _pypi: https://pypi.org/project/fragalysis/
+.. _travis: https://travis-ci.org/dashboard
 .. _trigger travis: https://github.com/InformaticsMatters/trigger-travis.git

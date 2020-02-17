@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#developing-everything-example">Developing Everything Example</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#impact-on-build-process-local">Impact on Build Process (Local)</a></li>
 </ul>
 </li>
 </ul>
@@ -384,13 +385,13 @@ Fragalysis Stack and Kubernetes.</p>
 </div>
 <div class="section" id="development-recommendation">
 <h2>Development Recommendation<a class="headerlink" href="#development-recommendation" title="Permalink to this headline">¶</a></h2>
-<p>For the main production images (latest and tagged) we…</p>
+<p>For the main production images for DEV (latest) and PRODUCTION (tagged) we…</p>
 <ol class="arabic simple">
 <li><p>…utilise <strong>Travis</strong> build triggers in the main <code class="docutils literal notranslate"><span class="pre">xchem</span></code> repositories.
 The build triggers are used <em>exclusively</em> for the automatic production of
 <code class="docutils literal notranslate"><span class="pre">latest</span></code> images on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.</p></li>
-<li><p>Similarly, we build tagged images on the main <code class="docutils literal notranslate"><span class="pre">xchem</span></code> repositories based
-on the presence of a release (or tag) in the repository.
+<li><p>Similarly, Travis builds tagged images on the main <code class="docutils literal notranslate"><span class="pre">xchem</span></code> repositories
+based on the presence of a release (or tag) in the repository.
 <code class="docutils literal notranslate"><span class="pre">fragalysis-backend:1.0.0</span></code> is automatically produced when the owner
 applies the tag <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code> to the <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> repository.</p></li>
 </ol>
@@ -399,8 +400,8 @@ above all, simple.</p>
 <p>Individual developers…</p>
 <ol class="arabic simple" start="3">
 <li><p>…work on branches of the main repositories or on branches of
-<em>forks</em> of the main repos. No images are automatically produced from
-changes to branches or forks.</p></li>
+<em>forks</em> of the main repos.</p></li>
+<li><p>No images are automatically produced from changes to branches or forks.</p></li>
 <li><p>Developers are responsible for building their own container images
 and for pushing them to Docker Hub. <strong>Tina</strong> working on branch <code class="docutils literal notranslate"><span class="pre">1-defect</span></code>
 in a <em>fork</em> of the <code class="docutils literal notranslate"><span class="pre">fragalysis-frontend</span></code> repository is responsible
@@ -439,7 +440,7 @@ and the ability to use build-time args in the FROM statement,
 i.e. Docker v17.05 or later.</p>
 </div></blockquote>
 <div class="section" id="developing-front-end-f-e-code-example">
-<h3>Developing Front-end (F/E) Code Example<a class="headerlink" href="#developing-front-end-f-e-code-example" title="Permalink to this headline">¶</a></h3>
+<span id="fe-example"></span><h3>Developing Front-end (F/E) Code Example<a class="headerlink" href="#developing-front-end-f-e-code-example" title="Permalink to this headline">¶</a></h3>
 <p>Here you’re developing front-end code, relying on a published backend image
 and the existing stack implementation.</p>
 <img alt="_images/frag-travis.002.png" src="_images/frag-travis.002.png" />
@@ -449,11 +450,11 @@ and the existing stack implementation.</p>
 <li><p>The developer creates a <em>branch</em> and clones it, e.g. <code class="docutils literal notranslate"><span class="pre">1-fix</span></code>,
 in order to make changes (<strong>B</strong>)</p></li>
 <li><p>The developer <em>clones</em> <code class="docutils literal notranslate"><span class="pre">xchem/fragslysis-stack</span></code> (<strong>C</strong>)</p></li>
-<li><p>When a stack image is to be deployed the developer builds the stack
-(locally). This will be achieved through the use of a build script <a class="footnote-reference brackets" href="#f3" id="id3">3</a>)
-where the developer provides a suitable set of <em>build-args</em>, as shown
-(<strong>D</strong>).</p></li>
-<li><p>Upon conclusion a <em>pull-request</em> on the f/e repository
+<li><p>When a stack image is to be tested the developer builds the stack
+(locally) using Docker. This could be achieved through the use of a
+build script <a class="footnote-reference brackets" href="#f3" id="id3">3</a>) where the developer provides a suitable set of
+<em>build-args</em>, as shown (<strong>D</strong>).</p></li>
+<li><p>Upon conclusion of development a <em>pull-request</em> on the f/e repository
 propagates the changes back to the XChem repo.</p></li>
 </ol>
 <p>The produced <em>stack</em>, built from a tagged b/e and the code in
@@ -475,7 +476,7 @@ This is essential in the example above because the user wishes to publish
 </ul>
 </div>
 <div class="section" id="developing-back-end-b-e-code-example">
-<h3>Developing Back-end (B/E) Code Example<a class="headerlink" href="#developing-back-end-b-e-code-example" title="Permalink to this headline">¶</a></h3>
+<span id="be-example"></span><h3>Developing Back-end (B/E) Code Example<a class="headerlink" href="#developing-back-end-b-e-code-example" title="Permalink to this headline">¶</a></h3>
 <p>Here you’re developing back-end code, relying on existing front-end and stack
 implementation.</p>
 <img alt="_images/frag-travis.003.png" src="_images/frag-travis.003.png" />
@@ -486,16 +487,16 @@ implementation.</p>
 <li><p>The developer creates a <em>branch</em> and clones it, e.g. <code class="docutils literal notranslate"><span class="pre">1-fix</span></code>,
 in order to make changes (<strong>B</strong>)</p></li>
 <li><p>The developer <em>clones</em> <code class="docutils literal notranslate"><span class="pre">xchem/fragslysis-stack</span></code> (<strong>C</strong>)</p></li>
-<li><p>When a stack image is to be deployed the developer needs to build their own
+<li><p>When a stack image is to be tested the developer needs to build their own
 b/e image (<strong>D</strong>) (which they can optionally push to Docker hub) and then
 build the stack (locally), providing suitable <em>build-args</em>, as shown
 (<strong>E</strong>).</p></li>
-<li><p>Upon conclusion a <em>pull-request</em> on the b/e repository
+<li><p>Upon conclusion of development a <em>pull-request</em> on the b/e repository
 propagates the changes back to the XChem repo.</p></li>
 </ol>
 </div>
 <div class="section" id="developing-stack-code-example">
-<h3>Developing Stack Code Example<a class="headerlink" href="#developing-stack-code-example" title="Permalink to this headline">¶</a></h3>
+<span id="stack-example"></span><h3>Developing Stack Code Example<a class="headerlink" href="#developing-stack-code-example" title="Permalink to this headline">¶</a></h3>
 <p>Here you’re developing stack code, relying on a published back-end image
 and front-end implementation.</p>
 <img alt="_images/frag-travis.004.png" src="_images/frag-travis.004.png" />
@@ -506,15 +507,15 @@ and front-end implementation.</p>
 in order to make changes (<strong>B</strong>)</p></li>
 </ol>
 <ol class="arabic simple" start="4">
-<li><p>When a stack image needs to be deployed the developer needs to build their
+<li><p>When a stack image needs to be tested the developer needs to build their
 own stack image, which is pushed to Docker hub (<strong>C</strong>) providing suitable
 <em>build-args</em>, as shown (<strong>D</strong>).</p></li>
-<li><p>Upon conclusion a <em>pull-request</em> on the stack repository
+<li><p>Upon conclusion of development  a <em>pull-request</em> on the stack repository
 propagates the changes back to the XChem repo.</p></li>
 </ol>
 </div>
 <div class="section" id="developing-everything-example">
-<h3>Developing Everything Example<a class="headerlink" href="#developing-everything-example" title="Permalink to this headline">¶</a></h3>
+<span id="everything-example"></span><h3>Developing Everything Example<a class="headerlink" href="#developing-everything-example" title="Permalink to this headline">¶</a></h3>
 <p>Here you’re developing front-end, back-end and stack code.</p>
 <img alt="_images/frag-travis.005.png" src="_images/frag-travis.005.png" />
 <p>This is essentially a combination of the three prior scenarios.</p>
@@ -524,15 +525,52 @@ propagates the changes back to the XChem repo.</p></li>
 clones that to make changes (<strong>B</strong>). In the diagram we have branches
 <code class="docutils literal notranslate"><span class="pre">1-fix</span></code>, <code class="docutils literal notranslate"><span class="pre">2-fix</span></code> and <code class="docutils literal notranslate"><span class="pre">4-feature</span></code> for the f/e, b/e and stack
 respectively.</p></li>
-<li><p>When a stack is to be deployed the developer first builds their own b/e
+<li><p>When a stack is to be tested the developer first builds their own b/e
 (<strong>C</strong>) using minimal build arguments <a class="footnote-reference brackets" href="#f5" id="id5">5</a>. The user then builds their own
 stack, from a clone of their code branch. Here you can see the stack
 is configured to use the <code class="docutils literal notranslate"><span class="pre">abc/fragalysis-backend:2-fix</span></code> image
 and a clone of the f/e <code class="docutils literal notranslate"><span class="pre">1-fix</span></code> branch.</p></li>
 <li><p>The pushed stack can then be deployed to the Kubernetes cluster.</p></li>
-<li><p>Upon conclusion <em>pull-requests</em> for b/e, f/e and stack repositories
-are made in order to propagate the changes back to the XChem repos.</p></li>
+<li><p>Upon conclusion of development  <em>pull-requests</em> for b/e, f/e and stack
+repositories are made in order to propagate the changes back to the XChem
+repos.</p></li>
 </ol>
+</div>
+</div>
+<div class="section" id="impact-on-build-process-local">
+<h2>Impact on Build Process (Local)<a class="headerlink" href="#impact-on-build-process-local" title="Permalink to this headline">¶</a></h2>
+<p>The <em>fork</em>/<em>branch</em>/<em>clone</em> requirements should not impact on the <a class="reference external" href="https://github.com/pavol-brunclik-m2ms/fragalysis-frontend/tree/develop">current</a>
+development approach as they’re required to sensibly develop code
+cooperatively anyway.</p>
+<p>The existing <strong>Background</strong>, <strong>Prerequisites</strong> and <strong>Setup</strong> do not change.</p>
+<p>The <strong>Build the images locally</strong> section changes a little, depending on what
+code you’re modifying. In this case we can concentrate on the
+<a class="reference internal" href="#fe-example"><span class="std std-ref">Developing Front-end (F/E) Code Example</span></a> example.</p>
+<p>You will build <code class="docutils literal notranslate"><span class="pre">fragalysis-backend</span></code> and the <code class="docutils literal notranslate"><span class="pre">fragalysis-loader</span></code> as you
+do now.</p>
+<p>As the <code class="docutils literal notranslate"><span class="pre">fragalysis-stack</span></code> will be enhanced to use Docker’s
+build arguments to identify the back-end container image and the
+source of the front-end code, we just need to add
+a small number of build arguments.</p>
+<p>Let’s assume I’ve forked the front-end code to the <code class="docutils literal notranslate"><span class="pre">alan</span></code> GitHub account
+(i.e. <code class="docutils literal notranslate"><span class="pre">alan/fragalysis-frontend</span></code>). I have also made (committed and pushed)
+changes to the <code class="docutils literal notranslate"><span class="pre">1-fix</span></code> branch in that fork. In order to build a stack
+using my code I just need to run the following slightly modified Docker
+build command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pushd</span> <span class="n">fragalysis</span><span class="o">-</span><span class="n">stack</span> <span class="o">||</span> <span class="n">exit</span>
+<span class="n">docker</span> <span class="n">build</span> <span class="o">.</span> \
+    <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">FE_GIT_PROJECT</span><span class="o">=</span><span class="n">alan</span> \
+    <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">FE_GIT_PROJECT_BRANCH</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">fix</span> \
+    <span class="o">--</span><span class="n">pull</span> \
+    <span class="o">-</span><span class="n">t</span> <span class="n">xchem</span><span class="o">/</span><span class="n">fragalysis</span><span class="o">-</span><span class="n">stack</span><span class="p">:</span><span class="n">latest</span>
+<span class="n">popd</span> <span class="o">||</span> <span class="n">exit</span>
+</pre></div>
+</div>
+<blockquote class="epigraph">
+<div><p>I cannot (normally) push this image because I don’t have access to the <code class="docutils literal notranslate"><span class="pre">xchem</span></code>
+project in Docker Hub. I can push it to my own Docker Hub project if I
+re-tag the image (or just use a different tag in the first place).</p>
+</div></blockquote>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -555,7 +593,6 @@ dependent backend container image for example.</p>
 possible so the user may not have to specify anything in this case.</p>
 </dd>
 </dl>
-</div>
 </div>
 </div>
 
