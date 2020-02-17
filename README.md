@@ -11,7 +11,7 @@ server.
 ## Building the documentation
 The documentation is written in [Sphinx] and is the source of this project's
 GitHub **PAGES**. For details of how this is done refer to the documentation
-[notes]  in our OKD Orchestrator project.
+[notes] in our OKD Orchestrator project.
 
 ---
 

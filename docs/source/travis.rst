@@ -88,7 +88,7 @@ Let's see how **Travis** works for the Fragalysis Stack by exploring
 a simple example, where a user-change to a repository's *master* branch
 results in the stack being re-built, illustrated by the following diagram.
 
-..  image:: images/repo-chain-1.001.png
+..  image:: images/frag-travis.001.png
 
 The diagram illustrates a *user* making a change (**A**) to the
 ``master`` branch of ``fragalysis-backend`` repository. The following steps
@@ -311,6 +311,121 @@ After all, if you're expect to have 20 or 30 developers all on different forks
 and branches, all developing different aspects of the code, an automatic build
 system would be enormously complex, fragile and costly to maintain.
 
+Development Examples
+====================
+
+To further illustrate the knock-on effect of the above recommendation
+for individual developers, i.e. that developers are responsible for their own
+container images using repository forks and branches, a few examples follow.
+
+..  epigraph::
+
+    The following relies on the use of standard Docker build arguments
+    and the ability to use build-time args in the FROM statement,
+    i.e. Docker v17.05 or later.
+
+Developing Front-end (F/E) Code Example
+---------------------------------------
+
+Here you're developing front-end code, relying on a published backend image
+and the existing stack implementation.
+
+..  image:: images/frag-travis.002.png
+
+1.  The developer *forks* ``xchem/fragslysis-frontend``, into, say
+    ``abc/fragslysis-frontend`` (**A**)
+2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
+    in order to make changes (**B**)
+3.  The developer *clones* ``xchem/fragslysis-stack`` (**C**)
+4.  When a stack image is to be deployed the developer builds the stack
+    (locally). This will be achieved through the use of a build script [#f3]_)
+    where the developer provides a suitable set of *build-args*, as shown
+    (**D**).
+5.  Upon conclusion a *pull-request* on the f/e repository
+    propagates the changes back to the XChem repo.
+
+The produced *stack*, built from a tagged b/e and the code in
+the developer's 1-fix branch of their front-end repo fork, can then be pushed
+to Docker-hub and the Kubernetes cluster triggered to pull and run
+the updated code.
+
+The diagram also illustrates how the XChem ``DEV/latest`` Fragalysis Stack
+is built and deployed (automatically using Travis). This *official* stack uses
+a tagged b/e image (the same version in this example) but its *build args*
+(**E**) are such that is uses the ``master`` branch of the ``xchem`` project
+as the source of the front-end code [#f4]_.
+
+Notes: -
+
+-   The stack image tag would, by default, be the branch or tag being built.
+    Travis will take care of this for official images. Users will be able to
+    define the ``IMAGE_TAG`` build argument to over-ride this behaviour.
+    This is essential in the example above because the user wishes to publish
+    ``abc/fragalysis-stack:1-fix``, not ``abc/fragalysis-stack:latest``.
+
+Developing Back-end (B/E) Code Example
+--------------------------------------
+
+Here you're developing back-end code, relying on existing front-end and stack
+implementation.
+
+..  image:: images/frag-travis.003.png
+
+Here, in a less cluttered diagram: -
+
+1.  The developer *forks* ``xchem/fragslysis-backend``, into, say
+    ``abc/fragslysis-backend`` (**A**)
+2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
+    in order to make changes (**B**)
+3.  The developer *clones* ``xchem/fragslysis-stack`` (**C**)
+4.  When a stack image is to be deployed the developer needs to build their own
+    b/e image (**D**) (which they can optionally push to Docker hub) and then
+    build the stack (locally), providing suitable *build-args*, as shown
+    (**E**).
+5.  Upon conclusion a *pull-request* on the b/e repository
+    propagates the changes back to the XChem repo.
+
+Developing Stack Code Example
+-----------------------------
+
+Here you're developing stack code, relying on a published back-end image
+and front-end implementation.
+
+..  image:: images/frag-travis.004.png
+
+1.  The developer *forks* the fragalysis stack repository (say to ``abc``)
+    (**A**)
+2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
+    in order to make changes (**B**)
+4.  When a stack image needs to be deployed the developer needs to build their
+    own stack image, which is pushed to Docker hub (**C**) providing suitable
+    *build-args*, as shown (**D**).
+5.  Upon conclusion a *pull-request* on the stack repository
+    propagates the changes back to the XChem repo.
+
+Developing Everything Example
+-----------------------------
+
+Here you're developing front-end, back-end and stack code.
+
+..  image:: images/frag-travis.005.png
+
+This is essentially a combination of the three prior scenarios.
+
+1.  The developer *forks* each repository (say to ``abc``) (**A**)
+2.  The developer creates a feature *branch* in each *fork* and then
+    clones that to make changes (**B**). In the diagram we have branches
+    ``1-fix``, ``2-fix`` and ``4-feature`` for the f/e, b/e and stack
+    respectively.
+3.  When a stack is to be deployed the developer first builds their own b/e
+    (**C**) using minimal build arguments [#f5]_. The user then builds their own
+    stack, from a clone of their code branch. Here you can see the stack
+    is configured to use the ``abc/fragalysis-backend:2-fix`` image
+    and a clone of the f/e ``1-fix`` branch.
+4.  The pushed stack can then be deployed to the Kubernetes cluster.
+5.  Upon conclusion *pull-requests* for b/e, f/e and stack repositories
+    are made in order to propagate the changes back to the XChem repos.
+
 .. rubric:: Footnotes
 
 .. [#f1] Publishing to PyPi does not currently result in a trigger of the
@@ -318,6 +433,14 @@ system would be enormously complex, fragile and costly to maintain.
 
 .. [#f2] This is achieved through a POST operation to the **Travis** REST API
          naming the *downstream* repository and passing in some extra material.
+
+.. [#f3] The build script will help by forcing a pull of the
+         dependent backend container image for example.
+
+.. [#f4] ideally this would actually be a tag rather than ``master``
+
+.. [#f5] Automation fo the image project from the project fork should be
+         possible so the user may not have to specify anything in this case.
 
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
 .. _travis: https://travis-ci.org/dashboard
