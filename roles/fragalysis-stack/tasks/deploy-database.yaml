@@ -1,1 +1,63 @@
 ---
+
+- name: Create database volume claim
+  k8s:
+    definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+
+# Best practice ... wait for the PVC to bind.
+# e.g. wait until resources[0].status.phase == Bound (initially Pending)
+
+- name: Wait for database volume claim to bind
+  k8s_facts:
+    kind: PersistentVolumeClaim
+    name: database
+    namespace: "{{ stack_namespace }}"
+  register: database_bind_result
+  until: database_bind_result.resources[0].status.phase == 'Bound'
+  delay: 5
+  retries: "{{ (bind_timeout|int / 5)|int }}"
+
+# Now the database secrets.
+#
+# We rely on random passwords but only if they've not already been deployed.
+# It's too complicated to change root password if it's already been set so,
+# if the secret exists then we pull values from the deployed object
+# and we do not write them again.
+
+- name: Check database secrets
+  k8s_info:
+    kind: Secret
+    api_version: v1
+    namespace: "{{ stack_namespace }}"
+    name: database
+  register: db_s_result
+
+- name: Set database secret facts (new)
+  set_fact:
+    db_root_password_fact: "{{ database_root_password }}"
+    db_user_password_fact: "{{ database_user_password }}"
+  when: db_s_result.resources|length == 0
+
+- name: Set database secret facts (pre-deployed secrets)
+  set_fact:
+    db_root_password_fact: "{{ db_s_result.resources[0].data.root_password|b64decode }}"
+    db_user_password_fact: "{{ db_s_result.resources[0].data.user_password|b64decode }}"
+  when: db_s_result.resources|length == 1
+
+- name: Write database secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-database.yaml.j2') }}"
+    wait: yes
+  when: db_s_result.resources|length == 0
+
+# Now the database and its service.
+
+- name: Deploy the database
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - statefulset-database
+  - service-db

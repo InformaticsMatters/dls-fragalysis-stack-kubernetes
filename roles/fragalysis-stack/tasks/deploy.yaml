@@ -1,6 +1,6 @@
 ---
 
-# Create the namepsace (project) and other key bits.
+# Create the namespace (project) and other key bits.
 # Everything, except the graph at the moment goes into
 # a dedicated namespace. When done we simply delete the namespace.
 
@@ -9,14 +9,6 @@
     that:
     - stack_namespace|string|length > 0
     - stack_namespace|string != SetMe
-
-- name: The namespace cannot exist
-  k8s_info:
-    kind: Secret
-    api_version: v1
-    name: graph-secrets
-    namespace: "{{ graph_namespace }}"
-  register: graph_s_result
 
 - name: Creating namespace '{{ stack_namespace }}'
   k8s:
@@ -34,7 +26,7 @@
     wait: yes
 
 # Deploy a database?
-# At the moment, yes.
+# Yes if the user hasn't set an explicit host (external to our namespace)
 
 - name: Deploy the database
   import_tasks: deploy-database.yaml

@@ -1,6 +1,12 @@
 ---
 
-# Go...
+- name: Check the namespace
+  assert:
+    that:
+    - stack_namespace|string|length > 0
+    - stack_namespace|string != SetMe
+
+# Bye bye...
 
 - name: Deleting namespace '{{ stack_namespace }}'
   k8s:

@@ -54,35 +54,26 @@ spec:
             port: 3306
         env:
         - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: fs-mysql-secrets
-              key: database-user
+          value: fragalysis
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: fs-mysql-secrets
-              key: database-password
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: fs-mysql-secrets
-              key: database
+              name: database
+              key: user_password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: fs-mysql-secrets
-              key: database-root-password
+              name: database
+              key: root_password
+        - name: MYSQL_DATABASE
+          value: frag
         - name: MYSQL_ROOT_HOST
-          valueFrom:
-            secretKeyRef:
-              name: fs-mysql-secrets
-              key: database-root-host
+          value: '%'
         volumeMounts:
-        - name: database-data
+        - name: database-volume
           mountPath: /var/lib/mysql
 
       volumes:
-      - name: database-data
+      - name: database-volume
         persistentVolumeClaim:
-          claimName: database-pvc
+          claimName: database

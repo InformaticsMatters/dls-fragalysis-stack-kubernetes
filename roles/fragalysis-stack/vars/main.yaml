@@ -1,6 +1,10 @@
 ---
 
-# Variables, but not common ones.
+# Variables, but not ones the user is typically expected to adjust.
+
+# The state of the stack,
+# one of 'present' or 'absent'
+stack_state: present
 
 # The node label for preferred selection,
 # A request to position pods onto a node for this purpose.
@@ -20,3 +24,16 @@ database_image_registry: docker.io
 database_image_tag: '5.7.23'
 database_vol_storageclass: ' '
 database_vol_size_g: 1
+
+# Auto-generated passwords.
+# Different lengths to avoid the Ansible caching problem.
+database_root_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
+database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
+
+# General variables -----------------------------------------------------------
+
+# General timeout, generally used within the k8s module,
+# for wait duration
+wait_timeout: 600
+# Volume binding timeout (seconds)
+bind_timeout: 120
