@@ -1,0 +1,14 @@
+---
+
+# The state of the stack,
+# one of 'present' or 'absent'
+stack_state: present
+
+# The user must provide a name for their namespace.
+# Which cannot exist.
+stack_namespace: SetMe
+
+# Variables controlling the deployed database image.
+# Define a database host if a pre-existing database is to be used.
+# If blank a database will be created specifically for the stack.
+databse_host: ''

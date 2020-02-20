@@ -1,0 +1,41 @@
+---
+
+# Create the namepsace (project) and other key bits.
+# Everything, except the graph at the moment goes into
+# a dedicated namespace. When done we simply delete the namespace.
+
+- name: Check the namespace
+  assert:
+    that:
+    - stack_namespace|string|length > 0
+    - stack_namespace|string != SetMe
+
+- name: The namespace cannot exist
+  k8s_info:
+    kind: Secret
+    api_version: v1
+    name: graph-secrets
+    namespace: "{{ graph_namespace }}"
+  register: graph_s_result
+
+- name: Creating namespace '{{ stack_namespace }}'
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - namespace
+  - serviceaccount
+  - role
+  - rolebinding-stack-sa
+
+- name: Relax {{ stack_namespace }} 'default' service account (for cert-manager)
+  k8s:
+    definition: "{{ lookup('template', 'rolebinding-default-sa.yaml.j2') }}"
+    wait: yes
+
+# Deploy a database?
+# At the moment, yes.
+
+- name: Deploy the database
+  import_tasks: deploy-database.yaml
+  when: database_host|string|length == 0

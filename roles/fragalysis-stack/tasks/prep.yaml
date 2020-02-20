@@ -1,0 +1,32 @@
+---
+
+# Common playbook preparation.
+
+# Expose ansible version
+- debug:
+    var: ansible_version.full
+
+# Basic pre-playbook prerequisites.
+# We need the openshift/kubernetes module amongst other things...
+
+- name: Install prerequisite Python modules
+  pip:
+    name:
+    - openshift==0.10.0
+    - jmespath==0.9.4
+    extra_args: --user
+
+# Kubernetes credentials ------------------------------------------------------
+
+# We don't use the Kubernetes credentials directly,
+# but we load them into variables here from their
+# expected environment variables so that we can assert they've been set.
+#
+# If we're using OpenShift credentials these environment variables
+# will not be set and we will therefore rely on them being set
+# from the 'login.yaml' play.
+
+- name: Set initial authentication facts
+  set_fact:
+    k8s_auth_host: "{{ lookup('env', 'K8S_AUTH_HOST') }}"
+    k8s_auth_api_key: "{{ lookup('env', 'K8S_AUTH_API_KEY') }}"

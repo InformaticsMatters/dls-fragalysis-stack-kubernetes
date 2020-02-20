@@ -1,0 +1,11 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: database
+  namespace: {{ stack_namespace }}
+spec:
+  selector:
+    name: database
+  ports:
+  - port: 3306

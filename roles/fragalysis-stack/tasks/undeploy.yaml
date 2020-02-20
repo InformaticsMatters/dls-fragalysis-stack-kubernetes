@@ -1,0 +1,9 @@
+---
+
+# Go...
+
+- name: Deleting namespace '{{ stack_namespace }}'
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'namespace.yaml.j2') }}"
+    wait: yes

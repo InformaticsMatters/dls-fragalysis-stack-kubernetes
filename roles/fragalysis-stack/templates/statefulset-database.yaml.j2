@@ -1,0 +1,88 @@
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: database
+  namespace: {{ stack_namespace }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: database
+  serviceName: database
+  template:
+    metadata:
+      name: database
+      labels:
+        app: database
+    spec:
+      serviceAccountName: stack
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ stack_node_purpose }}
+
+      containers:
+      - name: database
+        image: {{ database_image_registry }}/{{ database_image }}:{{ database_version }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        resources:
+          limits:
+            cpu: {{ database_cpu_limit }}
+            memory: {{ database_mem_limit }}
+          requests:
+            cpu: {{ database_cpu_request }}
+            memory: {{ database_mem_request }}
+        livenessProbe:
+          initialDelaySeconds: 30
+          failureThreshold: 3
+          successThreshold: 1
+          periodSeconds: 10
+          timeoutSeconds: 1
+          tcpSocket:
+            port: 3306
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: fs-mysql-secrets
+              key: database-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fs-mysql-secrets
+              key: database-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: fs-mysql-secrets
+              key: database
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fs-mysql-secrets
+              key: database-root-password
+        - name: MYSQL_ROOT_HOST
+          valueFrom:
+            secretKeyRef:
+              name: fs-mysql-secrets
+              key: database-root-host
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/mysql
+
+      volumes:
+      - name: database-data
+        persistentVolumeClaim:
+          claimName: database-pvc
