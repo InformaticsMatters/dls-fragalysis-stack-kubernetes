@@ -57,10 +57,23 @@
 
 # Now the database and its service.
 
-- name: Deploy the database
+- name: Deploy database
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
   - statefulset-database
   - service-database
+
+- name: Wait for database to become Ready
+  k8s_facts:
+    kind: Pod
+    name: database-0
+    namespace: "{{ stack_namespace }}"
+  register: db_result
+  until: >-
+    db_result.resources|length == 1
+    and db_result.resources[0].status.containerStatuses|length == 1
+    and db_result.resources[0].status.containerStatuses[0].ready
+  delay: 10
+  retries: "{{ (wait_timeout|int / 10)|int }}"
