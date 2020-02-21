@@ -66,7 +66,7 @@
   - service-database
 
 - name: Wait for database to become Ready
-  k8s_facts:
+  k8s_info:
     kind: Pod
     name: database-0
     namespace: "{{ stack_namespace }}"
