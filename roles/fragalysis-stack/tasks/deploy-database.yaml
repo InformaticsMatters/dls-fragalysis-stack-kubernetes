@@ -34,23 +34,29 @@
     name: database
   register: db_s_result
 
+  host: {{ stack_db_host_fact }}
+  port: {{ stack_db_port_fact }}
+
 - name: Set database secret facts (new)
   set_fact:
-    db_root_password_fact: "{{ database_root_password }}"
-    db_user_password_fact: "{{ database_user_password }}"
+    stack_db_root_password_fact: "{{ database_root_password }}"
+    stack_db_user_password_fact: "{{ database_user_password }}"
+    stack_db_host_fact: database.{{ stack_namespace }}.svc
+    stack_db_port_fact: "{{ database_port }}"
   when: db_s_result.resources|length == 0
 
 - name: Set database secret facts (pre-deployed secrets)
   set_fact:
-    db_root_password_fact: "{{ db_s_result.resources[0].data.root_password|b64decode }}"
-    db_user_password_fact: "{{ db_s_result.resources[0].data.user_password|b64decode }}"
+    stack_db_root_password_fact: "{{ db_s_result.resources[0].data.root_password|b64decode }}"
+    stack_db_user_password_fact: "{{ db_s_result.resources[0].data.user_password|b64decode }}"
+    stack_db_host_fact: "{{ db_s_result.resources[0].data.host|b64decode }}"
+    stack_db_port_fact: "{{ db_s_result.resources[0].data.port|b64decode }}"
   when: db_s_result.resources|length == 1
 
 - name: Write database secrets
   k8s:
     definition: "{{ lookup('template', 'secret-database.yaml.j2') }}"
     wait: yes
-  when: db_s_result.resources|length == 0
 
 # Now the database and its service.
 

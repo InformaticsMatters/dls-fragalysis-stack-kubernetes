@@ -36,7 +36,13 @@
       This job must run from AWX but the 'user_name'
       were either not defined or blank.
 
-- name: Set namespace fact (stack for user_id {{ tower_user_id }})
+- name: Display user details
+  debug:
+    msg: >-
+      tower_user_name={{ tower_user_name }}
+      tower_user_id={{ tower_user_id }}
+
+- name: Set namespace fact (for user_id '{{ tower_user_id }}')
   set_fact:
     stack_namespace: stack-{{ tower_user_id }}
 
