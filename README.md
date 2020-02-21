@@ -8,10 +8,13 @@ application to Kubernetes. This repository builds on the work accomplished
 by our [OpenShift deployment] and yields plays that can be run from an [AWX]
 server.
 
-## Building the documentation
-The documentation is written in [Sphinx] and is the source of this project's
-GitHub **PAGES**. For details of how this is done refer to the documentation
-[notes] in our OKD Orchestrator project.
+## Project documentation
+The documentation is written in [Sphinx]. To build the documentation
+(from within an environment that satisfied `build-requirements.txt`),
+which results in the main index page `docs/build/html/index.html`,
+run the following from the project root: -
+
+    sphinx-build -Eab html docs/source docs/build/html
 
 ---
 
