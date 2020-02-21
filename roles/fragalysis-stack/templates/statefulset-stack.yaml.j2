@@ -34,7 +34,11 @@ spec:
       containers:
       - name: stack
         image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
+{% if stack_image_tag == 'latest' %}
+        imagePullPolicy: Always
+{% else %}
         imagePullPolicy: IfNotPresent
+{% endif %}
         ports:
         - containerPort: 80
         resources:

@@ -2,7 +2,7 @@
 
 # Command stack control variables...
 stack_image_registry: docker.io
-stack_image: xchem/fargalysis-stack
+stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
 
 stack_media_vol_storageclass: ' '
@@ -22,4 +22,8 @@ graph_service: neo4j.graph.svc
 # If blank a database will be created specifically for the stack.
 databse_host: ''
 
+# If you're not providing your own database
+# then you must provide a storage class for
+# the one that will be crated, unless the default
+# storage class (represented by a blank (single space).
 database_vol_storageclass: ' '
