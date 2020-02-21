@@ -51,8 +51,8 @@ database_mem_limit: 2Gi
 database_cpu_request: 100m
 database_mem_request: 2Gi
 
-database_image: mysql
 database_image_registry: docker.io
+database_image: mysql
 database_image_tag: '5.7.23'
 database_port: 3306
 
