@@ -9,3 +9,5 @@ script:
 - yamllint .
 - find . -type f -iname '*.yaml.j2' -exec yamllint {} \;
 - ansible-lint
+- cd docs
+- ./make-docs.sh

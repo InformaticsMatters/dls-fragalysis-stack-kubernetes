@@ -33,7 +33,7 @@ spec:
 
       containers:
       - name: database
-        image: {{ database_image_registry }}/{{ database_image }}:{{ database_image_tag }}
+        image: '{{ database_image_registry }}/{{ database_image }}:{{ database_image_tag }}'
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3306
