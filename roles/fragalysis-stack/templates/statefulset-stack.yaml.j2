@@ -74,26 +74,20 @@ spec:
           value: {{ graph_service }}
         # Extracted from stack secrets...
         #
+        - name: WEB_DJANGO_SUPERUSER_NAME
+          value: admin
+        - name: WEB_DJANGO_SUPERUSER_EMAIL
+          value: noone@example.com
         - name: WEB_DJANGO_SECRET_KEY
-          valueFrom:
+          value:
             secretKeyRef:
               name: stack
               key: django_secret_key
-        - name: WEB_DJANGO_SUPERUSER_NAME
-          valueFrom:
-            secretKeyRef:
-              name: stack
-              key: django_superuser_name
         - name: WEB_DJANGO_SUPERUSER_PASSWORD
           valueFrom:
             secretKeyRef:
               name: stack
               key: django_superuser_password
-        - name: WEB_DJANGO_SUPERUSER_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: stack
-              key: django_superuser_email
         # Extracted from database secrets...
         #
         - name: MYSQL_HOST

@@ -30,20 +30,7 @@ stack_media_vol_size_g: 1
 stack_build_xcdb: yes
 
 stack_django_secret_key: "{{ lookup('password', '/dev/null length=50 chars=ascii_letters') }}"
-stack_django_superuser_name: admin
 stack_django_superuser_password: "{{ lookup('password', '/dev/null length=22 chars=ascii_letters') }}"
-stack_django_superuser_email: noone@example.com
-
-stack_ispyb_user: ???
-stack_ispyb_password: ???
-stack_ispyb_host: ispybdbproxy.diamond.ac.uk
-stack_ispyb_port: 4306
-
-stack_xchem_user: 'test_xchem'
-stack_xchem_password: 'conor'
-stack_xchem_name: 'c0n0r'
-stack_xchem_host: '172.23.142.43'
-stack_xchem_port: '5432'
 
 # Database configuration ------------------------------------------------------
 
