@@ -3,3 +3,6 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: {{ stack_namespace }}
+  annotations:
+    user_id: {{ tower_user_id }}
+    user_name: {{ tower_user_name }}

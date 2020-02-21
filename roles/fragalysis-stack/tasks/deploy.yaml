@@ -1,5 +1,15 @@
 ---
 
+# Various deployment variables considered mandatory.
+# The 'prep' stage will have asserted that variables
+# required for all plays have been set. Here we're
+# just concerned with those required to play.
+
+- name: Assert variables
+  assert:
+    that:
+    - stack_hostname|string|length > 0
+
 # Create the namespace (project) and other key bits.
 # Everything, except the graph at the moment goes into
 # a dedicated namespace. When done we simply delete the namespace.

@@ -2,22 +2,22 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1beta1
 metadata:
-  name: keycloak
+  name: stack
   namespace: {{ stack_namespace }}
   annotations:
     ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ kc_cert_issuer|lower }}"
+    cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ stack_cert_issuer|lower }}"
 spec:
   tls:
   - hosts:
-    - {{ kc_hostname }}
-    secretName: im-keycloak-tls
+    - {{ stack_hostname }}
+    secretName: stack-tls
   rules:
-  - host: {{ kc_hostname }}
+  - host: {{ stack_hostname }}
     http:
       paths:
-      - path: /
+      - path: /{{ tower_user_id }}
         backend:
-          serviceName: keycloak
+          serviceName: stack
           servicePort: http

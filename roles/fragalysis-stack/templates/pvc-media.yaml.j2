@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: stack
+  name: media
   namespace: {{ stack_namespace }}
 spec:
   accessModes:
   - ReadWriteMany
-  storageClassName: '{{ stack_vol_storageclass }}'
+  storageClassName: '{{ stack_media_vol_storageclass }}'
   resources:
     requests:
-      storage: {{ stack_vol_size_g }}Gi
+      storage: {{ stack_media_vol_size_g }}Gi

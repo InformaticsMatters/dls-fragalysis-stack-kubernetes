@@ -38,3 +38,8 @@
 # we now need to logout...
 - include_tasks: logout.yaml
   when: okd_master_hostname is defined
+
+# Finally, display the user's ID, they'll need this
+- name: Display user ID
+  debug:
+    msg: Your user ID is "{{ tower_user_id|default('-undefined-') }}"

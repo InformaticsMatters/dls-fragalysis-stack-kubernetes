@@ -1,6 +1,7 @@
 ---
 
-# Variables, but not ones the user is typically expected to adjust.
+# Variables,
+# but not ones the user is typically expected to adjust.
 
 # Fragalysis Stack configuration ----------------------------------------------
 
@@ -14,13 +15,15 @@ stack_node_purpose: application
 # The Pod Security Policy (expected to exist in the cluster)
 # that is used by the stack Role object.
 stack_sa_psp: im-core-unrestricted
+# The stack certificate issuer
+stack_cert_issuer: staging
 
 stack_cpu_limit: 500m
 stack_mem_limit: 2Gi
 stack_cpu_request: 100m
 stack_mem_request: 2Gi
 
-stack_vol_size_g: 1
+stack_media_vol_size_g: 1
 
 stack_build_xcdb: yes
 

@@ -33,7 +33,7 @@ spec:
 
       containers:
       - name: stack
-        image: {{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag}}
+        image: {{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
@@ -64,6 +64,12 @@ spec:
           tcpSocket:
             port: 80
         env:
+        - name: NEO4J_BOLT_URL
+          value: bolt://neo4j:test@{{ graph_service }}:7687
+        - name: NEO4J_QUERY
+          value: {{ graph_service }}
+        # Extracted from stack secrets...
+        #
         - name: WEB_DJANGO_SECRET_KEY
           valueFrom:
             secretKeyRef:
@@ -84,6 +90,8 @@ spec:
             secretKeyRef:
               name: stack
               key: django_superuser_email
+        # Extracted from database secrets...
+        #
         - name: MYSQL_HOST
           valueFrom:
             secretKeyRef:
@@ -108,6 +116,8 @@ spec:
             secretKeyRef:
               name: database
               key: root_password
+        # Extracted from ispyb secrets...
+        #
         - name: ISPYB_USER
           valueFrom:
             secretKeyRef:
@@ -128,6 +138,8 @@ spec:
             secretKeyRef:
               name: ispyb
               key: port
+        # Extracted from xchem secrets...
+        #
         - name: XCHEM_NAME
           valueFrom:
             secretKeyRef:
@@ -153,10 +165,6 @@ spec:
             secretKeyRef:
               name: xchem
               key: port
-        - name: NEO4J_BOLT_URL
-          value: bolt://neo4j:test@{{ graph_service }}:7687
-        - name: NEO4J_QUERY
-          value: {{ graph_service }}
         - name: BUILD_XCDB
 {% if stack_build_xcdb %}
           value: 'yes'
@@ -170,4 +178,4 @@ spec:
       volumes:
       - name: media
         persistentVolumeClaim:
-          claimName: stack
+          claimName: media

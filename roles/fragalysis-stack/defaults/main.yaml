@@ -1,19 +1,25 @@
 ---
 
+# Command stack control variables...
+stack_image_registry: docker.io
+stack_image: xchem/fargalysis-stack
+stack_image_tag: latest
+
+stack_media_vol_storageclass: ' '
+
+# The hostname that will be used to connect to the stacks.
+# This will be a URL directed at the cluster. The stack will
+# be available on a path defined by the user-ID. So, user 'abc' (id 17)
+# will have a stack available at https://{{ stack_hostname }}/{{ id }}
+stack_hostname: ''
+
+# The Graph instance to connect to
+# (expected to be resident on the same cluster)
+graph_service: neo4j.graph.svc
+
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
 databse_host: ''
 
 database_vol_storageclass: ' '
-
-# Command stack control variables...
-stack_image_registry: docker.io
-stack_image: xchem/fargalysis-stack
-stack_image_tag: latest
-
-stack_vol_storageclass: ' '
-
-# The Graph instance to connect to
-# (expected to be resident on the same cluster)
-graph_service: neo4j.graph.svc
