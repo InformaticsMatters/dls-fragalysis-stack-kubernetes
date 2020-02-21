@@ -20,7 +20,7 @@ graph_service: neo4j.graph.svc
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
-databse_host: ''
+database_host: ''
 
 # If you're not providing your own database
 # then you must provide a storage class for
