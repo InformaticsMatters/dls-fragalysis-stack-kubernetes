@@ -1,0 +1,173 @@
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: stack
+  namespace: {{ stack_namespace }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: stack
+  serviceName: stack
+  template:
+    metadata:
+      name: stack
+      labels:
+        app: stack
+    spec:
+      serviceAccountName: stack
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ stack_node_purpose }}
+
+      containers:
+      - name: stack
+        image: {{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag}}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: {{ stack_cpu_limit }}
+            memory: {{ stack_mem_limit }}
+          requests:
+            cpu: {{ stack_cpu_request }}
+            memory: {{ stack_mem_request }}
+        # Expect the earliest that the container can be ready is 60 seconds.
+        # But check every 15 seconds and permit 36 failures before
+        # considering the startup to have failed (that's about 10 minutes).
+        readinessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 36
+          tcpSocket:
+            port: 80
+        # Consider the container dead if the port is not open
+        # after 4 attempts over a 2 minute period after about 10 minutes.
+        livenessProbe:
+          initialDelaySeconds: 630
+          periodSeconds: 30
+          timeoutSeconds: 3
+          failureThreshold: 4
+          tcpSocket:
+            port: 80
+        env:
+        - name: WEB_DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stack
+              key: django_secret_key
+        - name: WEB_DJANGO_SUPERUSER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: stack
+              key: django_superuser_name
+        - name: WEB_DJANGO_SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stack
+              key: django_superuser_password
+        - name: WEB_DJANGO_SUPERUSER_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: stack
+              key: django_superuser_email
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: host
+        - name: MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: port
+        - name: MYSQL_USER
+          value: fragalysis
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: user_password
+        - name: MYSQL_DATABASE
+          value: frag
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: root_password
+        - name: ISPYB_USER
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: user
+        - name: ISPYB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: password
+        - name: ISPYB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: host
+        - name: ISPYB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: port
+        - name: XCHEM_NAME
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: name
+        - name: XCHEM_USER
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: user
+        - name: XCHEM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: password
+        - name: XCHEM_HOST
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: host
+        - name: XCHEM_PORT
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: port
+        - name: NEO4J_BOLT_URL
+          value: bolt://neo4j:test@{{ graph_service }}:7687
+        - name: NEO4J_QUERY
+          value: {{ graph_service }}
+        - name: BUILD_XCDB
+{% if stack_build_xcdb %}
+          value: 'yes'
+{% else %}
+          value: 'no'
+{% endif %}
+        volumeMounts:
+        - name: media
+          mountPath: /code/media
+
+      volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: stack

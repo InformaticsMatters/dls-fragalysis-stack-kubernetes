@@ -1,0 +1,31 @@
+---
+
+- name: Create stack volume claim
+  k8s:
+    definition: "{{ lookup('template', 'pvc-stack.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+
+# Best practice ... wait for the PVC to bind.
+# e.g. wait until resources[0].status.phase == Bound (initially Pending)
+
+- name: Wait for stack volume claim to bind
+  k8s_facts:
+    kind: PersistentVolumeClaim
+    name: stack
+    namespace: "{{ stack_namespace }}"
+  register: bind_result
+  until: bind_result.resources[0].status.phase == 'Bound'
+  delay: 5
+  retries: "{{ (bind_timeout|int / 5)|int }}"
+
+# Now the stack, its service and ingress.
+
+- name: Deploy the stack
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - statefulset-stack
+  - service-stack
+#  - ingress-stack

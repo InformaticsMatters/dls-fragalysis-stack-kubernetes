@@ -4,3 +4,16 @@
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
 databse_host: ''
+
+database_vol_storageclass: ' '
+
+# Command stack control variables...
+stack_image_registry: docker.io
+stack_image: xchem/fargalysis-stack
+stack_image_tag: latest
+
+stack_vol_storageclass: ' '
+
+# The Graph instance to connect to
+# (expected to be resident on the same cluster)
+graph_service: neo4j.graph.svc

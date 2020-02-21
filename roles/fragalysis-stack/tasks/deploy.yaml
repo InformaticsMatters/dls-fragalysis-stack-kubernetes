@@ -31,3 +31,8 @@
 - name: Deploy the database
   import_tasks: deploy-database.yaml
   when: database_host|string|length == 0
+
+# Now deploy the stack
+
+- name: Deploy the stack
+  import_tasks: deploy-stack.yaml
