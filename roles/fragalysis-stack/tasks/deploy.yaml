@@ -18,7 +18,6 @@
   assert:
     that:
     - stack_namespace|string|length > 0
-    - stack_namespace|string != SetMe
 
 - name: Creating namespace '{{ stack_namespace }}'
   k8s:
