@@ -8,6 +8,14 @@ application to Kubernetes. This repository builds on the work accomplished
 by our [OpenShift deployment] and yields plays that can be run from an [AWX]
 server.
 
+## Editing the sensitive.vault
+Certain, sensitive, variables are located in the encrypted file
+`roles/fragalysis-stack/vars/sensitive.vault`. This file should not be
+committed un-encrypted and can be edited from the project root without 
+decrypting it, armed with the repository vault password, using: -
+
+    ansible-vault edit roles/fragalysis-stack/vars/sensitive.vault
+
 ## Project documentation
 The documentation is written in [Sphinx]. To build the documentation
 (from within an environment that satisfied `build-requirements.txt`),
