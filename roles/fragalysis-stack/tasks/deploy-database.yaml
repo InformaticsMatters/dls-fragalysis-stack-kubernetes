@@ -34,9 +34,6 @@
     name: database
   register: db_s_result
 
-  host: {{ stack_db_host_fact }}
-  port: {{ stack_db_port_fact }}
-
 - name: Set database secret facts (new)
   set_fact:
     stack_db_root_password_fact: "{{ database_root_password }}"
