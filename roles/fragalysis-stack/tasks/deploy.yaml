@@ -36,7 +36,9 @@
     wait: yes
 
 # Deploy a database?
-# Yes if the user hasn't set an explicit host (external to our namespace)
+# Yes if the user hasn't set an explicit host
+# If the user defines a database_host they must provide
+# additional material but we're not checking that here.
 
 - name: Deploy the database
   import_tasks: deploy-database.yaml
@@ -44,5 +46,5 @@
 
 # Now deploy the stack
 
-- name: Deploy the stack
-  import_tasks: deploy-stack.yaml
+#- name: Deploy the stack
+#  import_tasks: deploy-stack.yaml
