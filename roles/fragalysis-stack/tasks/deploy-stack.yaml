@@ -150,3 +150,13 @@
   k8s:
     definition: "{{ lookup('template', 'ingress-stack.yaml.j2') }}"
     wait: yes
+
+# Display helpful usage/diagnostic information
+
+- name: Display stack namespace
+  debug:
+    msg: Your stack namespace is '{{ stack_namespacve }}'
+
+- name: Display stack URL
+  debug:
+    msg: Your stack URL is 'https://{{ stack_hostname }}/{{ towewr_user_id }}/{{ stack_name }}'
