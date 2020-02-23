@@ -18,6 +18,16 @@ spec:
     spec:
       serviceAccountName: stack
 
+      initContainers:
+{% if database_host|string|length > 0 %}
+      - image: 'busybox:1.28.0'
+        name: wait-for-db
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nslookup {{ databse_host }}; do echo waiting for db; sleep 1; done;'
+{% endif %}
+
       # A 'preferred' (not guaranteed)
       # node selection affinity...
       affinity:
