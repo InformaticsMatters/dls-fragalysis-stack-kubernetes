@@ -121,7 +121,7 @@
 
   when: s_result.resources|length == 0
 
-# Now the stack, its service and ingress.
+# Now the stack and its service.
 
 - name: Deploy stack
   k8s:
@@ -130,7 +130,6 @@
   loop:
   - statefulset-stack
   - service-stack
-#  - ingress-stack
 
 - name: Wait for stack to become Ready
   k8s_info:
@@ -144,3 +143,10 @@
     and s_result.resources[0].status.containerStatuses[0].ready
   delay: 10
   retries: "{{ (wait_timeout|int / 10)|int }}"
+
+# Finally the stack ingress.
+
+- name: Deploy stack ingress
+  k8s:
+    definition: "{{ lookup('template', 'ingress-stack.yaml.j2') }}"
+    wait: yes
