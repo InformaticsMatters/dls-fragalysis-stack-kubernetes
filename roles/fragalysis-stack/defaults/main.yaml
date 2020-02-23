@@ -1,29 +1,50 @@
 ---
 
-# Command stack control variables...
+# The stack image you want to deploy,
+# consisting of a (public) container registry,
+# image and image tag...
 stack_image_registry: docker.io
 stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
 
-stack_media_vol_storageclass: ' '
-
 # The hostname that will be used to connect to the stacks.
 # This will be a URL directed at the cluster. The stack will
 # be available on a path defined by the user-ID. So, user 'abc' (id 17)
-# will have a stack available at https://{{ stack_hostname }}/{{ id }}
+# will have a stack available at https://{{ stack_hostname }}/...
 stack_hostname: ''
 
-# The Graph instance to connect to
-# (expected to be resident on the same cluster)
-graph_service: neo4j.graph.svc
+# A symbolic name for your stack. As the stack namespace is automatic,
+# and based on your AWX user ID, the name allows you to deploy more than one
+# stack at a time, each with its own name.
+#
+# The name is used to further distinguish the https route to the application
+# as your application will be available using the hostname: -
+#
+#   https://{{ stack_hostname }}//{{ id }}/{{ stack_name }}
+#
+# The name can only consist of lower-case letters.
+stack_name: default
+
+# The storage class of the volume used for the stack's media folder.
+# If left as an empty string the default storage class of the cluster
+# will be used. You should strive to use a named storage class, e.g. 'efs'.
+stack_media_vol_storageclass: ' '
 
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
 database_host: ''
-
-# If you're not providing your own database
-# then you must provide a storage class for
-# the one that will be crated, unless the default
-# storage class (represented by a blank (single space).
+# If you're not using an externally provisioned (pre-existing database)
+# then you must provide a storage class for the data volume that will be
+# created, unless the default storage class will suffice
+# (represented by a blank, single space).
 database_vol_storageclass: ' '
+
+# AWX Credentials -------------------------------------------------------------
+# The following variables can be provided by AWX credentials,
+# so their variables names are not to be altered. If not using AWX
+# to inject values you can provide your own.
+
+# The Graph instance to connect to.
+graph_hostname: ''
+graph_password: ''

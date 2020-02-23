@@ -36,6 +36,17 @@
       This job must run from AWX but the 'user_name'
       were either not defined or blank.
 
+# Also, check the stack name provided.
+# It cannot be blank and must only consist of lower-case letters.
+# It will form the basis of the namespace and ingress.
+
+- name: Check stack name
+  assert:
+    that: stack_name is match('[a-z]+')
+    fail_msg: >-
+      You must prove a value for stack_name.
+      It cannot be blank must only contain lower-case letters.
+
 - name: Display user details
   debug:
     msg: >-
@@ -44,7 +55,7 @@
 
 - name: Set namespace fact (for user_id '{{ tower_user_id }}')
   set_fact:
-    stack_namespace: stack-{{ tower_user_id }}
+    stack_namespace: stack-{{ tower_user_id }}-{{ stack_name }}
 
 # Basic pre-playbook prerequisites.
 # We need the openshift/kubernetes module amongst other things...

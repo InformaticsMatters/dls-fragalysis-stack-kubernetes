@@ -17,7 +17,7 @@ spec:
   - host: {{ stack_hostname }}
     http:
       paths:
-      - path: /{{ tower_user_id }}
+      - path: /{{ tower_user_id }}/{{ stack_name }}
         backend:
           serviceName: stack
           servicePort: http
