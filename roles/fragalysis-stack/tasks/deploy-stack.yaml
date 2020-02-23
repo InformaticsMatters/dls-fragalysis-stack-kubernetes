@@ -155,7 +155,7 @@
 
 - name: Display stack namespace
   debug:
-    msg: Your stack namespace is '{{ stack_namespacve }}'
+    msg: Your stack Kubernetes namespace is '{{ stack_namespace }}'
 
 - name: Display stack URL
   debug:
