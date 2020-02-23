@@ -159,4 +159,4 @@
 
 - name: Display stack URL
   debug:
-    msg: Your stack URL is 'https://{{ stack_hostname }}/{{ tower_user_id }}/{{ stack_name }}'
+    msg: Your stack URL is 'https://{{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}'

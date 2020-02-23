@@ -11,17 +11,13 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ stack_hostname }}
+    - {{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}
     secretName: stack-tls
   rules:
-  - host: {{ stack_hostname }}
+  - host: {{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}
     http:
       paths:
-      - path: /{{ tower_user_id }}/{{ stack_name }}
-        backend:
-          serviceName: stack
-          servicePort: http
-      - path: /{{ tower_user_id }}/{{ stack_name }}/.+
+      - path: /
         backend:
           serviceName: stack
           servicePort: http
