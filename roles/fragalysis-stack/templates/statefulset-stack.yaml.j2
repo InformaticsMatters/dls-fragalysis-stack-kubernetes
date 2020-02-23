@@ -91,13 +91,13 @@ spec:
         - name: WEB_DJANGO_SECRET_KEY
           value:
             secretKeyRef:
-              name: stack
-              key: django_secret_key
+              name: django
+              key: secret_key
         - name: WEB_DJANGO_SUPERUSER_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: stack
-              key: django_superuser_password
+              name: django
+              key: superuser_password
         # Extracted from database secrets...
         #
         - name: MYSQL_HOST
