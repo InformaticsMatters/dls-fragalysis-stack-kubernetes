@@ -52,20 +52,23 @@
       database_host_fact={{ database_host_fact }}
       database_port_fact={{ database_port_fact }}
 
-- name: Set (new) secrets
-  block:
-
-  - name: Set database secret facts (new)
-    set_fact:
-      stack_db_root_password_fact: "{{ database_root_password }}"
-      stack_db_user_password_fact: "{{ database_user_password }}"
-
-  - name: Write database secrets
-    k8s:
-      definition: "{{ lookup('template', 'secret-database.yaml.j2') }}"
-      wait: yes
-
+- name: Set database secret facts (new)
+  set_fact:
+    stack_db_root_password_fact: "{{ database_root_password }}"
+    stack_db_user_password_fact: "{{ database_user_password }}"
   when: s_result.resources|length == 0
+
+- name: Write database secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-database.yaml.j2') }}"
+    wait: yes
+  when: s_result.resources|length == 0
+
+- name: Set database secret facts (from secrets)
+  set_fact:
+    stack_db_root_password_fact: "{{ s_result.resources[0].data.root_password|b64decode }}"
+    stack_db_user_password_fact: "{{ s_result.resources[0].data.user_password|b64decode }}"
+  when: s_result.resources|length == 1
 
 # Now the database and its service.
 

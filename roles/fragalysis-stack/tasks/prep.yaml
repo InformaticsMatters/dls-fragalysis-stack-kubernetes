@@ -47,11 +47,12 @@
       You must prove a value for stack_name.
       It cannot be blank must only contain lower-case letters.
 
-- name: Display user details
+- name: Display user and stack details
   debug:
     msg: >-
       tower_user_name={{ tower_user_name }}
       tower_user_id={{ tower_user_id }}
+      stack_name={{ stack_name }}
 
 - name: Set namespace fact (for user_id '{{ tower_user_id }}')
   set_fact:
