@@ -25,6 +25,19 @@ stack_hostname: ''
 # The name can only consist of lower-case letters.
 stack_name: default
 
+# Built the XChem Database?
+# If 'yes' then you will need to ensure that you provide suitable values for
+# the following variables, used to create the xchem secrets, otherwise the
+# stack will fail to start: -
+# - XCHEM_NAME
+# - XCHEM_USER
+# - XCHEM_PASSWORD
+# - XCHEM_HOST
+# - XCHEM_PORT
+# They are normally encrypted using Ansible Vault in the project's
+# 'sensitive.yaml' filer.
+stack_build_xcdb: no
+
 # The storage class of the volume used for the stack's media folder.
 # If left as an empty string the default storage class of the cluster
 # will be used. You should strive to use a named storage class, e.g. 'efs'.
