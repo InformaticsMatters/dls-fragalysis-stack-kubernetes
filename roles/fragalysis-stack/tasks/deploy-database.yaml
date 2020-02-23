@@ -34,25 +34,31 @@
     name: database
   register: s_result
 
+- name: Set database location (internal)
+  set_fact:
+    database_host_fact: database.{{ stack_namespace }}.svc
+    database_port_fact: "{{ database_port }}"
+  when: database_host|string|length == 0
+
+- name: Set database location (external)
+  set_fact:
+    database_host_fact: database_host
+    database_port_fact: "{{ database_port }}"
+  when: database_host|string|length > 0
+
+- name: Display database location
+  debug:
+    msg: >-
+      database_host_fact={{ database_host_fact }}
+      database_port_fact={{ database_port_fact }}
+
 - name: Set (new) secrets
   block:
-
-  - name: Set database host (internal)
-    set_fact:
-      database_host_fact: database.{{ stack_namespace }}.svc
-    when: database_host|string|length == 0
-
-  - name: Set database host (external)
-    set_fact:
-      database_host_fact: database_host
-    when: database_host|string|length > 0
 
   - name: Set database secret facts (new)
     set_fact:
       stack_db_root_password_fact: "{{ database_root_password }}"
       stack_db_user_password_fact: "{{ database_user_password }}"
-      stack_db_host_fact: "{{ database_host_fact }}"
-      stack_db_port_fact: "{{ database_port }}"
 
   - name: Write database secrets
     k8s:

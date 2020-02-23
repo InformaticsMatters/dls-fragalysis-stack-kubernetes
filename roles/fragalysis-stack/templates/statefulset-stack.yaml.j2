@@ -101,24 +101,18 @@ spec:
         # Extracted from database secrets...
         #
         - name: MYSQL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: database
-              key: host
+          value: {{ database_host_fact }}
         - name: MYSQL_PORT
-          valueFrom:
-            secretKeyRef:
-              name: database
-              key: port
+          value: {{ database_port_fact }}
         - name: MYSQL_USER
           value: fragalysis
+        - name: MYSQL_DATABASE
+          value: frag
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: database
               key: user_password
-        - name: MYSQL_DATABASE
-          value: frag
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
