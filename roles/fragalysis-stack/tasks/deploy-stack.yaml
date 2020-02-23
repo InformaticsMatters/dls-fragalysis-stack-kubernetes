@@ -141,8 +141,8 @@
     s_result.resources|length == 1
     and s_result.resources[0].status.containerStatuses|length == 1
     and s_result.resources[0].status.containerStatuses[0].ready
-  delay: 10
-  retries: "{{ (wait_timeout|int / 10)|int }}"
+  delay: 20
+  retries: "{{ (wait_timeout|int / 20)|int }}"
 
 # Finally the stack ingress.
 
