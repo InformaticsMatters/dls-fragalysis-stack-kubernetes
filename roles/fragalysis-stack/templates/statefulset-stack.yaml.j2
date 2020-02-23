@@ -101,9 +101,9 @@ spec:
         # Extracted from database secrets...
         #
         - name: MYSQL_HOST
-          value: {{ database_host_fact }}
+          value: '{{ database_host_fact }}'
         - name: MYSQL_PORT
-          value: {{ database_port_fact }}
+          value: '{{ database_port_fact }}'
         - name: MYSQL_USER
           value: fragalysis
         - name: MYSQL_DATABASE
