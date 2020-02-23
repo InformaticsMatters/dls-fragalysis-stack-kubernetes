@@ -89,7 +89,7 @@ spec:
         - name: WEB_DJANGO_SUPERUSER_EMAIL
           value: noone@example.com
         - name: WEB_DJANGO_SECRET_KEY
-          value:
+          valueFrom:
             secretKeyRef:
               name: django
               key: secret_key
