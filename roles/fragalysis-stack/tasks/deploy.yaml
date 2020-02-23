@@ -15,7 +15,6 @@
 - name: Include sensitive variables
   include_vars:
     file: sensitive.vault
-    dir: vars
 
 # Create the namespace (project) and other key bits.
 # Everything, except the graph at the moment goes into
