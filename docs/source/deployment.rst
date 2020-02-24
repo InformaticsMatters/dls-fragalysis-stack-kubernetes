@@ -84,17 +84,13 @@ in the *Resources -> Templates* view.
 To deploy your stack you should click on the **Fragalysis Stack (Kubernetes)**
 **Job Template**, where you'll have an opportunity to fine-tune the deployment
 for you specific image. That essentially means ensuring the following variables
-are set for your needs: -
+are set for your needs [#f2]_: -
 
 1.  ``stack_image`` - the container registry project and image name for
     your stack, i.e. ``xchem/fragalsyis-stack`` for official images.
 2.  ``stack_image_tag`` - the tag you've assigned to your image (i.e. ``latest``)
 3.  ``stack_hostname`` - the hostname that's used to route fragalysis traffic
     to the cluster
-
-.. epigraph::
-
-    There are a some other variables but these are the key ones.
 
 With variables set you just **SAVE** them (if you've changed them)
 and then click **LAUNCH** to run the deployment playbook.
@@ -115,11 +111,45 @@ Debugging the stack
 *   **Pod Logs**
 *   **Pod Shells**
 
+Loading target data
+===================
+
+You can load data into a Fragalysis Stack using the *Data Loader* role and
+accompanying AWX **Job Templates**. You should find a
+**Fragaysis Stack Data Loader** **Job Template**, which relies on a loader
+container image that can synchronise data from an AWS S3 bucket.
+
+When you run the loader job you simply need to ensure that the
+following Job Template variables are appropriately set::
+
+    stack_name
+    loader_image_registry
+    loader_image
+    loader_image_tag
+    loader_data_origin
+
+Preparing new target data
+-------------------------
+
+If you have new data you wish to deploy it first needs to be uploaded
+to your chosen S3 bucket. For example, if the AWS S3 bucket is ``dls-fragalysis``
+and you have data in the directory ``2020-02-34T12`` you can use the following
+AWS CLI command [#f3]_ to upload it for use by the loader::
+
+    aws s3 sync 2020-02-24T12 s3://dls-fragalysis/django-data/2020-02-24T12
+
+Once done you ca use ``2020-02-24T12`` as the ``loader_data_origin`` value in
+your loader Job.
+
 .. rubric:: Footnotes
 
-.. [#f1] *Flavours* being the official development (latest) and production
-        (tagged) stack images along with any number of user stacks (limited
+.. [#f1] *Flavours* being the official development (``latest``) and production
+        (*tagged*) stack images along with any number of user stacks (limited
         by the available Kubernetes cluster resources).
+
+.. [#f2] There are a some other variables but these are the key ones.
+
+.. [#f3] You will need AWS credentials to do this.
 
 .. _ansible: https://github.com/ansible/ansible
 .. _ansible vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html

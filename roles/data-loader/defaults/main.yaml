@@ -10,7 +10,7 @@ stack_name: default
 # image and image tag...
 loader_image_registry: docker.io
 loader_image: xchem/fragalysis-s3-loader
-loaderimage_tag: latest
+loader_image_tag: latest
 
 # The origin of the data to load.
 # Essentially a sub-path in the designated S3 bucket.
