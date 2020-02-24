@@ -6,7 +6,7 @@
   include_vars:
     file: sensitive.vault
 
-# The namespace (project) must exist.
+# The namespace (project) and media volume claims must exist.
 
 - name: Check the namespace
   assert:
@@ -22,6 +22,17 @@
 - name: Assert namepsace exists
   assert:
     that: n_result.resources|length == 1
+
+- name: Get the media PVC
+  k8s_info:
+    kind: PersistentVolumeClaim
+    namespace: "{{ stack_namespace }}"
+    name: media
+  register: pvc_result
+
+- name: Assert media PVC exists
+  assert:
+    that: pvc_result.resources|length == 1
 
 # Launch the loader
 

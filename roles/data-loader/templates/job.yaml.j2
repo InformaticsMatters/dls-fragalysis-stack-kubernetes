@@ -10,6 +10,9 @@ spec:
   ttlSecondsAfterFinished: 300
 
   template:
+    metadata:
+      labels:
+        name: loader
     spec:
       serviceAccountName: stack
 
@@ -29,7 +32,11 @@ spec:
       containers:
       - name: loader
         image: '{{ loader_image_registry }}/{{ loader_image }}:{{ loader_image_tag }}'
+{% if loader_image_tag == 'latest' %}
+        imagePullPolicy: Always
+{% else %}
         imagePullPolicy: IfNotPresent
+{% endif %}
         env:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
