@@ -14,15 +14,15 @@
 
 # The namespace (project) and media volume claims must exist.
 
-- name: Check the namespace
+- name: Check the namespace ({{ stack_namespace }})
   assert:
     that:
     - stack_namespace|string|length > 0
 
-- name: Get the namespace ({{ stack_namespace }})
+- name: Get the namespace
   k8s_info:
     kind: Namespace
-    name: stack
+    name: "{{ stack_namespace }}"
   register: n_result
 
 - name: Assert namepsace exists
