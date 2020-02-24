@@ -6,5 +6,5 @@ Fragalysis Stack Orchestration (Kubernetes)
     :maxdepth: 1
     :caption: Contents
 
-    travis
-    awx
+    development
+    deployment

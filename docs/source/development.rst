@@ -1,10 +1,11 @@
-**********************
-Travis and Development
-**********************
+***********
+Development
+***********
 
 .. epigraph::
 
-    The role of `Travis`_ in the Fragalysis Stack *development* process.
+    Fragalysis Stack development procedures for Kubernetes deployment
+    and the role of `Travis`_ in the Fragalysis Stack *CI/CD* process.
 
 The OpenShift deployment of the Stack used **Jenkins** as the CI/CD build
 framework, relying on the container registry and build capabilities provided
