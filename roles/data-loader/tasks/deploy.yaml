@@ -12,7 +12,9 @@
   include_vars:
     file: sensitive.vault
 
-# The namespace (project) and media volume claims must exist.
+# The namespace (project),
+# the media volume claim
+# and a database secret must exist.
 
 - name: Check the namespace ({{ stack_namespace }})
   assert:
@@ -39,6 +41,17 @@
 - name: Assert media PVC exists
   assert:
     that: pvc_result.resources|length == 1
+
+- name: Get the databse secrets
+  k8s_info:
+    kind: Secret
+    namespace: "{{ stack_namespace }}"
+    name: database
+  register: s_result
+
+- name: Assert database secrets exist
+  assert:
+    that: s_result.resources|length == 1
 
 # Launch the loader
 

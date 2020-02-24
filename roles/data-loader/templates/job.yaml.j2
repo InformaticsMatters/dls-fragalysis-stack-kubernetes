@@ -38,6 +38,7 @@ spec:
         imagePullPolicy: IfNotPresent
 {% endif %}
         env:
+        # AWS S3 credentials, bucket and data-origin
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -52,6 +53,31 @@ spec:
           value: '{{ loader_bucket_name }}'
         - name: DATA_ORIGIN
           value: '{{ loader_data_origin }}'
+        # Database credentials
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: host
+        - name: MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: port
+        - name: MYSQL_USER
+          value: fragalysis
+        - name: MYSQL_DATABASE
+          value: frag
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: user_password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: root_password
         volumeMounts:
         - name: media
           mountPath: /code/media
