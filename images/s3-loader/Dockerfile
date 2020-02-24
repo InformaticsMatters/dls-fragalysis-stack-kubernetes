@@ -5,6 +5,7 @@ FROM $from_image:$from_tag
 COPY docker-entrypoint.sh ./
 COPY loader-requirements.txt ./
 RUN pip install -r loader-requirements.txt && \
-    chmod 755 docker-entrypoint.sh
+    chmod -R 755 *.sh && \
+    chmod -R 755 *.py
 
 CMD ["./docker-entrypoint.sh"]
