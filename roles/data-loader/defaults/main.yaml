@@ -9,7 +9,7 @@ stack_name: default
 # consisting of a (public) container registry,
 # image and image tag...
 loader_image_registry: docker.io
-loader_image: xchem/fragalysis-loader
+loader_image: xchem/fragalysis-s3-loader
 loaderimage_tag: latest
 
 # The origin of the data to load.

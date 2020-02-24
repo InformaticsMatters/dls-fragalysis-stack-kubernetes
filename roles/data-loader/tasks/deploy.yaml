@@ -1,5 +1,11 @@
 ---
 
+- name: Check key variables
+  assert:
+    that:
+    - loader_data_origin|string|length > 0
+    - loader_data_origin|string != 'SetMe'
+
 # Include sensitive (encrypted) material.
 
 - name: Include sensitive variables
