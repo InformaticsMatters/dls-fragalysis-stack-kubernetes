@@ -92,6 +92,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#debugging-the-stack">Debugging the stack</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-target-data">Loading target data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparing-new-target-data">Preparing new target data</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -231,7 +235,7 @@ to somewhere like Docker Hub.</p>
 <p>To deploy your stack you should click on the <strong>Fragalysis Stack (Kubernetes)</strong>
 <strong>Job Template</strong>, where you’ll have an opportunity to fine-tune the deployment
 for you specific image. That essentially means ensuring the following variables
-are set for your needs: -</p>
+are set for your needs <a class="footnote-reference brackets" href="#f2" id="id2">2</a>: -</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">stack_image</span></code> - the container registry project and image name for
 your stack, i.e. <code class="docutils literal notranslate"><span class="pre">xchem/fragalsyis-stack</span></code> for official images.</p></li>
@@ -239,9 +243,6 @@ your stack, i.e. <code class="docutils literal notranslate"><span class="pre">xc
 <li><p><code class="docutils literal notranslate"><span class="pre">stack_hostname</span></code> - the hostname that’s used to route fragalysis traffic
 to the cluster</p></li>
 </ol>
-<blockquote class="epigraph">
-<div><p>There are a some other variables but these are the key ones.</p>
-</div></blockquote>
 <p>With variables set you just <strong>SAVE</strong> them (if you’ve changed them)
 and then click <strong>LAUNCH</strong> to run the deployment playbook.</p>
 <div class="section" id="ingress-and-namespace">
@@ -258,12 +259,46 @@ the URI that should direct traffic to your stack instance.</p>
 <li><p><strong>Pod Logs</strong></p></li>
 <li><p><strong>Pod Shells</strong></p></li>
 </ul>
+</div>
+</div>
+<div class="section" id="loading-target-data">
+<h2>Loading target data<a class="headerlink" href="#loading-target-data" title="Permalink to this headline">¶</a></h2>
+<p>You can load data into a Fragalysis Stack using the <em>Data Loader</em> role and
+accompanying AWX <strong>Job Templates</strong>. You should find a
+<strong>Fragaysis Stack Data Loader</strong> <strong>Job Template</strong>, which relies on a loader
+container image that can synchronise data from an AWS S3 bucket.</p>
+<p>When you run the loader job you simply need to ensure that the
+following Job Template variables are appropriately set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stack_name</span>
+<span class="n">loader_image_registry</span>
+<span class="n">loader_image</span>
+<span class="n">loader_image_tag</span>
+<span class="n">loader_data_origin</span>
+</pre></div>
+</div>
+<div class="section" id="preparing-new-target-data">
+<h3>Preparing new target data<a class="headerlink" href="#preparing-new-target-data" title="Permalink to this headline">¶</a></h3>
+<p>If you have new data you wish to deploy it first needs to be uploaded
+to your chosen S3 bucket. For example, if the AWS S3 bucket is <code class="docutils literal notranslate"><span class="pre">dls-fragalysis</span></code>
+and you have data in the directory <code class="docutils literal notranslate"><span class="pre">2020-02-34T12</span></code> you can use the following
+AWS CLI command <a class="footnote-reference brackets" href="#f3" id="id3">3</a> to upload it for use by the loader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">sync</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span><span class="n">T12</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="n">dls</span><span class="o">-</span><span class="n">fragalysis</span><span class="o">/</span><span class="n">django</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="mi">2020</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span><span class="n">T12</span>
+</pre></div>
+</div>
+<p>Once done you ca use <code class="docutils literal notranslate"><span class="pre">2020-02-24T12</span></code> as the <code class="docutils literal notranslate"><span class="pre">loader_data_origin</span></code> value in
+your loader Job.</p>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p><em>Flavours</em> being the official development (latest) and production
-(tagged) stack images along with any number of user stacks (limited
+<dd><p><em>Flavours</em> being the official development (<code class="docutils literal notranslate"><span class="pre">latest</span></code>) and production
+(<em>tagged</em>) stack images along with any number of user stacks (limited
 by the available Kubernetes cluster resources).</p>
+</dd>
+<dt class="label" id="f2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>There are a some other variables but these are the key ones.</p>
+</dd>
+<dt class="label" id="f3"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>You will need AWS credentials to do this.</p>
 </dd>
 </dl>
 </div>
