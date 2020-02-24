@@ -1,0 +1,11 @@
+---
+
+# The deployment state (it's always 'present')
+# we don't envisage un-deploying the loader.
+loader_state: 'present'
+
+# Purpose label for the desired execution node
+loader_node_purpose: application
+
+# Time to wait for the loader to complete
+loader_timeout: 900

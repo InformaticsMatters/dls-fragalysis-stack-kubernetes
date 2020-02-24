@@ -52,8 +52,7 @@ database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_
 
 # General variables -----------------------------------------------------------
 
-# General timeout, generally used within the k8s module,
-# for wait duration
+# General timeout, used within the k8s module for wait duration
 wait_timeout: 600
 # Volume binding timeout (seconds)
 bind_timeout: 120

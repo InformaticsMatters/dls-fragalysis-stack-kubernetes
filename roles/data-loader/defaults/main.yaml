@@ -1,0 +1,18 @@
+---
+
+# The name of the stack to deploy the loader to.
+# This is used to automatically form the expected namespace
+# (a combination of 'stack-{{ user_id }}-{{ name }}.
+stack_name: default
+
+# The loader image you want to deploy,
+# consisting of a (public) container registry,
+# image and image tag...
+loader_image_registry: docker.io
+loader_image: xchem/fragalysis-loader
+loaderimage_tag: latest
+
+# The origin of the data to load.
+# Essentially a sub-path in the designated S3 bucket.
+# This must be set by the user.
+loader_data_origin: SetMe

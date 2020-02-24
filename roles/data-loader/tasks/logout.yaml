@@ -1,0 +1,10 @@
+---
+
+# Called to logout of an OpenShift session
+
+- name: Log out (revoke a prior access token)
+  k8s_auth:
+    host: "{{ okd_master_hostname }}"
+    api_key: "{{ k8s_auth_api_key }}"
+    state: absent
+  when: k8s_auth_api_key is defined

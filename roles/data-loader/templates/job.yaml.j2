@@ -1,0 +1,58 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loader
+  namespace: {{ stack_namespace }}
+spec:
+  # Clean-up completed (or failed) Jobs
+  # after 5 minutes...
+  ttlSecondsAfterFinished: 300
+
+  template:
+    spec:
+      serviceAccountName: stack
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ loader_node_purpose }}
+
+      containers:
+      - name: loader
+        image: '{{ loader_image_registry }}/{{ loader_image }}:{{ loader_image_tag }}'
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: loader
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loader
+              key: aws_secret_access_key
+        - name: BUCKET_NAME
+          value: '{{ loader_bucket_name }}'
+        - name: DATA_ORIGIN
+          value: '{{ loader_data_origin }}'
+        volumeMounts:
+        - name: media
+          mountPath: /code/media
+
+      volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: media
+
+      restartPolicy: Never
+  backoffLimit: 1
