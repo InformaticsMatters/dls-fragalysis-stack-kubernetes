@@ -1,0 +1,96 @@
+---
+
+# Tasks required to change a deployed version of Fragalysis.
+# Usually executed from 'site-fragalysis-stack_version-change.yaml'.
+#
+# This playbook first ensures that the Fragalysis namespace exists
+# and that an existing deployment exists - the user is first supposed
+# to have deployed the stack before changing its version.
+
+- include_tasks: prep.yaml
+
+# If it looks like we're deploying to OpenShift
+# we need to use the k8s authentication module to login
+# and obtain an API key.
+- include_tasks: login.yaml
+  when: okd_master_hostname is defined
+
+# A kubernetes (or OpenShift) host and an API key must be set.
+# We will either have authenticated against an OpenShift server
+# or the AWX kubernetes credentials will have injected suitable
+# values for the K8S_AUTH_HOST and K8S_AUTH_API_KEY environment variables.
+# Either way the ansible variables 'k8s_auth_host' and
+# 'k8s_auth_api_key' will have been set.
+- name: Assert authentication
+  assert:
+    that:
+    - k8s_auth_host|length > 0
+    - k8s_auth_api_key|length > 0
+
+# Go...
+
+- block:
+
+  # Include sensitive (encrypted) material.
+
+  - name: Include sensitive variables
+    include_vars:
+      file: sensitive.vault
+
+  # Assert namespace and a stateful set exist...
+
+  - name: Get expected namespace ({{ stack_namespace }})
+    k8s_info:
+      kind: Namespace
+      name: "{{ stack_namespace }}"
+    register: result
+
+  - name: Assert namespace exists
+    assert:
+      that: result.resources|length > 0
+      fail_msg: Namespace '{{ stack_namespace }}' does not exist
+
+  - name: Get expected StatefulSet
+    k8s_info:
+      kind: StatefulSet
+      name: stack
+      namespace: "{{ stack_namespace }}"
+    register: result
+
+  - name: Assert stack exists
+    assert:
+      that: result.resources|length > 0
+      fail_msg: Stack's StatefulSet does not exist
+
+  # We have a namespace and stack - simply re-deploy the stack
+  # As the version number is expected to have changed the stack should roll-out
+
+  - name: Deploy stack change
+    k8s:
+      definition: "{{ lookup('template', 'statefulset-stack.yaml.j2') }}"
+      wait: yes
+
+  - name: Wait for stack to become Ready
+    k8s_info:
+      kind: Pod
+      name: stack-0
+      namespace: "{{ stack_namespace }}"
+    register: s_result
+    until: >-
+      s_result.resources|length == 1
+      and s_result.resources[0].status.containerStatuses|length == 1
+      and s_result.resources[0].status.containerStatuses[0].ready
+    delay: 20
+    retries: "{{ (wait_timeout|int / 20)|int }}"
+
+  # Done.
+
+  module_defaults:
+    group/k8s:
+      host: "{{ k8s_auth_host }}"
+      api_key: "{{ k8s_auth_api_key }}"
+
+# If it looks like we're deploying to OpenShift
+# we now need to logout...
+- include_tasks: logout.yaml
+  when: okd_master_hostname is defined
