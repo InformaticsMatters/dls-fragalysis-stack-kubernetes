@@ -10,4 +10,4 @@ script:
 - find . -type f -iname '*.yaml.j2' -exec yamllint {} \;
 - ansible-lint
 - cd docs
-- ./make-docs.sh
+- sphinx-build -Eab html docs/source docs/build/html
