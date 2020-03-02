@@ -92,7 +92,7 @@
 
   - name: Pause (to allow stack to terminate)
     pause:
-      seconds: 30
+      seconds: 45
 
   - name: Wait for stack to become Ready
     k8s_info:
