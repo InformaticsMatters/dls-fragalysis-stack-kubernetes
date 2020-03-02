@@ -131,10 +131,10 @@
   - statefulset-stack
   - service-stack
 
-- name: Wait for stack to become Ready
+- name: Wait for stack {{ stack_replicas }} to become Ready
   k8s_info:
     kind: Pod
-    name: stack-0
+    name: stack-{{ stack_replicas|int - 1 }}
     namespace: "{{ stack_namespace }}"
   register: s_result
   until: >-

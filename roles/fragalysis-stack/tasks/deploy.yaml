@@ -9,6 +9,7 @@
   assert:
     that:
     - stack_hostname|string|length > 0
+    - stack_replicas|int > 0
 
 # Include sensitive (encrypted) material.
 
