@@ -2,10 +2,11 @@
 
 # The stack image you want to deploy,
 # consisting of a (public) container registry,
-# image and image tag...
+# image, image tag and replicas...
 stack_image_registry: docker.io
 stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
+stack_replicas: 2
 
 # The hostname that will be used to connect to the stacks.
 # This will be a URL directed at the cluster. The stack will

@@ -10,6 +10,7 @@ spec:
     matchLabels:
       name: stack
   serviceName: stack
+  replicas: {{ stack_replicas }}
   template:
     metadata:
       name: stack
