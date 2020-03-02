@@ -37,7 +37,7 @@
     include_vars:
       file: sensitive.vault
 
-  # Assert namespace and a stateful set exist...
+  # Assert namespace, a stateful set and database secrets exist...
 
   - name: Get expected namespace ({{ stack_namespace }})
     k8s_info:
@@ -62,8 +62,28 @@
       that: result.resources|length > 0
       fail_msg: Stack's StatefulSet does not exist
 
+  - name: Check database secrets
+    k8s_info:
+      kind: Secret
+      api_version: v1
+      namespace: "{{ stack_namespace }}"
+      name: database
+    register: s_result
+
+  - name: Assert database secrets
+    assert:
+      that: s_result.resources|length > 0
+      fail_msg: Stack's database secrets do not exist
+
   # We have a namespace and stack - simply re-deploy the stack
   # As the version number is expected to have changed the stack should roll-out
+
+  - name: Get database secret facts (from secrets)
+    set_fact:
+      database_host_fact: "{{ s_result.resources[0].data.host|b64decode }}"
+      database_port_fact: "{{ s_result.resources[0].data.port|b64decode }}"
+      stack_db_root_password_fact: "{{ s_result.resources[0].data.root_password|b64decode }}"
+      stack_db_user_password_fact: "{{ s_result.resources[0].data.user_password|b64decode }}"
 
   - name: Deploy stack change
     k8s:
