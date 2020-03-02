@@ -89,7 +89,8 @@
     namespace: "{{ stack_namespace }}"
   register: db_result
   until: >-
-    db_result.resources|length == 1
+    db_result.resources is defined
+    and db_result.resources|length == 1
     and db_result.resources[0].status.containerStatuses|length == 1
     and db_result.resources[0].status.containerStatuses[0].ready
   delay: 10

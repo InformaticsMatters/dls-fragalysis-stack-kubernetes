@@ -90,6 +90,10 @@
       definition: "{{ lookup('template', 'statefulset-stack.yaml.j2') }}"
       wait: yes
 
+  - name: Pause (to allow stack to terminate)
+    pause:
+      seconds: 5
+
   - name: Wait for stack to become Ready
     k8s_info:
       kind: Pod
