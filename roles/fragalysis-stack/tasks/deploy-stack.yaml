@@ -138,7 +138,8 @@
     namespace: "{{ stack_namespace }}"
   register: s_result
   until: >-
-    s_result.resources|length == 1
+    s_result.resources is defined
+    and s_result.resources|length == 1
     and s_result.resources[0].status.containerStatuses|length == 1
     and s_result.resources[0].status.containerStatuses[0].ready
   delay: 20
