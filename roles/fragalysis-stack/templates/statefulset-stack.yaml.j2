@@ -79,9 +79,11 @@ spec:
             port: 80
         env:
         - name: NEO4J_BOLT_URL
-          value: bolt://neo4j:test@{{ graph_service }}:7687
+          value: bolt://neo4j:test@{{ graph_hostname }}:7687
         - name: NEO4J_QUERY
-          value: {{ graph_service }}
+          value: {{ graph_hostname }}
+        - name: NEO4J_AUTH
+          value: 'neo4j/{{ graph_password }}'
         # Extracted from stack secrets...
         #
         - name: WEB_DJANGO_SUPERUSER_NAME
