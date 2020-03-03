@@ -78,6 +78,10 @@
   # We have a namespace and stack - simply re-deploy the stack
   # As the version number is expected to have changed the stack should roll-out
 
+  - name: Assert stack replicas
+    assert:
+      that: stack_replicas|int > 0
+
   - name: Get database secret facts (from secrets)
     set_fact:
       database_host_fact: "{{ s_result.resources[0].data.host|b64decode }}"
@@ -90,22 +94,16 @@
       definition: "{{ lookup('template', 'statefulset-stack.yaml.j2') }}"
       wait: yes
 
-  - name: Pause (to allow stack to terminate)
-    pause:
-      seconds: 45
+  # The stacks are rolled out one after the other in reverse order
+  # from Pod 'stack-{{ stack_replicas - 1 }}' to 'stack-0'.
+  # Here we wait for all of them, starting with instance {{ stack_replicas - 1 }}...
 
-  - name: Wait for stack to become Ready
-    k8s_info:
-      kind: Pod
-      name: stack-0
-      namespace: "{{ stack_namespace }}"
-    register: s_result
-    until: >-
-      s_result.resources|length == 1
-      and s_result.resources[0].status.containerStatuses|length == 1
-      and s_result.resources[0].status.containerStatuses[0].ready
-    delay: 20
-    retries: "{{ (wait_timeout|int / 20)|int }}"
+  - name: Wait for each new stack to become Ready
+    include_tasks: wait-for-stack.yaml
+    vars:
+      stack_id: "{{ item }}"
+      stack_pre_wait_pause: 45
+    loop: "{{ range(stack_replicas|int - 1, -1, -1)|list }}"
 
   # Done.
 

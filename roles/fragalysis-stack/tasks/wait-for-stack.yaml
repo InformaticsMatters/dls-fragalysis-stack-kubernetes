@@ -1,0 +1,33 @@
+---
+
+# Essentially a sub-task, used normally from a loop in an outer playbook.
+# This task logic waits for a given stack 'stack-{{ stack_id }}' to
+# become ready, first waiting for period of time if {{ stack_pre_wait_pause }}
+# is set to anything greater than '0'.
+#
+# Expected variables:
+#
+# - stack_id             : required : The numeric ID of the stack 0..N-1
+# - stack_namespace      : required : The stack namespace
+# - stack_pre_wait_pause : optional : pre-wait pause (seconds)
+# - wait_timeout         : required : maximum time to wait
+
+- name: Pause (normally to allow stack to terminate)
+  pause:
+    seconds: "{{ stack_pre_wait_pause|int }}"
+  when:
+  - stack_pre_wait_pause is defined
+  - stack_pre_wait_pause|int > 0
+
+- name: Wait for stack-{{ stack_id }} to become Ready
+  k8s_info:
+    kind: Pod
+    name: stack-{{ stack_id }}
+    namespace: "{{ stack_namespace }}"
+  register: s_result
+  until: >-
+    s_result.resources|length == 1
+    and s_result.resources[0].status.containerStatuses|length == 1
+    and s_result.resources[0].status.containerStatuses[0].ready
+  delay: 20
+  retries: "{{ (wait_timeout|int / 20)|int }}"

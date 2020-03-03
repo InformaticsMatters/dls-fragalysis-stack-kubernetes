@@ -121,7 +121,12 @@
 
   when: s_result.resources|length == 0
 
-# Now the stack and its service.
+# Now the stack, its service and ingress
+# and give the user their stack URL.
+
+- name: Assert stack replicas
+  assert:
+    that: stack_replicas|int > 0
 
 - name: Deploy stack
   k8s:
@@ -130,34 +135,31 @@
   loop:
   - statefulset-stack
   - service-stack
+  - ingress-stack
 
-- name: Wait for stack {{ stack_replicas }} to become Ready
-  k8s_info:
-    kind: Pod
-    name: stack-{{ stack_replicas|int - 1 }}
-    namespace: "{{ stack_namespace }}"
-  register: s_result
-  until: >-
-    s_result.resources is defined
-    and s_result.resources|length == 1
-    and s_result.resources[0].status.containerStatuses|length == 1
-    and s_result.resources[0].status.containerStatuses[0].ready
-  delay: 20
-  retries: "{{ (wait_timeout|int / 20)|int }}"
+- name: Display stack URL
+  debug:
+    msg: Your stack URL is 'https://{{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}'
 
-# Finally the stack ingress.
+# The stack's a StatefulSet with {{ stack_replicas }} instances.
+# They are initialised one after the other from Pod 'stack-0'
+# to Pod 'stack-{{ stack_replicas - 1 }}'.
+# Here we wait for all of them, starting with instance 0...
 
-- name: Deploy stack ingress
-  k8s:
-    definition: "{{ lookup('template', 'ingress-stack.yaml.j2') }}"
-    wait: yes
+- name: Wait for each new stack to become Ready
+  include_tasks: wait-for-stack.yaml
+  vars:
+    stack_id: "{{ item }}"
+  loop: "{{ range(stack_replicas|int)|list }}"
 
-# Display helpful usage/diagnostic information
+# Display helpful usage/diagnostic information.
+# Repeat the stack URL as it may have been lost in
+# the repeated log from the prior task.
 
 - name: Display stack namespace
   debug:
     msg: Your stack Kubernetes namespace is '{{ stack_namespace }}'
 
-- name: Display stack URL
+- name: Display stack URL (again)
   debug:
     msg: Your stack URL is 'https://{{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}'
