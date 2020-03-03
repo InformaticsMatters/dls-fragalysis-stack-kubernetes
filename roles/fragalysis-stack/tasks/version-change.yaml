@@ -102,7 +102,7 @@
     include_tasks: wait-for-stack.yaml
     vars:
       stack_id: "{{ item }}"
-      stack_pre_wait_pause: 45
+      stack_wait_for_termination: yes
     loop: "{{ range(stack_replicas|int - 1, -1, -1)|list }}"
 
   # Done.
