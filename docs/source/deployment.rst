@@ -27,28 +27,11 @@ Deployments (plays) are likely to require a number of sensitive values
 to specific *Teams* of *Users*. Management of this aspect of Ansible
 is complex but it is simplified through the use of `AWX`_.
 
-AWX Fundamentals
-================
+..  toctree::
+    :maxdepth: 1
+    :caption: AWX
 
-AWX is a task engine built on top of Ansible that is able to simplify, manage
-monitor application deployments through the use of Ansible playbooks present
-in repositories (GitLab, GitHub etc.). We're not going to go into detail
-about how the AWX server we use is fully configured, instead we're just going
-to explore some key aspects that are essential to deploying the Fragalysis
-Stack.
-
-To run a playbook in AWX you typically need to create the following minimum
-set of objects: -
-
-*   An **Organisation**
-*   A **Team**
-*   A **User**
-*   An **Inventory** and **Hosts**, often something simple like ``localhost``
-*   **Credentials**, like Kubernetes cluster credentials
-*   A **Project**, which is a reference to a GitHib project containing the play
-*   A **Job Template**, that joins the inventory, credentials and project
-    together with the opportunity to over-ride default variables in the
-    corresponding play
+    awx
 
 Sensitive Material (Ansible Vault)
 ----------------------------------
