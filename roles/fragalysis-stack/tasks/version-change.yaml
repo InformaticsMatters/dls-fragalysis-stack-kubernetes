@@ -92,6 +92,7 @@
   - name: Deploy stack change
     k8s:
       definition: "{{ lookup('template', 'statefulset-stack.yaml.j2') }}"
+      force: yes
       wait: yes
 
   # The stacks are rolled out one after the other in reverse order
