@@ -93,7 +93,6 @@
     k8s:
       definition: "{{ lookup('template', 'statefulset-stack.yaml.j2') }}"
       force: yes
-      wait: yes
 
   # The stacks are rolled out one after the other in reverse order
   # from Pod 'stack-{{ stack_replicas - 1 }}' to 'stack-0'.
