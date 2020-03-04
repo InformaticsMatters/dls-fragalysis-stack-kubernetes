@@ -42,6 +42,15 @@ spec:
                 values:
                 - {{ stack_node_purpose }}
 
+      # Init Containers
+      initContainers:
+      - image: busybox:1.28.0
+        name: wait-for-graph
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nslookup {{ graph_hostname }}; do echo waiting for neo4j; sleep 1; done;'
+
       containers:
       - name: stack
         image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
