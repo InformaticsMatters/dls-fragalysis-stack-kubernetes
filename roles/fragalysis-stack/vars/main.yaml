@@ -20,12 +20,15 @@ stack_sa_psp: im-core-unrestricted
 # deployed by the Informatics Matters infrastructure playbook.
 stack_cert_issuer: staging
 
-stack_cpu_limit: 500m
+stack_cpu_limit: 8000m
 stack_mem_limit: 2Gi
-stack_cpu_request: 100m
-stack_mem_request: 2Gi
+stack_cpu_request: 10m
+stack_mem_request: 800Mi
 
-stack_media_vol_size_g: 1
+# The Django app's media directory.
+# To hold map and pdb target data, which
+# depending on deployed targets, should be at least 3Gi
+stack_media_vol_size_g: 8
 
 stack_django_secret_key: "{{ lookup('password', '/dev/null length=50 chars=ascii_letters') }}"
 stack_django_superuser_password: "{{ lookup('password', '/dev/null length=22 chars=ascii_letters') }}"
@@ -35,17 +38,19 @@ stack_cicd_trigger_id: "0"
 # Database configuration ------------------------------------------------------
 
 # Database Pod CPU and Memory resources
-database_cpu_limit: 500m
+database_cpu_limit: 2000m
 database_mem_limit: 2Gi
-database_cpu_request: 100m
-database_mem_request: 2Gi
+database_cpu_request: 10m
+database_mem_request: 400Mi
 
 database_image_registry: docker.io
 database_image: mysql
 database_image_tag: '5.7.23'
 database_port: 3306
 
-database_vol_size_g: 1
+# For the django application database.
+# Needs at least 400MB, size it accordingly.
+database_vol_size_g: 2
 
 # Auto-generated passwords.
 # Different lengths to avoid the Ansible caching problem.

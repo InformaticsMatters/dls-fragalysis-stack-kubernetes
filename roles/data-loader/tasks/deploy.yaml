@@ -80,8 +80,8 @@
   until: >-
     result.resources[0].status.completionTime is defined
     or result.resources[0].status.failed is defined
-  delay: 20
-  retries: "{{ (loader_timeout|int / 20)|int }}"
+  delay: 40
+  retries: "{{ (loader_timeout_minutes|int * 60 / 40)|int }}"
 
 - name: Display loader Job status
   debug:

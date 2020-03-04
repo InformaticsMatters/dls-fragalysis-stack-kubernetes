@@ -7,5 +7,8 @@ loader_state: 'present'
 # Purpose label for the desired execution node
 loader_node_purpose: application
 
-# Time to wait for the loader to complete
-loader_timeout: 900
+# Time to wait for the loader to complete.
+# This should be long enough to accommodate the time taken to load
+# the largest of data sets. The current ALL_TARGETS data (4th March 2020)
+# takes around 40 minutes to load.
+loader_timeout_minutes: 60
