@@ -111,18 +111,30 @@ following Job Template variables are appropriately set::
     loader_image_tag
     loader_data_origin
 
-Preparing new target data
--------------------------
+Preparing new target data (AWS S3)
+----------------------------------
 
 If you have new data you wish to deploy it first needs to be uploaded
-to your chosen S3 bucket. For example, if the AWS S3 bucket is ``dls-fragalysis``
-and you have data in the directory ``2020-02-34T12`` you can use the following
+to your chosen S3 bucket. Install the `AWS CLI`_ and then run configuration
+in order to provide your AWS credentials::
+
+    $ aws configure
+    [...]
+
+.. epigraph::
+
+    As the ``aws configure`` command typically writes data to ``~/.aws/config``
+    you can avoid placing sensitive information in files by providing values
+    in the environment variables ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY``
+
+With the AWS CLI configured you can, with an AWS S3 bucket of ``dls-fragalysis``
+and local target data in the directory ``2020-02-34T12``, use the following
 AWS CLI command [#f3]_ to upload it for use by the loader::
 
     aws s3 sync 2020-02-24T12 s3://dls-fragalysis/django-data/2020-02-24T12
 
-Once done you ca use ``2020-02-24T12`` as the ``loader_data_origin`` value in
-your loader Job.
+With data loaded on S3 you can use ``2020-02-24T12`` as the ``loader_data_origin``
+value in your loader Job.
 
 .. rubric:: Footnotes
 
@@ -136,6 +148,7 @@ your loader Job.
 
 .. _ansible: https://github.com/ansible/ansible
 .. _ansible vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
-.. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
+.. _aws cli: https://aws.amazon.com/cli/
 .. _awx: https://github.com/ansible/awx
+.. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
 .. _namespace: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/

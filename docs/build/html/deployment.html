@@ -94,7 +94,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#loading-target-data">Loading target data</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#preparing-new-target-data">Preparing new target data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparing-new-target-data-aws-s3">Preparing new target data (AWS S3)</a></li>
 </ul>
 </li>
 </ul>
@@ -260,17 +260,28 @@ following Job Template variables are appropriately set:</p>
 </div>
 </div>
 </div>
-<div class="section" id="preparing-new-target-data">
-<h2>Preparing new target data<a class="headerlink" href="#preparing-new-target-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="preparing-new-target-data-aws-s3">
+<h2>Preparing new target data (AWS S3)<a class="headerlink" href="#preparing-new-target-data-aws-s3" title="Permalink to this headline">¶</a></h2>
 <p>If you have new data you wish to deploy it first needs to be uploaded
-to your chosen S3 bucket. For example, if the AWS S3 bucket is <code class="docutils literal notranslate"><span class="pre">dls-fragalysis</span></code>
-and you have data in the directory <code class="docutils literal notranslate"><span class="pre">2020-02-34T12</span></code> you can use the following
+to your chosen S3 bucket. Install the <a class="reference external" href="https://aws.amazon.com/cli/">AWS CLI</a> and then run configuration
+in order to provide your AWS credentials:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws configure
+[...]
+</pre></div>
+</div>
+<blockquote class="epigraph">
+<div><p>As the <code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">configure</span></code> command typically writes data to <code class="docutils literal notranslate"><span class="pre">~/.aws/config</span></code>
+you can avoid placing sensitive information in files by providing values
+in the environment variables <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code></p>
+</div></blockquote>
+<p>With the AWS CLI configured you can, with an AWS S3 bucket of <code class="docutils literal notranslate"><span class="pre">dls-fragalysis</span></code>
+and local target data in the directory <code class="docutils literal notranslate"><span class="pre">2020-02-34T12</span></code>, use the following
 AWS CLI command <a class="footnote-reference brackets" href="#f3" id="id3">3</a> to upload it for use by the loader:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">sync</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span><span class="n">T12</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="n">dls</span><span class="o">-</span><span class="n">fragalysis</span><span class="o">/</span><span class="n">django</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="mi">2020</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span><span class="n">T12</span>
 </pre></div>
 </div>
-<p>Once done you ca use <code class="docutils literal notranslate"><span class="pre">2020-02-24T12</span></code> as the <code class="docutils literal notranslate"><span class="pre">loader_data_origin</span></code> value in
-your loader Job.</p>
+<p>With data loaded on S3 you can use <code class="docutils literal notranslate"><span class="pre">2020-02-24T12</span></code> as the <code class="docutils literal notranslate"><span class="pre">loader_data_origin</span></code>
+value in your loader Job.</p>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
