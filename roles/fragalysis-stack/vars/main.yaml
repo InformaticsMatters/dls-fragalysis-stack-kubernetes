@@ -30,6 +30,8 @@ stack_media_vol_size_g: 1
 stack_django_secret_key: "{{ lookup('password', '/dev/null length=50 chars=ascii_letters') }}"
 stack_django_superuser_password: "{{ lookup('password', '/dev/null length=22 chars=ascii_letters') }}"
 
+stack_cicd_trigger_id: "0"
+
 # Database configuration ------------------------------------------------------
 
 # Database Pod CPU and Memory resources

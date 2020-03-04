@@ -176,6 +176,18 @@ spec:
 {% else %}
           value: 'no'
 {% endif %}
+        # CICD_TRIGGER_ID is variable whose value is controlled
+        # by the prevailing CI/CD process. It's value
+        # is defined by the CI/CD process and is used to force
+        # a redeployment of the underlying pods. This is used in
+        # situations where the origin image's tag may not have changed
+        # (e.g. it's 'latest' or 'stable') but a new build is expected to
+        # be available. Without changing something in the StatefulSet spec
+        # a roll-out will occur if the tag has not changed.
+        # The CI/CD process guarantees to change the value of this field
+        # for each intended image change.
+        - name: CICD_TRIGGER_ID
+          value: '{{ stack_cicd_trigger_id }}'
         volumeMounts:
         - name: media
           mountPath: /code/media
