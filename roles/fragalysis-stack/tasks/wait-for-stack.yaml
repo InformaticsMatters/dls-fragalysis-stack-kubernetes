@@ -43,10 +43,6 @@
   - stack_wait_for_termination|bool
   - p_result.resources|length > 0
 
-- name: Debug
-  debug:
-    var: s_result.resources
-
 # Now wait for ready...
 
 - name: Wait for stack-{{ stack_id }} to become Ready
@@ -62,8 +58,3 @@
     and s_result.resources[0].status.containerStatuses[0].ready
   delay: 20
   retries: "{{ (wait_timeout|int / 20)|int }}"
-
-- name: Debug
-  debug:
-    var: s_result.resources
-    
