@@ -33,6 +33,7 @@
   register: s_result
   until: >-
     s_result.resources|length == 1
+    and s_result.resources[0].status.containerStatuses is defined
     and s_result.resources[0].status.containerStatuses|length == 1
     and not s_result.resources[0].status.containerStatuses[0].ready
   delay: 5
@@ -41,6 +42,10 @@
   - stack_wait_for_termination is defined
   - stack_wait_for_termination|bool
   - p_result.resources|length > 0
+
+- name: Debug
+  debug:
+    var: s_result.resources
 
 # Now wait for ready...
 
@@ -52,7 +57,13 @@
   register: s_result
   until: >-
     s_result.resources|length == 1
+    and s_result.resources[0].status.containerStatuses is defined
     and s_result.resources[0].status.containerStatuses|length == 1
     and s_result.resources[0].status.containerStatuses[0].ready
   delay: 20
   retries: "{{ (wait_timeout|int / 20)|int }}"
+
+- name: Debug
+  debug:
+    var: s_result.resources
+    
