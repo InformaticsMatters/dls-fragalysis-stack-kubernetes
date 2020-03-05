@@ -29,9 +29,10 @@ is complex but it is simplified through the use of `AWX`_.
 
 ..  toctree::
     :maxdepth: 1
-    :caption: AWX
+    :caption: Deployment Tools
 
     awx
+    continuous-delivery
 
 Sensitive Material (Ansible Vault)
 ----------------------------------
