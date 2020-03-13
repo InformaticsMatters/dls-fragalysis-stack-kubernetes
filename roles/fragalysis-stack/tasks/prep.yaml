@@ -57,6 +57,7 @@
 - name: Install prerequisite Python modules
   pip:
     name:
+    - kubernetes==10.0.1
     - openshift==0.10.0
     - jmespath==0.9.4
     extra_args: --user
