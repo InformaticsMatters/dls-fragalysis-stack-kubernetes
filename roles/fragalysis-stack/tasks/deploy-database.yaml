@@ -79,6 +79,8 @@
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
+  - configmap-postgres-conf
+  - configmap-postgres-init
   - statefulset-database
   - service-database
 

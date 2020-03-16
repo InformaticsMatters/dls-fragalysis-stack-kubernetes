@@ -1,0 +1,12 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: postgres-conf
+  namespace: {{ stack_namespace }}
+data:
+  postgresql.conf: |
+    #--------------------------------------------------------------------------
+    # CONNECTIONS AND AUTHENTICATION
+    #--------------------------------------------------------------------------
+    listen_addresses = '*'

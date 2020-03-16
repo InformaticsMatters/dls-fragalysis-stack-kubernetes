@@ -44,9 +44,9 @@ database_cpu_request: 10m
 database_mem_request: 400Mi
 
 database_image_registry: docker.io
-database_image: mysql
-database_image_tag: '5.7.23'
-database_port: 3306
+database_image: postgres
+database_image_tag: '12.2'
+database_port: 5432
 
 # For the django application database.
 # Needs at least 400MB, size it accordingly.

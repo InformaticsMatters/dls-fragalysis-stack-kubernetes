@@ -112,24 +112,19 @@ spec:
               key: superuser_password
         # Extracted from database secrets...
         #
-        - name: MYSQL_HOST
-          value: '{{ database_host_fact }}'
-        - name: MYSQL_PORT
-          value: '{{ database_port_fact }}'
-        - name: MYSQL_USER
-          value: fragalysis
-        - name: MYSQL_DATABASE
+        - name: POSTGRESQL_DATABASE
           value: frag
-        - name: MYSQL_PASSWORD
+        - name: POSTGRESQL_USER
+          value: fragalysis
+        - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: database
               key: user_password
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database
-              key: root_password
+        - name: POSTGRESQL_HOST
+          value: '{{ database_host_fact }}'
+        - name: POSTGRESQL_PORT
+          value: '{{ database_port_fact }}'
         # Extracted from ispyb secrets...
         #
         - name: ISPYB_USER
