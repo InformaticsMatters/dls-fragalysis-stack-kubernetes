@@ -1,0 +1,17 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: postgres-init
+  namespace: {{ stack_namespace }}
+data:
+  01-init.sh: |
+    #!/bin/bash
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "admin" --dbname "admin" <<-EOSQL
+        -- Configure a user and database for Fragalysys
+        CREATE USER fragalysis;
+        ALTER USER fragalysis WITH PASSWORD '{{ stack_db_user_password_fact }}';
+        CREATE DATABASE frag;
+        GRANT ALL PRIVILEGES ON DATABASE frag TO fragalysis;
+    EOSQL

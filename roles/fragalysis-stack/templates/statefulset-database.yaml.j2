@@ -31,12 +31,20 @@ spec:
                 values:
                 - {{ stack_node_purpose }}
 
+      # To access the mounted database volume
+      # we set the security context's fsGroup
+      # to the group that will be using the volume
+      # In this case it's the postgres group in the container
+      # (obtained empirically)
+      securityContext:
+        fsGroup: 26
+
       containers:
       - name: database
         image: '{{ database_image_registry }}/{{ database_image }}:{{ database_image_tag }}'
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3306
+        - containerPort: 5432
         resources:
           limits:
             cpu: {{ database_cpu_limit }}
@@ -44,30 +52,76 @@ spec:
           requests:
             cpu: {{ database_cpu_request }}
             memory: {{ database_mem_request }}
-        livenessProbe:
+        readinessProbe:
+          # Wait 30 seconds
+          # then fail after more than 2 minutes of failures...
           initialDelaySeconds: 30
-          failureThreshold: 3
-          successThreshold: 1
-          periodSeconds: 10
-          timeoutSeconds: 1
-          tcpSocket:
-            port: 3306
-        env:
-        - name: MYSQL_USER
-          value: fragalysis
-        - name: MYSQL_DATABASE
-          value: frag
-        - name: MYSQL_PASSWORD
-          value: {{ stack_db_user_password_fact }}
-        - name: MYSQL_ROOT_PASSWORD
-          value: {{ stack_db_root_password_fact }}
-        - name: MYSQL_ROOT_HOST
-          value: '%'
+          failureThreshold: 9
+          periodSeconds: 15
+          timeoutSeconds: 2
+          exec:
+            command:
+            - "/bin/sh"
+            - "-i"
+            - "-c"
+            - pg_isready -h 127.0.0.1 -p 5432 -U admin -q
+        livenessProbe:
+          # Wait 30 seconds
+          # then fail after more than 2 minutes of failures...
+          initialDelaySeconds: 30
+          failureThreshold: 9
+          periodSeconds: 15
+          timeoutSeconds: 2
+          exec:
+            command:
+            - "/bin/sh"
+            - "-i"
+            - "-c"
+            - pg_isready -h 127.0.0.1 -p 5432 -U admin -q
         volumeMounts:
-        - name: database-volume
-          mountPath: /var/lib/mysql
+        # Database initialisation scripts
+        # It's here we create additional - 'out-of-the-box' users and databases
+        - mountPath: /docker-entrypoint-initdb.d/01-init.sh
+          name: postgres-init
+          subPath: 01-init.sh
+          readOnly: true
+        # Postgres configuration
+        - mountPath: /etc/postgresql/postgresql.conf
+          name: postgres-conf
+          subPath: postgresql.conf
+          readOnly: true
+        # Persistent volume for data
+        - mountPath: /var/lib/postgresql/data
+          name: database-volume
+        env:
+        # PGDATA - the location of persisted database files.
+        # Normally a sub-directory of '/var/lib/postgresql/data'.
+        # The PVC is mounted at '/var/lib/postgresql' and we use
+        # PGDATA to identify a sub-directory in the mount.
+        # If we don't postres fails to start with the error: -
+        #
+        #   initdb: directory "/var/lib/postgresql/data" exists but is not empty
+        #   It contains a lost+found directory, perhaps due to it being a mount point.
+        #   Using a mount point directly as the data directory is not recommended.
+        #   Create a subdirectory under the mount point.
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        # Admin/superuser name and password
+        - name: POSTGRES_USER
+          value: admin
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: root_password
 
       volumes:
+      - name: postgres-init
+        configMap:
+          name: postgres-init
+      - name: postgres-conf
+        configMap:
+          name: postgres-conf
       - name: database-volume
         persistentVolumeClaim:
           claimName: database
