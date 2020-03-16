@@ -1,4 +1,9 @@
 ---
+
+# Create the fragalysis user and database (frag)
+# Refer to 'how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04'
+# on the DigitalOcean site with regard to the ALTER ROLE actions.
+
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -13,5 +18,8 @@ data:
         CREATE USER fragalysis;
         ALTER USER fragalysis WITH PASSWORD '{{ stack_db_user_password_fact }}';
         CREATE DATABASE frag;
+        ALTER ROLE fragalysis SET client_encoding TO 'utf8';
+        ALTER ROLE fragalysis SET default_transaction_isolation TO 'read committed';
+        ALTER ROLE fragalysis SET timezone TO 'UTC';
         GRANT ALL PRIVILEGES ON DATABASE frag TO fragalysis;
     EOSQL

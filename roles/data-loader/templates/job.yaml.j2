@@ -54,30 +54,19 @@ spec:
         - name: DATA_ORIGIN
           value: '{{ loader_data_origin }}'
         # Database credentials
-        - name: MYSQL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: database
-              key: host
-        - name: MYSQL_PORT
-          valueFrom:
-            secretKeyRef:
-              name: database
-              key: port
-        - name: MYSQL_USER
-          value: fragalysis
-        - name: MYSQL_DATABASE
+        - name: POSTGRESQL_DATABASE
           value: frag
-        - name: MYSQL_PASSWORD
+        - name: POSTGRESQL_USER
+          value: fragalysis
+        - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: database
               key: user_password
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database
-              key: root_password
+        - name: POSTGRESQL_HOST
+          value: '{{ database_host_fact }}'
+        - name: POSTGRESQL_PORT
+          value: '{{ database_port_fact }}'
         volumeMounts:
         - name: media
           mountPath: /code/media
