@@ -52,5 +52,5 @@
 
 # Now deploy the stack
 
-#- name: Deploy the stack
-#  import_tasks: deploy-stack.yaml
+- name: Deploy the stack
+  import_tasks: deploy-stack.yaml
