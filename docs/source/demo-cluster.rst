@@ -1,0 +1,140 @@
+***************************
+Setting up the Demo cluster
+***************************
+
+.. epigraph::
+
+    Notes on configuring the demonstration Fragalysis AWS-based
+    kubernetes cluster for Diamond Light Source. These notes describe the
+    software setup based on the the assumption that you have a viable cluster
+    and are in possession of the ``kubeconfig`` file, have an AWS IAM Role,
+    access to the wider internet and can pull code from git repositories,
+    Docker Hub and images hosted on private (GitLab) registries.
+
+To setup the cluster you need to complete the following steps: -
+
+1.  Create the software **infrastructure**
+2.  Configure the **AWX application server**
+
+With the infrastructure and AWX application server setup
+we then deploy applications into the cluster using the Jobs
+that were configured above, in step 2.
+
+3.  Deploy a fragmentation **graph database**
+4.  Deploy **Fragalysis**
+5.  Deploy the Informatics Matters **Fragnet Search** application
+6.  Deploy the Informatics Matters **Squonk** application
+
+Prerequisites
+#############
+
+Before trying to setup the demo you will need: -
+
+*   A unix platform (OSX 10.15.3 was used to prepare this demo)
+*   Python 3 (Python 3.7.5 was used to prepare this demo)
+*   The git client
+*   A virtual environment engine like conda
+*   Ansible vault credentials to decrypt the im-demo variables in this repository
+*   An AWS kubernetes cluster, with...
+    *   At least 5 spare CPU cores
+    *   At least 8Gi of available memory
+    *   With one node having at least 3 free cores and 6Gi of available RAM
+*   The cluster kubeconfig file
+*   A storage class called "gp2" available to the cluster
+*   A route to the cluster, normally through an Application Load Balancer
+    in EKS or an Elastic IP associated with one of your application nodes
+    if you're using EC2
+*   Suitable Domain re-directions, a wildcard or individual routes for
+    *   Keycloak
+    *   AWX
+    *   Fragalysis
+    *   Fragnet Search
+    *   Squonk
+*   An AWS IAM user capable of managing the EC2 cluster
+*   A **node pool** of application nodes
+*   A **node pool** of graph nodes
+*   The deployment benefits from node labels and taints
+    (see :ref:`Labels and taints`)
+*   Access to GitHub
+*   Access to Ansible Galaxy
+*   Access to the Docker Hub registry
+*   Credentials that will allow access to GitLab private registries
+*   Fragmentation and Fragalysis data available in an AWS S3 **Bucket**
+
+Create the software infrastructure
+##################################
+
+Start in a suitable working directory on your control machine (desktop or
+laptop) and prepare a directory that you can use for Python virtual
+environments.
+
+Create a working directory and create and enter a Python 3 virtual
+environment::
+
+    $ mkdir -p ~/Code/im-demo
+    $ cd ~/Code/im-demo
+    $ conda create -n im-demo python=3.8
+    $ conda activate im-demo
+
+Clone the infrastructure project and checkout the stable revision used
+for the demo (``2020.6``)::
+
+    $ clone https://github.com/InformaticsMatters/ansible-infrastructure.git
+    $ cd ansible-infrastructure
+    $ git checkout tags/2020.6
+
+From here you should follow the infrastructure project's **"Getting Started"**
+guide and then its **"Creating the Infrastructure"** guide. Importantly, in
+the **Creating** sub-section, instead of using the
+``site-im-main-parameters.vault`` file we use ``site-im-demo-parameters.vault``,
+which requires its own vault key.Ensure the file contains settings suitable for
+your cluster and domains and then install it::
+
+    $ ansible-playbook -e "@site-im-demo-parameters.vault" site.yaml \
+            --ask-vault-pass
+    [then provide the im-demo vault key]
+
+If you don't want to (or can't) use the ``im-demo`` parameter file you can
+still install the infrastructure in your cluster by providing your own
+parameter file, and define values for the following variables::
+
+    cm_letsencrypt_email
+    db_user
+    db_user_password
+    pg_vol_storageclass
+    pg_bu_vol_storageclass
+    kc_admin_password
+    kc_hostname
+    ax_admin_password
+    ax_hostname
+    ax_kubernetes_context
+
+Allow approximately **6 minutes** for the infrastructure provisioning
+to complete.
+
+Once it's installed you should be able to navigate to the AWX
+application server using the address you gave it in the
+``site-im-demo-parameters.vault`` file.
+
+With this done we can move to configuring AWX.
+
+Configure the AWX application server
+####################################
+
+Labels and taints
+#################
+
+Application nodes
+*****************
+
+Nodes for general application deployment employ the label **key** ``purpose``
+and **value** ``application``. This is optional, deployments request nodes
+with this label but are happy to reside on any node.
+
+Graph database nodes
+********************
+
+To create nodes to be used exclusively for the graph database we rely on
+*labels* and *taints*. The graph database deployment benefits from nodes
+with the label **key** ``purpose`` and **value** ``bigmem`` and the *taint*
+**key** ``purpose``, **value** ``bigmem`` and **effect** ``NoSchedule``.
