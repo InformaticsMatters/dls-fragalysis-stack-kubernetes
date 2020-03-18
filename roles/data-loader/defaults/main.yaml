@@ -1,6 +1,18 @@
 ---
 
-# The name of the stack to deploy the loader to.
+# A boolean, set if the stack deployment is for a developer
+# i.e. not a PRODUCTION, STAGING or DEVELOPMENT deployment.
+# Developer stacks get their own auto-generated namespaces
+# and ingress routes. Non-developer stacks need an explicit
+# 'stack_namespace' and 'stack_hostname'.
+stack_is_for_developer: yes
+
+# The namespace to deploy the stack to.
+# Not defined for user stacks  where the namespace will be created
+# from the user (developer) ID and will be 'stack-{{ id }}-{{ stack_name }}'.
+stack_namespace: ''
+
+# The name of the stack to deploy the loader to, for developer stacks.
 # This is used to automatically form the expected namespace
 # (a combination of 'stack-{{ user_id }}-{{ name }}.
 stack_name: default
