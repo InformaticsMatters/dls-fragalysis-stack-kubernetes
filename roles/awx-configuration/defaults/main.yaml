@@ -9,9 +9,6 @@ tower_password: SetMe
 # The AWX/Tower installation URL
 tower_host: https://awx-demo.informaticsmatters.org
 
-# The AWX/Tower main organisation
-tower_org: Diamond Light Source
-
 # The cluster IAM user able to create/manage EC2 instances
 # and other objects in the cluster. Expected in the conventional
 # environment variables: -
@@ -32,7 +29,7 @@ tower_cluster_k8s_auth_veify_ssl: "{{ lookup('env', 'K8S_AUTH_VERIFY_SSL')|defau
 # The configuration to load (typically an encrypted file).
 # This is used to dynamically load variables from a file in 'vars'.
 # The file loaded is 'vars/config-{{ tower_config }}.yaml'.
-tower_configuration_name: initial
+tower_configuration_name: demo
 
 # Delete any post-installation demo material?
 tower_delete_demo_material: yes

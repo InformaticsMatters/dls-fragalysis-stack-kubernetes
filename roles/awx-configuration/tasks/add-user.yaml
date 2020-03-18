@@ -15,7 +15,7 @@
 - name: Associate user to organisation ({{ item.username }})
   command: >-
     tower-cli organization associate
-    --organization '{{ tower_org }}'
+    --organization '{{ tower.organisation }}'
     --user '{{ item.username }}'
   register: cmd_result
   changed_when: "'changed: false' not in cmd_result.stdout"

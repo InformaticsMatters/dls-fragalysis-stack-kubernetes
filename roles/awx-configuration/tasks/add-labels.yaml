@@ -3,5 +3,5 @@
 - name: Add labels
   awx.awx.tower_label:
     name: "{{ item }}"
-    organization: "{{ tower_org }}"
+    organization: "{{ tower.organisation }}"
   loop: "{{ tower.labels }}"

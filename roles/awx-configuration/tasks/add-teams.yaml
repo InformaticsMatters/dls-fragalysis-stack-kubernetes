@@ -3,5 +3,5 @@
 - name: Add teams
   awx.awx.tower_team:
     name: "{{ item }}"
-    organization: "{{ tower_org }}"
+    organization: "{{ tower.organisation }}"
   loop: "{{ tower.teams }}"

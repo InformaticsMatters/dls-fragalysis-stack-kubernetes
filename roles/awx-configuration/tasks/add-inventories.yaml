@@ -3,6 +3,6 @@
 - name: Add inventories
   awx.awx.tower_inventory:
     name: "{{ item }}"
-    organization: "{{ tower_org }}"
+    organization: "{{ tower.organisation }}"
   loop:
   - localhost

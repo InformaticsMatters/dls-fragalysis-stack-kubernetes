@@ -3,24 +3,6 @@
 # Configure AWX with all our material
 # (inventories, hosts, projects etc.)
 
-- name: Pre-flight check
-  assert:
-    that:
-    - tower_host|string|length > 0
-    - tower_host|string != 'SetMe'
-    - tower_username|string|length > 0
-    - tower_username|string != 'SetMe'
-    - tower_password|string|length > 9
-    - tower_password|string != 'SetMe'
-    - tower_org|string|length > 0
-    - tower_org|string != 'SetMe'
-    - tower_cluster_aws_access_key_id|string|length > 0
-    - tower_cluster_aws_secret_access_key|string|length > 0
-    - tower_cluster_k8s_auth_host|string|length > 0
-    - tower_cluster_k8s_auth_api_key|string|length > 0
-    - tower_cluster_k8s_auth_veify_ssl|string|length > 0
-  tags: always
-
 # Load tower configuration
 # The definition of users, projects and jobs.
 
@@ -30,6 +12,24 @@
     possible_files:
     - roles/awx-configuration/vars/config-{{ tower_configuration_name }}.vault
     - roles/awx-configuration/vars/config-initial.yaml
+  tags: always
+
+- name: Pre-flight check
+  assert:
+    that:
+    - tower_host|string|length > 0
+    - tower_host|string != 'SetMe'
+    - tower_username|string|length > 0
+    - tower_username|string != 'SetMe'
+    - tower_password|string|length > 9
+    - tower_password|string != 'SetMe'
+    - tower.organisation|string|length > 0
+    - tower.organisation|string != 'SetMe'
+    - tower_cluster_aws_access_key_id|string|length > 0
+    - tower_cluster_aws_secret_access_key|string|length > 0
+    - tower_cluster_k8s_auth_host|string|length > 0
+    - tower_cluster_k8s_auth_api_key|string|length > 0
+    - tower_cluster_k8s_auth_veify_ssl|string|length > 0
   tags: always
 
 # Create the tower-cli config file.
