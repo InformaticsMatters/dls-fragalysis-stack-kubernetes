@@ -1,0 +1,5 @@
+---
+
+- name: Add users
+  include_tasks: add-user.yaml
+  loop: "{{ tower.users }}"

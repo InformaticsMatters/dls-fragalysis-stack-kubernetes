@@ -1,0 +1,48 @@
+---
+
+# The AWX/Tower admin user.
+# This will have been set when the infrastructure was created.
+tower_username: admin
+# The AWX/Tower admin user password,
+# which must be 10 characters or more
+tower_password: SetMe
+# The AWX/Tower installation URL
+tower_host: https://awx-demo.informaticsmatters.org
+
+# The AWX/Tower main organisation
+tower_org: Diamond Light Source
+
+# The cluster IAM user able to create/manage EC2 instances
+# and other objects in the cluster. Expected in the conventional
+# environment variables: -
+# - AWS_ACCESS_KEY_ID
+# - AWS_SECRET_ACCESS_KEY
+tower_cluster_aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+tower_cluster_aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+
+# The cluster control-plane kubernetes credential.
+# Expected in the environment variables: -
+# - K8S_AUTH_HOST
+# - K8S_AUTH_API_KEY
+# - K8S_AUTH_VERIFY_SSL
+tower_cluster_k8s_auth_host: "{{ lookup('env', 'K8S_AUTH_HOST') }}"
+tower_cluster_k8s_auth_api_key: "{{ lookup('env', 'K8S_AUTH_API_KEY') }}"
+tower_cluster_k8s_auth_veify_ssl: "{{ lookup('env', 'K8S_AUTH_VERIFY_SSL')|default('no', true) }}"
+
+# The configuration to load (typically an encrypted file).
+# This is used to dynamically load variables from a file in 'vars'.
+# The file loaded is 'vars/config-{{ tower_config }}.yaml'.
+tower_configuration_name: initial
+
+# Delete any post-installation demo material?
+tower_delete_demo_material: yes
+# Set to keep the constructed tower config file.
+# Useful if you want to run some tower-cli commands after applying this role.
+keep_tower_config: yes
+
+tower_config_file: ~/.tower_cli.cfg
+
+#-----------------------------------------------------------------------------#
+# Bulk sensitive project-wide material is located in vars/main.yml            #
+# Edit the file using ansible vault which saves it in an encrypted state      #
+#-----------------------------------------------------------------------------#

@@ -68,9 +68,6 @@ Before trying to setup the demo you will need: -
 Create the software infrastructure
 ##################################
 
-The infrastructure is created using playbooks and roles present in the
-Informatics Matters `infrastructure`_ GitHub repository.
-
 Start in a suitable working directory on your control machine (desktop or
 laptop) and prepare a directory that you can use for Python virtual
 environments.
@@ -86,7 +83,7 @@ environment::
 Clone the infrastructure project and checkout the stable revision used
 for the demo (``2020.6``)::
 
-    $ git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
+    $ clone https://github.com/InformaticsMatters/ansible-infrastructure.git
     $ cd ansible-infrastructure
     $ git checkout tags/2020.6
 
@@ -128,31 +125,6 @@ With this done we can move to configuring AWX.
 Configure the AWX application server
 ####################################
 
-Configuration of the AWX server is achieved with the playbooks and roles
-in the Informatics Matters `DLS Kubernetes`_ GitHub repository. The demo
-configuration will create the following objects: -
-
-*   An organisation
-*   A team
-*   A user
-
-Clone the project and checkout the stable revision used for the demo
-(``2020.1``)::
-
-    $ cd ~/Code/im-demo
-    $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
-    $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.1
-    $ pip install -r requirements.txt
-    $ ansible-galaxy install -r role-requirements.yaml
-
-Armed with the AWS ``admin`` user password you can configure the
-AWX applications server using its playbook, passing the password
-in via the command-line::
-
-    $ ansible-playbook -e "tower_password=<PASSWORD>>" \
-            site-awx-configuration.yaml \
-            --ask-vault-pass
 
 .. _labels:
 
@@ -173,6 +145,3 @@ To create nodes to be used exclusively for the graph database we rely on
 *labels* and *taints*. The graph database deployment benefits from nodes
 with the label **key** ``purpose`` and **value** ``bigmem`` and the *taint*
 **key** ``purpose``, **value** ``bigmem`` and **effect** ``NoSchedule``.
-
-.. _infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure.git
-.. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git

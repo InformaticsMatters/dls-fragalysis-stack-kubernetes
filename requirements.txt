@@ -1,5 +1,6 @@
 # The ansible that's expected in our AWX installation.
 # Run the playbook with this and there's more chance it'll work
 # when run from within our AWX instance.
-ansible == 2.9.5
+ansible == 2.9.6
+kubernetes == 10.0.1
 openshift == 0.10.1

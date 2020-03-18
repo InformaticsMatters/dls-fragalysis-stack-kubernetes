@@ -1,0 +1,7 @@
+---
+
+- name: Add teams
+  awx.awx.tower_team:
+    name: "{{ item }}"
+    organization: "{{ tower_org }}"
+  loop: "{{ tower.teams }}"

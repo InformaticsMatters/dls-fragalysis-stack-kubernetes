@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Setting up the Demo cluster &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Continuous Delivery" href="continuous-delivery.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Fragalysis Stack (Kubernetes)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">Deployment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setting up the Demo cluster</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-software-infrastructure">Create the software infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure-the-awx-application-server">Configure the AWX application server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#labels-and-taints">Labels and taints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#application-nodes">Application nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graph-database-nodes">Graph database nodes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Fragalysis Stack (Kubernetes)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Setting up the Demo cluster</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/demo-cluster.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="setting-up-the-demo-cluster">
+<h1>Setting up the Demo cluster<a class="headerlink" href="#setting-up-the-demo-cluster" title="Permalink to this headline">¶</a></h1>
+<blockquote class="epigraph">
+<div><p>Notes on configuring the demonstration Fragalysis AWS-based
+kubernetes cluster for Diamond Light Source. These notes describe the
+software setup based on the the assumption that you have a viable cluster
+and are in possession of the <code class="docutils literal notranslate"><span class="pre">kubeconfig</span></code> file, have an AWS IAM Role,
+access to the wider internet and can pull code from git repositories,
+Docker Hub and images hosted on private (GitLab) registries.</p>
+</div></blockquote>
+<p>To setup the cluster you need to complete the following steps: -</p>
+<ul class="simple">
+<li><p>Create the software <strong>infrastructure</strong></p></li>
+<li><p>Configure the <strong>AWX application server</strong></p></li>
+</ul>
+<p>With the infrastructure and AWX application server setup
+we then deploy applications into the cluster using the Jobs
+that were configured above, in step 2.</p>
+<ul class="simple">
+<li><p>Deploy a fragmentation <strong>graph database</strong></p></li>
+<li><p>Deploy <strong>Fragalysis</strong></p></li>
+<li><p>Deploy the Informatics Matters <strong>Fragnet Search</strong> application</p></li>
+<li><p>Deploy the Informatics Matters <strong>Squonk</strong> application</p></li>
+</ul>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Before trying to setup the demo you will need: -</p>
+<ol class="arabic simple">
+<li><p>A unix platform (OSX 10.15.3 was used to prepare this demo)</p></li>
+<li><p>Python 3 (Python 3.8.1 was used to prepare this demo)</p></li>
+<li><p>The git client</p></li>
+<li><p>A virtual environment engine like conda</p></li>
+<li><p>Ansible vault credentials to decrypt the im-demo variables in this repository</p></li>
+<li><p>An AWS kubernetes cluster, with: -</p>
+<ul class="simple">
+<li><p>At least 5 spare CPU cores</p></li>
+<li><p>At least 8Gi of available memory</p></li>
+<li><p>With one node having at least 3 free cores and 6Gi of available RAM</p></li>
+</ul>
+</li>
+<li><p>The cluster kubeconfig file</p></li>
+<li><p>A storage class called “gp2” available to the cluster</p></li>
+<li><p>A route to the cluster, normally through an Application Load Balancer
+in EKS or an Elastic IP associated with one of your application nodes
+if you’re using EC2</p></li>
+<li><p>Suitable Domain re-directions, a wildcard or individual routes for: -</p>
+<ul class="simple">
+<li><p>Keycloak</p></li>
+<li><p>AWX</p></li>
+<li><p>Fragalysis</p></li>
+<li><p>Fragnet Search</p></li>
+<li><p>Squonk</p></li>
+</ul>
+</li>
+<li><p>An AWS IAM user capable of managing the EC2 cluster</p></li>
+<li><p>A <strong>node pool</strong> of application nodes</p></li>
+<li><p>A <strong>node pool</strong> of graph nodes</p></li>
+<li><p>The deployment benefits from node labels and taints (see <a class="reference internal" href="#labels"><span class="std std-ref">Labels and taints</span></a>)</p></li>
+<li><p>Access to GitHub</p></li>
+<li><p>Access to Ansible Galaxy</p></li>
+<li><p>Access to the Docker Hub registry</p></li>
+<li><p>Credentials that will allow access to GitLab private registries</p></li>
+<li><p>Fragmentation and Fragalysis data available in an AWS S3 <strong>Bucket</strong></p></li>
+</ol>
+</div>
+<div class="section" id="create-the-software-infrastructure">
+<h2>Create the software infrastructure<a class="headerlink" href="#create-the-software-infrastructure" title="Permalink to this headline">¶</a></h2>
+<p>Start in a suitable working directory on your control machine (desktop or
+laptop) and prepare a directory that you can use for Python virtual
+environments.</p>
+<p>Create a working directory and create and enter a Python 3 virtual
+environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir -p ~/Code/im-demo
+$ cd ~/Code/im-demo
+$ conda create -n im-demo python=3.8
+$ conda activate im-demo
+</pre></div>
+</div>
+<p>Clone the infrastructure project and checkout the stable revision used
+for the demo (<code class="docutils literal notranslate"><span class="pre">2020.6</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ clone https://github.com/InformaticsMatters/ansible-infrastructure.git
+$ cd ansible-infrastructure
+$ git checkout tags/2020.6
+</pre></div>
+</div>
+<p>From here you should follow the infrastructure project’s <strong>“Getting Started”</strong>
+guide and then its <strong>“Creating the Infrastructure”</strong> guide. Importantly, in
+the <strong>Creating</strong> sub-section, instead of using the
+<code class="docutils literal notranslate"><span class="pre">site-im-main-parameters.vault</span></code> file we use <code class="docutils literal notranslate"><span class="pre">site-im-demo-parameters.vault</span></code>,
+which requires its own vault key.Ensure the file contains settings suitable for
+your cluster and domains and then install it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-playbook -e &quot;@site-im-demo-parameters.vault&quot; site.yaml \
+        --ask-vault-pass
+[then provide the im-demo vault key]
+</pre></div>
+</div>
+<p>If you don’t want to (or can’t) use the <code class="docutils literal notranslate"><span class="pre">im-demo</span></code> parameter file you can
+still install the infrastructure in your cluster by providing your own
+parameter file, and define values for the following variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cm_letsencrypt_email</span>
+<span class="n">db_user</span>
+<span class="n">db_user_password</span>
+<span class="n">pg_vol_storageclass</span>
+<span class="n">pg_bu_vol_storageclass</span>
+<span class="n">kc_admin_password</span>
+<span class="n">kc_hostname</span>
+<span class="n">ax_admin_password</span>
+<span class="n">ax_hostname</span>
+<span class="n">ax_kubernetes_context</span>
+</pre></div>
+</div>
+<p>Allow approximately <strong>6 minutes</strong> for the infrastructure provisioning
+to complete.</p>
+<p>Once it’s installed you should be able to navigate to the AWX application
+server using the address you gave it, or the one in the
+<code class="docutils literal notranslate"><span class="pre">site-im-demo-parameters.vault</span></code> file if you used that.</p>
+<p>With this done we can move to configuring AWX.</p>
+</div>
+<div class="section" id="configure-the-awx-application-server">
+<h2>Configure the AWX application server<a class="headerlink" href="#configure-the-awx-application-server" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="labels-and-taints">
+<span id="labels"></span><h2>Labels and taints<a class="headerlink" href="#labels-and-taints" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="application-nodes">
+<h3>Application nodes<a class="headerlink" href="#application-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Nodes for general application deployment employ the label <strong>key</strong> <code class="docutils literal notranslate"><span class="pre">purpose</span></code>
+and <strong>value</strong> <code class="docutils literal notranslate"><span class="pre">application</span></code>. This is optional, deployments request nodes
+with this label but are happy to reside on any node.</p>
+</div>
+<div class="section" id="graph-database-nodes">
+<h3>Graph database nodes<a class="headerlink" href="#graph-database-nodes" title="Permalink to this headline">¶</a></h3>
+<p>To create nodes to be used exclusively for the graph database we rely on
+<em>labels</em> and <em>taints</em>. The graph database deployment benefits from nodes
+with the label <strong>key</strong> <code class="docutils literal notranslate"><span class="pre">purpose</span></code> and <strong>value</strong> <code class="docutils literal notranslate"><span class="pre">bigmem</span></code> and the <em>taint</em>
+<strong>key</strong> <code class="docutils literal notranslate"><span class="pre">purpose</span></code>, <strong>value</strong> <code class="docutils literal notranslate"><span class="pre">bigmem</span></code> and <strong>effect</strong> <code class="docutils literal notranslate"><span class="pre">NoSchedule</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="continuous-delivery.html" class="btn btn-neutral float-left" title="Continuous Delivery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Informatics Matters Ltd
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
