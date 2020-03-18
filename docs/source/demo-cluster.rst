@@ -154,7 +154,84 @@ in via the command-line::
             site-awx-configuration.yaml \
             --ask-vault-pass
 
+This will create an *organisation*, *team*, *labels* and a *user*.
+The various *credentials* required for the playbooks will be added
+along with *projects* (references to the playbooks in our git repositories)
+and *job-templates*.
+
+If you login to the AWX server now you should be able to navigate to all of
+these objects.
+
 .. _labels:
+
+Deploying the demo applications
+###############################
+
+With the AWX server configured we can now run the **Job Templates** that
+are responsible for deploying the various applications.
+
+Start by logging into the AWX application server as the demo user ``demo``.
+From there you should be able to navigate to the **Templates** screen where
+all the templates are presented to you.
+
+The Fragmentation Graph Database
+********************************
+
+Deploy the Fragmentation graph by *launching* the **Fragmentation Graph**
+template.
+
+**screenshot**
+
+As the graph initialisation takes some time the job does not
+(at the moment) wait for the graph to initialise. We use the ``kubectl``
+command-line to check on the status of the graph::
+
+    $ kubectl get all -n graph
+
+Where you should
+**TBD**
+
+Fragalysis
+**********
+
+With the graph installed we can now start the Fragalysis Stack and its
+*Data Loader*.
+
+Deploy Fragalysis by *launching* the **Fragslysis Stack**
+template.
+
+**screenshot**
+
+As the stack initialisation is a little more deterministic (and short)
+the job waits for the stack to become ready before finishing. When this job
+finishes you know the stack is "up and running".
+
+You can't use the stack without any target data so you now need to run
+the *Data Loader*.
+
+Deploy the loader by *launching* the **Fragslysis Stack Data Loader**
+template. This job will also wait for the loader to complete. If you're
+running a typical **ALL TARGETS** load this might take around 40 minutes.
+The job will time-out after an hour.
+
+Squonk
+******
+
+Squonk can be deployed using AWX.
+
+Deploy Squonk by *launching* the **Squonk** job template.
+Squonk should be installed and running in less than 5 minutes.
+
+**screenshot**
+
+With squonk deployed you can then inject the standard RDKit pipelines
+with another Job. Install the pipelines by running the **Squonk (RDKit Pipelines)**
+Job.
+
+Fragnet Search
+**************
+
+**TBD**
 
 Labels and taints
 #################
@@ -173,6 +250,19 @@ To create nodes to be used exclusively for the graph database we rely on
 *labels* and *taints*. The graph database deployment benefits from nodes
 with the label **key** ``purpose`` and **value** ``bigmem`` and the *taint*
 **key** ``purpose``, **value** ``bigmem`` and **effect** ``NoSchedule``.
+
+Destroying the cluster
+######################
+
+**TBD**
+
+Finally, remove the infrastructure namespace, which will remove **Keycloak**,
+**PostgreSQL** and the **AWX application server** and the persistent volumes
+used by it and the database::
+
+    $ kubectl delete namespace/im-infra
+
+You can now dispose of the cluster.
 
 .. _infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure.git
 .. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git

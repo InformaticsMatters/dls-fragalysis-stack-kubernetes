@@ -6,7 +6,7 @@
 # Load tower configuration
 # The definition of users, projects and jobs.
 
-- name: Load configuration
+- name: Load configuration ({{ tower_configuration_name }})
   include_vars: "{{ lookup('first_found', possible_files) }}"
   vars:
     possible_files:
@@ -60,12 +60,13 @@
 
 - import_tasks: add-labels.yaml
   tags: labels
+- import_tasks: add-credentials.yaml
+  tags: credentials
+
 - import_tasks: add-teams.yaml
   tags: teams
 - import_tasks: add-users.yaml
   tags: users
-- import_tasks: add-credentials.yaml
-  tags: credentials
 - import_tasks: add-projects.yaml
   tags: projects
 - import_tasks: add-job-templates.yaml

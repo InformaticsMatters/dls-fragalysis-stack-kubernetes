@@ -87,11 +87,19 @@
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#create-the-software-infrastructure">Create the software infrastructure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#configure-the-awx-application-server">Configure the AWX application server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deploying-the-demo-applications">Deploying the demo applications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-fragmentation-graph-database">The Fragmentation Graph Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fragalysis">Fragalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squonk">Squonk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fragnet-search">Fragnet Search</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#labels-and-taints">Labels and taints</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#application-nodes">Application nodes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#graph-database-nodes">Graph database nodes</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#destroying-the-cluster">Destroying the cluster</a></li>
 </ul>
 </li>
 </ul>
@@ -215,7 +223,7 @@ if you’re using EC2</p></li>
 <li><p>An AWS IAM user capable of managing the EC2 cluster</p></li>
 <li><p>A <strong>node pool</strong> of application nodes</p></li>
 <li><p>A <strong>node pool</strong> of graph nodes</p></li>
-<li><p>The deployment benefits from node labels and taints (see <a class="reference internal" href="#labels"><span class="std std-ref">Labels and taints</span></a>)</p></li>
+<li><p>The deployment benefits from node labels and taints (see <a class="reference internal" href="#labels"><span class="std std-ref">Deploying the demo applications</span></a>)</p></li>
 <li><p>Access to GitHub</p></li>
 <li><p>Access to Ansible Galaxy</p></li>
 <li><p>Access to the Docker Hub registry</p></li>
@@ -225,6 +233,8 @@ if you’re using EC2</p></li>
 </div>
 <div class="section" id="create-the-software-infrastructure">
 <h2>Create the software infrastructure<a class="headerlink" href="#create-the-software-infrastructure" title="Permalink to this headline">¶</a></h2>
+<p>The infrastructure is created using playbooks and roles present in the
+Informatics Matters <a class="reference external" href="https://github.com/InformaticsMatters/ansible-infrastructure.git">infrastructure</a> GitHub repository.</p>
 <p>Start in a suitable working directory on your control machine (desktop or
 laptop) and prepare a directory that you can use for Python virtual
 environments.</p>
@@ -238,7 +248,7 @@ $ conda activate im-demo
 </div>
 <p>Clone the infrastructure project and checkout the stable revision used
 for the demo (<code class="docutils literal notranslate"><span class="pre">2020.6</span></code>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ clone https://github.com/InformaticsMatters/ansible-infrastructure.git
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
 $ cd ansible-infrastructure
 $ git checkout tags/2020.6
 </pre></div>
@@ -278,9 +288,94 @@ server using the address you gave it, or the one in the
 </div>
 <div class="section" id="configure-the-awx-application-server">
 <h2>Configure the AWX application server<a class="headerlink" href="#configure-the-awx-application-server" title="Permalink to this headline">¶</a></h2>
+<p>Configuration of the AWX server is achieved with the playbooks and roles
+in the Informatics Matters <a class="reference external" href="https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git">DLS Kubernetes</a> GitHub repository. The demo
+configuration will create the following objects: -</p>
+<ul class="simple">
+<li><p>An organisation</p></li>
+<li><p>A team</p></li>
+<li><p>A user</p></li>
+</ul>
+<p>Clone the project and checkout the stable revision used for the demo
+(<code class="docutils literal notranslate"><span class="pre">2020.1</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ~/Code/im-demo
+$ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
+$ cd dls-fragalysis-stack-kubernetes
+$ git checkout tags/2020.1
+$ pip install -r requirements.txt
+$ ansible-galaxy install -r role-requirements.yaml
+</pre></div>
+</div>
+<p>Armed with the AWS <code class="docutils literal notranslate"><span class="pre">admin</span></code> user password you can configure the
+AWX applications server using its playbook, passing the password
+in via the command-line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-playbook -e &quot;tower_password=&lt;PASSWORD&gt;&gt;&quot; \
+        site-awx-configuration.yaml \
+        --ask-vault-pass
+</pre></div>
+</div>
+<p>This will create an <em>organisation</em>, <em>team</em>, <em>labels</em> and a <em>user</em>.
+The various <em>credentials</em> required for the playbooks will be added
+along with <em>projects</em> (references to the playbooks in our git repositories)
+and <em>job-templates</em>.</p>
+<p>If you login to the AWX server now you should be able to navigate to all of
+these objects.</p>
+</div>
+<div class="section" id="deploying-the-demo-applications">
+<span id="labels"></span><h2>Deploying the demo applications<a class="headerlink" href="#deploying-the-demo-applications" title="Permalink to this headline">¶</a></h2>
+<p>With the AWX server configured we can now run the <strong>Job Templates</strong> that
+are responsible for deploying the various applications.</p>
+<p>Start by logging into the AWX application server as the demo user <code class="docutils literal notranslate"><span class="pre">demo</span></code>.
+From there you should be able to navigate to the <strong>Templates</strong> screen where
+all the templates are presented to you.</p>
+<div class="section" id="the-fragmentation-graph-database">
+<h3>The Fragmentation Graph Database<a class="headerlink" href="#the-fragmentation-graph-database" title="Permalink to this headline">¶</a></h3>
+<p>Deploy the Fragmentation graph by <em>launching</em> the <strong>Fragmentation Graph</strong>
+template.</p>
+<p><strong>screenshot</strong></p>
+<p>As the graph initialisation takes some time the job does not
+(at the moment) wait for the graph to initialise. We use the <code class="docutils literal notranslate"><span class="pre">kubectl</span></code>
+command-line to check on the status of the graph:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl get all -n graph
+</pre></div>
+</div>
+<p>Where you should
+<strong>TBD</strong></p>
+</div>
+<div class="section" id="fragalysis">
+<h3>Fragalysis<a class="headerlink" href="#fragalysis" title="Permalink to this headline">¶</a></h3>
+<p>With the graph installed we can now start the Fragalysis Stack and its
+<em>Data Loader</em>.</p>
+<p>Deploy Fragalysis by <em>launching</em> the <strong>Fragslysis Stack</strong>
+template.</p>
+<p><strong>screenshot</strong></p>
+<p>As the stack initialisation is a little more deterministic (and short)
+the job waits for the stack to become ready before finishing. When this job
+finishes you know the stack is “up and running”.</p>
+<p>You can’t use the stack without any target data so you now need to run
+the <em>Data Loader</em>.</p>
+<p>Deploy the loader by <em>launching</em> the <strong>Fragslysis Stack Data Loader</strong>
+template. This job will also wait for the loader to complete. If you’re
+running a typical <strong>ALL TARGETS</strong> load this might take around 40 minutes.
+The job will time-out after an hour.</p>
+</div>
+<div class="section" id="squonk">
+<h3>Squonk<a class="headerlink" href="#squonk" title="Permalink to this headline">¶</a></h3>
+<p>Squonk can be deployed using AWX.</p>
+<p>Deploy Squonk by <em>launching</em> the <strong>Squonk</strong> job template.
+Squonk should be installed and running in less than 5 minutes.</p>
+<p><strong>screenshot</strong></p>
+<p>With squonk deployed you can then inject the standard RDKit pipelines
+with another Job. Install the pipelines by running the <strong>Squonk (RDKit Pipelines)</strong>
+Job.</p>
+</div>
+<div class="section" id="fragnet-search">
+<h3>Fragnet Search<a class="headerlink" href="#fragnet-search" title="Permalink to this headline">¶</a></h3>
+<p><strong>TBD</strong></p>
+</div>
 </div>
 <div class="section" id="labels-and-taints">
-<span id="labels"></span><h2>Labels and taints<a class="headerlink" href="#labels-and-taints" title="Permalink to this headline">¶</a></h2>
+<h2>Labels and taints<a class="headerlink" href="#labels-and-taints" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="application-nodes">
 <h3>Application nodes<a class="headerlink" href="#application-nodes" title="Permalink to this headline">¶</a></h3>
 <p>Nodes for general application deployment employ the label <strong>key</strong> <code class="docutils literal notranslate"><span class="pre">purpose</span></code>
@@ -294,6 +389,17 @@ with this label but are happy to reside on any node.</p>
 with the label <strong>key</strong> <code class="docutils literal notranslate"><span class="pre">purpose</span></code> and <strong>value</strong> <code class="docutils literal notranslate"><span class="pre">bigmem</span></code> and the <em>taint</em>
 <strong>key</strong> <code class="docutils literal notranslate"><span class="pre">purpose</span></code>, <strong>value</strong> <code class="docutils literal notranslate"><span class="pre">bigmem</span></code> and <strong>effect</strong> <code class="docutils literal notranslate"><span class="pre">NoSchedule</span></code>.</p>
 </div>
+</div>
+<div class="section" id="destroying-the-cluster">
+<h2>Destroying the cluster<a class="headerlink" href="#destroying-the-cluster" title="Permalink to this headline">¶</a></h2>
+<p><strong>TBD</strong></p>
+<p>Finally, remove the infrastructure namespace, which will remove <strong>Keycloak</strong>,
+<strong>PostgreSQL</strong> and the <strong>AWX application server</strong> and the persistent volumes
+used by it and the database:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl delete namespace/im-infra
+</pre></div>
+</div>
+<p>You can now dispose of the cluster.</p>
 </div>
 </div>
 
