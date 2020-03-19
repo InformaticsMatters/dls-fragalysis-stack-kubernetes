@@ -1,6 +1,6 @@
-***************************
-Setting up the Demo cluster
-***************************
+*******************************
+Deploying the demo applications
+*******************************
 
 .. epigraph::
 
@@ -38,9 +38,11 @@ A cluster
 
 #.  An AWS kubernetes cluster, with: -
 
-    *   At least 5 spare CPU cores
-    *   At least 8Gi of available memory
-    *   With one node having at least 3 free cores and 6Gi of available RAM
+    *   At least 8 spare application CPU cores and 24Gi of RAM,
+        with one node having at least 3 free cores and 6Gi of available RAM
+        and a large memory node with at least 48Gi RAM
+    *   Achieved with a pair of 8-core 32Gi application nodes
+        and an 8-core 64Gi high-memory node
 
 #.  A storage class called "gp2" available to the cluster
 #.  A route to the cluster, normally through an Application Load Balancer
