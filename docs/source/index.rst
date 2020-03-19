@@ -3,7 +3,7 @@ Fragalysis Stack Orchestration (Kubernetes)
 *******************************************
 
 ..  toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Contents
 
     development
