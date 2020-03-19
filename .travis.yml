@@ -9,5 +9,4 @@ install:
 script:
 - yamllint .
 - find . -type f -iname '*.yaml.j2' -exec yamllint {} \;
-- ansible-lint
 - sphinx-build -Eab html docs/source docs/build/html
