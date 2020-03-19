@@ -26,7 +26,7 @@ that were configured above, in step 2.
 *   Deploy the Informatics Matters **Fragnet Search** application
 
 .. note:: Allow **3 hours** to install the infrastructure and
-          all the application components.
+          all the application components. All times are approximate.
 
 Prerequisites
 #############
@@ -84,8 +84,8 @@ A host
 Create the software infrastructure
 ##################################
 
-.. note:: Allow **15 minutes** to install the infrastructure, which consists
-          of an EFS provisioner, PostgreSQL database, Keyclock
+.. note:: Allow **15 minutes** to complete this task, which includes
+          installation of an EFS provisioner, PostgreSQL database, Keyclock
           and AWX.
 
 With the cluster and **kubeconfig** file available we can create the
@@ -120,7 +120,8 @@ the **Creating** sub-section, instead of using the
 which requires its own vault key.
 
 Ensure the file contains settings suitable
-for your cluster, which you an do by decrypting on-th-fly::
+for your cluster, which you an do by decrypting on-th-fly
+using `Ansible Vault`_::
 
     $ ansible-vault edit site-im-demo-parameters.vault --ask-vault-pass
 
@@ -163,45 +164,55 @@ With this done we can move to configuring AWX.
 Configure the AWX application server
 ####################################
 
-.. note:: Allow 2 minutes
+.. note:: Allow 5 minutes to complete this task,
+          to configure and check the AWX application server
 
 Configuration of the AWX server is achieved with the playbooks and roles
-in the Informatics Matters `DLS Kubernetes`_ GitHub repository. The demo
-configuration will create the following objects: -
-
-*   An organisation
-*   A team
-*   A user
+in the Informatics Matters `DLS Kubernetes`_ GitHub repository.
 
 Clone the project and checkout the stable revision used for the demo::
 
     $ cd ~/Code/im-demo
     $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
     $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.1
+    $ git checkout tags/2020.4
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r role-requirements.yaml
 
-Armed with the AWS ``admin`` user password you can configure the
-AWX applications server using its playbook, passing the password
-in via the command-line::
+The demo configuration will create the following objects: -
 
-    $ ansible-playbook -e "tower_password=<PASSWORD>>" \
+*   An organisation
+*   Credentials
+*   A team
+*   A demo user
+*   Inventories and Hosts
+*   Projects
+*   Job Templates
+
+You can view the configuration using ansible vault::
+
+    $ ansible-vault edit roles/awx-configuration/vars/config-demo.vault \
+        --ask-vault-pass
+
+Armed with the AWX ``admin`` user password used during the infrastructure
+installation step above, you can now configure the AWX applications server
+using its playbook, passing the password in via the command-line::
+
+    $ ansible-playbook -e tower_password=<PASSWORD> \
             site-awx-configuration.yaml \
             --ask-vault-pass
 
-This will create an *organisation*, *team*, *labels* and a *user*.
-The various *credentials* required for the playbooks will be added
-along with *projects* (references to the playbooks in our git repositories)
-and *job-templates*.
 
-If you login to the AWX server now you should be able to navigate to all of
-these objects.
+If you login to the AWX server now using the ``demo`` user you should be able
+to navigate to the Templates page and see all the available jobs, as
+shown in this screenshot: -
 
-.. _labels:
+.. image:: ./images/demo-job-templates.png
 
 Deploying the demo applications
 ###############################
+
+.. note:: Allow **2 hours** to install all of the applications.
 
 With the AWX server configured we can now run the **Job Templates** that
 are responsible for deploying the various applications.
@@ -213,26 +224,82 @@ all the templates are presented to you.
 The Fragmentation Graph Database
 ********************************
 
-.. note:: Allow 40 minutes
+.. note:: Allow 2 hours to complete this task.
 
 Deploy the Fragmentation graph by *launching* the **Fragmentation Graph**
 template.
 
-**screenshot**
+.. image:: ./images/demo-job-templates-fragmentation-graph.png
 
-As the graph initialisation takes some time the job does not
-(at the tim eof writing) wait for the graph to initialise. We therefore use the
-``kubectl`` command-line to check on the status of the graph::
+.. epigraph::
 
-    $ kubectl get all -n graph
+    The jobs have been configured to first present a confirmation dialogue box
+    so that you can adjust some key job variables before they run. for example,
+    the **Fragmentation Graph** job allows you to provide a path to the
+    graph data you want to deploy (using the ``graph_bucket_path`` variable).
 
-Where you should
-**TBD**
+Acknowledge the dialogue (clicking **Next**) and then the **Launch** button.
 
-Fragalysis
-**********
+As the graph initialisation can take some time the job does not
+(at the time of writing) wait for the graph to initialise. We therefore use the
+``kubectl`` command-line to check on the status of the graph before moving on.
+Check that the graph namespace exists::
 
-.. note:: Allow 10 minutes
+    $ kubectl get namespace/graph
+    NAME    STATUS   AGE
+    graph   Active   7s
+
+And then *watch* the Graph Pod status until it's ``Running``. The
+graph contains an initialisation container used to download the graph
+data to the cluster::
+
+    $ kubectl get pod/graph-0 -n graph -w
+    NAME      READY   STATUS     RESTARTS   AGE
+    graph-0   0/1     Init:0/1   0          14s
+    graph-0   0/1     Init:0/1   0          95s
+    graph-0   0/1     Init:0/1   0          100s
+    graph-0   0/1     PodInitializing   0          108s
+    graph-0   1/1     Running           0          114s
+
+Once you see ``Running`` the Pod has started and you can ``ctrl-c`` from the
+command.
+
+The graph needs to *import* the downloaded files into a graph database, which
+can take a significant length of time, depending on the data that's been
+downloaded.
+
+You can *follow* the Graph Pod's logs and wait for the import process to complete.
+The graph import typically involved 4 stages that are easily followed from the
+logs.
+
+The output here has been truncated because there is a lot of it.
+You're waiting to see the word ``Finished.`` issued by the
+``cypher-runner.sh`` script::
+
+    $ kubectl logs pod/graph-0 -n graph -f
+    [..]
+    2020-03-19 14:25:08.527+0000 INFO  ======== Neo4j 3.5.5 ========
+    2020-03-19 14:25:08.532+0000 INFO  Starting...
+    2020-03-19 14:25:14.865+0000 INFO  Bolt enabled on 0.0.0.0:7687.
+    2020-03-19 14:25:16.444+0000 INFO  Started.
+    2020-03-19 14:25:17.531+0000 INFO  Remote interface available at http://localhost:7474/
+    (cypher-runner.sh) Thu Mar 19 14:26:05 UTC 2020 Setting neo4j password...
+    (cypher-runner.sh) Thu Mar 19 14:26:07 UTC 2020 No legacy script.
+    (cypher-runner.sh) Thu Mar 19 14:26:07 UTC 2020 Trying /data/cypher-script/cypher-script.once...
+    (cypher-runner.sh) Thu Mar 19 14:26:08 UTC 2020 .once script executed.
+    (cypher-runner.sh) Thu Mar 19 14:26:08 UTC 2020 No .always script.
+    (cypher-runner.sh) Thu Mar 19 14:26:08 UTC 2020 Touching /data/data-loader/cypher-runner.executed...
+    (cypher-runner.sh) Thu Mar 19 14:26:08 UTC 2020 Finished.
+
+Once you see that you can ``ctrl-c`` form the *follow* command and continue
+with the remaining applications.
+
+Fragalysis (and Data Loader)
+****************************
+
+.. note:: Allow **45 minutes** to complete this task.
+          5 minutes for the stack and 40 minutes
+          for the initial (``ALL_TARGETS``) data load.
 
 With the graph installed we can now start the Fragalysis Stack and its
 *Data Loader*.
@@ -240,7 +307,7 @@ With the graph installed we can now start the Fragalysis Stack and its
 Deploy Fragalysis by *launching* the **Fragslysis Stack**
 template.
 
-**screenshot**
+.. image:: ./images/demo-job-templates-fragalysis-stack.png
 
 As the stack initialisation is a little more deterministic (and short)
 the job waits for the stack to become ready before finishing. When this job
@@ -250,32 +317,36 @@ You can't use the stack without any target data so you now need to run
 the *Data Loader*.
 
 Deploy the loader by *launching* the **Fragslysis Stack Data Loader**
-template. This job will also wait for the loader to complete. If you're
-running a typical **ALL TARGETS** load this might take around 40 minutes.
+template (see below).
+
+.. image:: ./images/demo-job-templates-fragalysis-stack-data-loader.png
+
+This job will also wait for the loader to complete. As we're
+running a typical **ALL TARGETS** load this will take around 40 minutes.
 The job will time-out after an hour.
 
 Squonk
 ******
 
-.. note:: Allow 5 minutes
-
-Squonk can be deployed using AWX.
+.. note:: Allow **6 minutes** to complete this task.
 
 Deploy Squonk by *launching* the **Squonk** job template.
-Squonk should be installed and running in less than 5 minutes.
 
-**screenshot**
+.. image:: ./images/demo-job-templates-squonk.png
 
-With squonk deployed you can then inject the standard RDKit pipelines
-with another Job. Install the pipelines by running the **Squonk (RDKit Pipelines)**
-Job.
+With Squonk deployed you can then inject the standard RDKit pipelines.
+Install the pipelines by running the **Squonk (RDKit Pipelines)** Job.
 
 Fragnet Search
 **************
 
-.. note:: Allow 1 minute
+.. note:: Allow **1 minute** to complete this task.
 
-**TBD**
+The Fragnet Search application relies on the database you installed earlier
+so we just need to deploy the search application using
+its **Fragnet Search** Job.
+
+.. image:: ./images/demo-job-templates-fragnet-search.png
 
 Labels and taints
 #################
@@ -295,18 +366,46 @@ To create nodes to be used exclusively for the graph database we rely on
 with the label **key** ``purpose`` and **value** ``bigmem`` and the *taint*
 **key** ``purpose``, **value** ``bigmem`` and **effect** ``NoSchedule``.
 
+Deploying a -new- Fragalysis Stack
+##################################
+
+.. note:: Allow **5 minutes** to complete this task.
+
+We've included a Job Template that can be used to deploy a new Fragalysis
+Stack using the stack's container image tag.
+
+If a new Fragalysis Stack becomes available you can install it using the above
+Job. The stack, which exists as a pair of **StatefulSet** Pods is then
+gracefully replaced by the new image.
+
+.. image:: ./images/demo-job-templates-fragalysis-stack-version-change.png
+
+You'l be prompted for variables and it's here that you can edit the
+``stack_image_tag`` value that's used to deploy the application.
+
+.. image:: ./images/demo-job-templates-version-prompt.png
+
 Destroying the cluster
 ######################
 
-**TBD**
+You cannot delete the cluster without risking leaving volumes lying around.
+prior to deleting the cluster you should run the following Jobs: -
+
+#. **Fragalysis Stack [DESTROY]**
+#. **Fragnet Search [DESTROY]**
+#. **Squonk [DESTROY]**
+#. **Fragmentation Graph [DESTROY]**
+
+.. image:: ./images/demo-job-templates-destroy.png
 
 Finally, remove the infrastructure namespace, which will remove **Keycloak**,
 **PostgreSQL** and the **AWX application server** and the persistent volumes
-used by it and the database::
+it uses::
 
     $ kubectl delete namespace/im-infra
 
 You can now dispose of the cluster.
 
-.. _infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure.git
-.. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
+.. _ansible vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
+.. _infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
+.. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
