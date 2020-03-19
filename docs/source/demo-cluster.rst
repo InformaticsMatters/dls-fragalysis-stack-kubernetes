@@ -22,27 +22,26 @@ that were configured above, in step 2.
 
 *   Deploy a fragmentation **graph database**
 *   Deploy **Fragalysis**
-*   Deploy the Informatics Matters **Fragnet Search** application
 *   Deploy the Informatics Matters **Squonk** application
+*   Deploy the Informatics Matters **Fragnet Search** application
+
+.. note:: Allow **3 hours** to install the infrastructure and
+          all the application components.
 
 Prerequisites
 #############
 
 Before trying to setup the demo you will need: -
 
-#.  A unix platform (OSX 10.15.3 was used to prepare this demo)
-#.  Python 3 (Python 3.8.1 was used to prepare this demo)
+A cluster
+*********
 
-#.  The git client
-#.  A virtual environment engine like conda
-#.  Ansible vault credentials to decrypt the im-demo variables in this repository
 #.  An AWS kubernetes cluster, with: -
 
     *   At least 5 spare CPU cores
     *   At least 8Gi of available memory
     *   With one node having at least 3 free cores and 6Gi of available RAM
 
-#.  The cluster kubeconfig file
 #.  A storage class called "gp2" available to the cluster
 #.  A route to the cluster, normally through an Application Load Balancer
     in EKS or an Elastic IP associated with one of your application nodes
@@ -58,15 +57,39 @@ Before trying to setup the demo you will need: -
 #.  An AWS IAM user capable of managing the EC2 cluster
 #.  A **node pool** of application nodes
 #.  A **node pool** of graph nodes
-#.  The deployment benefits from node labels and taints (see :ref:`labels`)
+#.  The deployment benefits from node labels and taints (see `labels and taints`_)
+#.  The cluster **kubeconfig** file
+#.  The cluster must have access to GitHub and GitLab
+#.  The cluster must have access to Docker Hub
+#.  The cluster must have access to Ansible Galaxy
+
+An AWS S3 Bucket
+****************
+
+#.  Fragmentation and Fragalysis data available in an AWS S3 **Bucket**
+
+A host
+******
+
+#.  A unix control machine from where you'll work
+    (OSX 10.15.3 was used to prepare this demo)
+#.  Python 3 (Python 3.8.1 was used to prepare this demo), ideally
+    using a virtual environment engine like conda
+#.  The git client
+#.  Ansible vault credentials to decrypt the encrypted variables in this
+    repository
 #.  Access to GitHub
 #.  Access to Ansible Galaxy
-#.  Access to the Docker Hub registry
-#.  Credentials that will allow access to GitLab private registries
-#.  Fragmentation and Fragalysis data available in an AWS S3 **Bucket**
 
 Create the software infrastructure
 ##################################
+
+.. note:: Allow **15 minutes** to install the infrastructure, which consists
+          of an EFS provisioner, PostgreSQL database, Keyclock
+          and AWX.
+
+With the cluster and **kubeconfig** file available we can create the
+essential underlying software infrastructure.
 
 The infrastructure is created using playbooks and roles present in the
 Informatics Matters `infrastructure`_ GitHub repository.
@@ -84,18 +107,30 @@ environment::
     $ conda activate im-demo
 
 Clone the infrastructure project and checkout the stable revision used
-for the demo (``2020.6``)::
+for the demo::
 
     $ git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
     $ cd ansible-infrastructure
-    $ git checkout tags/2020.6
+    $ git checkout tags/2020.7
 
 From here you should follow the infrastructure project's **"Getting Started"**
 guide and then its **"Creating the Infrastructure"** guide. Importantly, in
 the **Creating** sub-section, instead of using the
 ``site-im-main-parameters.vault`` file we use ``site-im-demo-parameters.vault``,
-which requires its own vault key.Ensure the file contains settings suitable for
-your cluster and domains and then install it::
+which requires its own vault key.
+
+Ensure the file contains settings suitable
+for your cluster, which you an do by decrypting on-th-fly::
+
+    $ ansible-vault edit site-im-demo-parameters.vault --ask-vault-pass
+
+You will need to pay special attention to the following variables::
+
+    kc_hostname
+    ax_hostname
+
+
+With any changes made to the vault file and saved install the infrastructure::
 
     $ ansible-playbook -e "@site-im-demo-parameters.vault" site.yaml \
             --ask-vault-pass
@@ -128,6 +163,8 @@ With this done we can move to configuring AWX.
 Configure the AWX application server
 ####################################
 
+.. note:: Allow 2 minutes
+
 Configuration of the AWX server is achieved with the playbooks and roles
 in the Informatics Matters `DLS Kubernetes`_ GitHub repository. The demo
 configuration will create the following objects: -
@@ -136,8 +173,7 @@ configuration will create the following objects: -
 *   A team
 *   A user
 
-Clone the project and checkout the stable revision used for the demo
-(``2020.1``)::
+Clone the project and checkout the stable revision used for the demo::
 
     $ cd ~/Code/im-demo
     $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
@@ -177,14 +213,16 @@ all the templates are presented to you.
 The Fragmentation Graph Database
 ********************************
 
+.. note:: Allow 40 minutes
+
 Deploy the Fragmentation graph by *launching* the **Fragmentation Graph**
 template.
 
 **screenshot**
 
 As the graph initialisation takes some time the job does not
-(at the moment) wait for the graph to initialise. We use the ``kubectl``
-command-line to check on the status of the graph::
+(at the tim eof writing) wait for the graph to initialise. We therefore use the
+``kubectl`` command-line to check on the status of the graph::
 
     $ kubectl get all -n graph
 
@@ -193,6 +231,8 @@ Where you should
 
 Fragalysis
 **********
+
+.. note:: Allow 10 minutes
 
 With the graph installed we can now start the Fragalysis Stack and its
 *Data Loader*.
@@ -217,6 +257,8 @@ The job will time-out after an hour.
 Squonk
 ******
 
+.. note:: Allow 5 minutes
+
 Squonk can be deployed using AWX.
 
 Deploy Squonk by *launching* the **Squonk** job template.
@@ -230,6 +272,8 @@ Job.
 
 Fragnet Search
 **************
+
+.. note:: Allow 1 minute
 
 **TBD**
 
