@@ -535,6 +535,9 @@ gracefully replaced by the new image.</p>
 <p>You’l be prompted for variables and it’s here that you can edit the
 <code class="docutils literal notranslate"><span class="pre">stack_image_tag</span></code> value that’s used to deploy the application.</p>
 <img alt="_images/demo-job-templates-version-prompt.png" src="_images/demo-job-templates-version-prompt.png" />
+<p>As there are two Pods the playbook waits for stack number <strong>1</strong> to restart
+and then for stack number <strong>0</strong> to restart, taking approximately 2 minutes per
+Pod. Using two Pods avoids service disruption during an upgrade.</p>
 </div>
 <div class="section" id="destroying-the-cluster">
 <h2>Destroying the cluster<a class="headerlink" href="#destroying-the-cluster" title="Permalink to this headline">¶</a></h2>

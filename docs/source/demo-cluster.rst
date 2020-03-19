@@ -385,6 +385,10 @@ You'l be prompted for variables and it's here that you can edit the
 
 .. image:: ./images/demo-job-templates-version-prompt.png
 
+As there are two Pods the playbook waits for stack number **1** to restart
+and then for stack number **0** to restart, taking approximately 2 minutes per
+Pod. Using two Pods avoids service disruption during an upgrade.
+
 Destroying the cluster
 ######################
 
