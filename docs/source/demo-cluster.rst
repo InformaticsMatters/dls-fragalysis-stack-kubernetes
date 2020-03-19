@@ -394,6 +394,8 @@ Pod. Using two Pods avoids service disruption during an upgrade.
 Destroying the cluster
 ######################
 
+.. note:: Allow **5 minutes** to complete this task.
+
 You cannot delete the cluster without risking leaving volumes lying around.
 prior to deleting the cluster you should run the following Jobs: -
 
