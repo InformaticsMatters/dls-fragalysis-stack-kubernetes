@@ -1,0 +1,35 @@
+---
+
+- name: Add user ({{ item.username }})
+  awx.awx.tower_user:
+    superuser: "{{ item.is_superuser|default('no', true)|bool }}"
+    first_name: "{{ item.first_name }}"
+    last_name: "{{ item.last_name }}"
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+    email: "{{ item.email }}"
+  no_log: yes
+
+# Associate user with organisation
+
+- name: Associate user to organisation ({{ item.username }})
+  command: >-
+    tower-cli organization associate
+    --organization '{{ tower.organisation }}'
+    --user '{{ item.username }}'
+  register: cmd_result
+  changed_when: "'changed: false' not in cmd_result.stdout"
+
+# Associate user with teams
+
+- name: Associate user with teams ({{ item.username }})
+  command: >-
+    tower-cli team associate
+    --team '{{ user_team }}'
+    --user '{{ item.username }}'
+  register: cmd_result
+  changed_when: "'changed: false' not in cmd_result.stdout"
+  loop: "{{ item.teams }}"
+  loop_control:
+    loop_var: user_team
+  when: item.teams is defined

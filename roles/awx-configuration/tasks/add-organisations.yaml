@@ -1,0 +1,7 @@
+---
+
+- name: Add organisations
+  awx.awx.tower_organization:
+    name: "{{ item }}"
+  loop:
+  - "{{ tower.organisation }}"

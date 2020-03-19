@@ -1,0 +1,8 @@
+---
+
+- name: Add inventories
+  awx.awx.tower_inventory:
+    name: "{{ item }}"
+    organization: "{{ tower.organisation }}"
+  loop:
+  - localhost

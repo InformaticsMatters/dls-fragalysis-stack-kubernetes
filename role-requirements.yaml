@@ -1,0 +1,5 @@
+---
+
+collections:
+- name: awx.awx
+  version: 9.3.0

@@ -1,0 +1,6 @@
+---
+
+- name: Remove tower_cli.cfg
+  file:
+    path: "{{ tower_config_file }}"
+    state: absent

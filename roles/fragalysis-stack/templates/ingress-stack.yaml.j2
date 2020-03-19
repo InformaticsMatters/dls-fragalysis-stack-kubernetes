@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}
+    - {{ stack_url }}
     secretName: stack-tls
   rules:
-  - host: {{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}
+  - host: {{ stack_url }}
     http:
       paths:
       - path: /

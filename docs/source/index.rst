@@ -8,3 +8,4 @@ Fragalysis Stack Orchestration (Kubernetes)
 
     development
     deployment
+    demo-cluster

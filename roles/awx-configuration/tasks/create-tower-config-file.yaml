@@ -1,0 +1,7 @@
+---
+
+- name: Write tower_cli.cfg
+  template:
+    src: tower_cli.cfg.j2
+    dest: "{{ tower_config_file }}"
+    mode: 0600

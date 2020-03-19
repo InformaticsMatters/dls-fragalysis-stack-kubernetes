@@ -8,20 +8,35 @@ stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
 stack_replicas: 2
 
+# A boolean, set if the stack deployment is for a developer
+# i.e. not a PRODUCTION, STAGING or DEVELOPMENT deployment.
+# Developer stacks get their own auto-generated namespaces
+# and ingress routes. Non-developer stacks need an explicit
+# 'stack_namespace' and 'stack_hostname'.
+stack_is_for_developer: yes
+
+# The namespace to deploy the stack to.
+# Not defined for user stacks  where the namespace will be created
+# from the user (developer) ID and will be 'stack-{{ id }}-{{ stack_name }}'.
+stack_namespace: ''
+
 # The hostname that will be used to connect to the stacks.
-# This will be a URL directed at the cluster. The stack will
-# be available on a path defined by the user-ID. So, user 'abc' (id 17)
-# will have a stack available at https://{{ stack_hostname }}/...
+# This will be a URL directed at the cluster.
+# Developer stacks will prepend a unique value to to make the route
+# specific for that developer
+# i.e. https://{{ id }}-{{ stack_name }}.{{ stack_hostname }}.
 stack_hostname: ''
 
-# A symbolic name for your stack. As the stack namespace is automatic,
-# and based on your AWX user ID, the name allows you to deploy more than one
-# stack at a time, each with its own name.
+# A symbolic name for your stack, used if you do not provide your own
+# 'stack_namespace' value. When you do not provide a namespace the stack
+# namespace you're given is automatic and based on your AWX user ID.
+# The 'stack_name' allows you to deploy more than one
+# stack at a time, each with its own name using the same user ID.
 #
 # The name is used to further distinguish the https route to the application
 # as your application will be available using the hostname: -
 #
-#   https://{{ stack_hostname }}//{{ id }}/{{ stack_name }}
+#   https://{{ id }}-{{ stack_name }}.{{ stack_hostname }}
 #
 # The name can only consist of lower-case letters.
 stack_name: default
