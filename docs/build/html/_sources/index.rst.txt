@@ -8,6 +8,5 @@ Fragalysis Stack Orchestration (Kubernetes)
 
     development
     deployment
-    demo-cluster-ec2
-    demo-cluster-eks
+    rancher
     demo-cluster
