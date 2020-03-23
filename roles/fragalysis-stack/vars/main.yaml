@@ -61,5 +61,9 @@ database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_
 
 # General timeout, used within the k8s module for wait duration
 wait_timeout: 600
+# Wait for volume binding?
+# Probably unless multi-zone deployments
+# where the PVC will not bind until the 'consumer' pod appears.
+wait_for_bind: yes
 # Volume binding timeout (seconds)
 bind_timeout: 120

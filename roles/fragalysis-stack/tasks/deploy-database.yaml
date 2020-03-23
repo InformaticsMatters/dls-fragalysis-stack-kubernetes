@@ -18,6 +18,7 @@
   until: bind_result.resources[0].status.phase == 'Bound'
   delay: 5
   retries: "{{ (bind_timeout|int / 5)|int }}"
+  when: wait_for_bind|bool
 
 # Now the database secrets.
 #
