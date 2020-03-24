@@ -49,6 +49,10 @@
 
 - import_tasks: add-organisations.yaml
   tags: organisations
+- import_tasks: add-teams.yaml
+  tags: teams
+- import_tasks: add-users.yaml
+  tags: users
 - import_tasks: add-inventories.yaml
   tags: inventories
 - import_tasks: add-hosts.yaml
@@ -63,10 +67,6 @@
 - import_tasks: add-credentials.yaml
   tags: credentials
 
-- import_tasks: add-teams.yaml
-  tags: teams
-- import_tasks: add-users.yaml
-  tags: users
 - import_tasks: add-projects.yaml
   tags: projects
 - import_tasks: add-job-templates.yaml
