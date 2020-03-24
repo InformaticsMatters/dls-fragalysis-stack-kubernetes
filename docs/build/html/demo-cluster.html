@@ -214,13 +214,14 @@ all the application components. All times are approximate.</p>
 with one node having at least 3 free cores and 6Gi of available RAM
 and a large memory node with at least 48Gi RAM</p></li>
 <li><p>Achieved with a pair of 8-core 32Gi application nodes
-and an 8-core 64Gi high-memory node</p></li>
+(e.g. <code class="docutils literal notranslate"><span class="pre">t3.2xlarge</span></code>) and an 8-core 64Gi high-memory node
+(e.g. <code class="docutils literal notranslate"><span class="pre">r5.2xlarge</span></code>)</p></li>
 </ul>
 </li>
 <li><p>A storage class called “gp2” available to the cluster</p></li>
-<li><p>A route to the cluster, normally through an Application Load Balancer
-in EKS or an Elastic IP associated with one of your application nodes
-if you’re using EC2</p></li>
+<li><p>A route to the cluster, normally achieved through a layer-4
+Network Load Balancer in EKS or an Elastic IP associated with one of
+your application nodes if you’re using EC2</p></li>
 <li><p>Suitable Domain re-directions, a wildcard or individual routes for: -</p>
 <ul class="simple">
 <li><p>Keycloak</p></li>
@@ -232,7 +233,7 @@ if you’re using EC2</p></li>
 </li>
 <li><p>An AWS IAM user capable of managing the EC2 cluster</p></li>
 <li><p>A <strong>node pool</strong> of application nodes</p></li>
-<li><p>A <strong>node pool</strong> of graph nodes</p></li>
+<li><p>A <strong>node pool</strong> of graph (bigmem) nodes</p></li>
 <li><p>The deployment benefits from node labels and taints (see <a class="reference internal" href="#labels-and-taints">labels and taints</a>)</p></li>
 <li><p>The cluster <strong>kubeconfig</strong> file</p></li>
 <li><p>The cluster must have access to GitHub and GitLab</p></li>
@@ -288,7 +289,7 @@ $ conda activate im-demo
 for the demo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
 $ cd ansible-infrastructure
-$ git checkout tags/2020.7
+$ git checkout tags/2020.11
 </pre></div>
 </div>
 <p>From here you should follow the infrastructure project’s <strong>“Getting Started”</strong>
@@ -297,9 +298,9 @@ the <strong>Creating</strong> sub-section, instead of using the
 <code class="docutils literal notranslate"><span class="pre">site-im-main-parameters.vault</span></code> file we use <code class="docutils literal notranslate"><span class="pre">site-im-demo-parameters.vault</span></code>,
 which requires its own vault key.</p>
 <p>Ensure the file contains settings suitable
-for your cluster, which you an do by decrypting on-th-fly
+for your cluster, which you an do by decrypting on-the-fly
 using <a class="reference external" href="https://docs.ansible.com/ansible/latest/user_guide/vault.html">Ansible Vault</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-vault edit site-im-demo-parameters.vault --ask-vault-pass
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-vault edit site-im-demo-parameters.vault
 </pre></div>
 </div>
 <p>You will need to pay special attention to the following variables:</p>
@@ -307,10 +308,24 @@ using <a class="reference external" href="https://docs.ansible.com/ansible/lates
 <span class="n">ax_hostname</span>
 </pre></div>
 </div>
-<p>With any changes made to the vault file and saved install the infrastructure:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-playbook -e &quot;@site-im-demo-parameters.vault&quot; site.yaml \
+<p>To install AWX you will need the context name of the cluster,
+located in your kubeconfig file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">contexts</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;im-demo&quot;</span>
+  <span class="n">context</span><span class="p">:</span>
+    <span class="n">user</span><span class="p">:</span> <span class="s2">&quot;im-demo&quot;</span>
+    <span class="n">cluster</span><span class="p">:</span> <span class="s2">&quot;im-demo&quot;</span>
+</pre></div>
+</div>
+<p>Passing this into the playbook with <code class="docutils literal notranslate"><span class="pre">-e</span> <span class="pre">ax_kubernetes_context=im-demo</span></code>.</p>
+<p>Now install the infrastructure (with any changes made to the vault file
+and saved):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-playbook \
+        -e &quot;@site-im-demo-parameters.vault&quot; \
+        -e ax_kubernetes_context=im-demo \
+        site.yaml \
         --ask-vault-pass
-[then provide the im-demo vault key]
+[provide the im-demo vault key]
 </pre></div>
 </div>
 <p>If you don’t want to (or can’t) use the <code class="docutils literal notranslate"><span class="pre">im-demo</span></code> parameter file you can
@@ -325,7 +340,6 @@ parameter file, and define values for the following variables:</p>
 <span class="n">kc_hostname</span>
 <span class="n">ax_admin_password</span>
 <span class="n">ax_hostname</span>
-<span class="n">ax_kubernetes_context</span>
 </pre></div>
 </div>
 <p>Allow approximately <strong>6 minutes</strong> for the infrastructure provisioning
@@ -348,7 +362,7 @@ in the Informatics Matters <a class="reference external" href="https://github.co
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ~/Code/im-demo
 $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
 $ cd dls-fragalysis-stack-kubernetes
-$ git checkout tags/2020.4
+$ git checkout tags/2020.8
 $ pip install -r requirements.txt
 $ ansible-galaxy install -r role-requirements.yaml
 </pre></div>
@@ -364,8 +378,7 @@ $ ansible-galaxy install -r role-requirements.yaml
 <li><p>Job Templates</p></li>
 </ul>
 <p>You can view the configuration using ansible vault:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-vault edit roles/awx-configuration/vars/config-demo.vault \
-    --ask-vault-pass
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ansible-vault edit roles/awx-configuration/vars/config-demo.vault
 </pre></div>
 </div>
 <p>Armed with the AWX <code class="docutils literal notranslate"><span class="pre">admin</span></code> user password used during the infrastructure
@@ -557,10 +570,12 @@ prior to deleting the cluster you should run the following Jobs: -</p>
 <li><p><strong>Fragmentation Graph [DESTROY]</strong></p></li>
 </ol>
 <img alt="_images/demo-job-templates-destroy.png" src="_images/demo-job-templates-destroy.png" />
-<p>Finally, remove the infrastructure namespace, which will remove <strong>Keycloak</strong>,
-<strong>PostgreSQL</strong> and the <strong>AWX application server</strong> and the persistent volumes
-it uses:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl delete namespace/im-infra
+<p>Finally, remove the infrastructure-created namespaces, which will remove
+<strong>Keycloak</strong>, <strong>PostgreSQL</strong> and the <strong>AWX application server</strong> and the
+persistent volumes it uses:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl delete namespace/im-infra \
+        namespace/im-efs-provisioner \
+        namespace/cert-manager
 </pre></div>
 </div>
 <p>You can now dispose of the cluster.</p>

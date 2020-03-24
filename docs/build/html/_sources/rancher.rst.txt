@@ -10,6 +10,10 @@ can be found in the following external (GoogleDoc) document: -
 
 With the following relevant sections: -
 
+*   Before you start
+    *   Create an S3 bucket for etcd backups
+    *   Create an AWS IAM User
+    *   Create an AWS IAM Role
 *   Deploy Rancher (“quickstart”)
 *   Set the Rancher server URL
 *   Create Cloud Credentials
