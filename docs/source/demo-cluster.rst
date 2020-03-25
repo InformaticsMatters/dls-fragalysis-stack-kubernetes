@@ -114,7 +114,7 @@ for the demo::
 
     $ git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
     $ cd ansible-infrastructure
-    $ git checkout tags/2020.11
+    $ git checkout tags/2020.12
 
 From here you should follow the infrastructure project's **"Getting Started"**
 guide and then its **"Creating the Infrastructure"** guide. Importantly, in
