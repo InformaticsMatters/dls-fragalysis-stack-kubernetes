@@ -192,7 +192,7 @@ Clone the project and checkout the stable revision used for the demo::
     $ cd ~/Code/im-demo
     $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
     $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.9
+    $ git checkout tags/2020.10
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r role-requirements.yaml
 
