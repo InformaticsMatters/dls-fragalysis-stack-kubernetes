@@ -362,7 +362,7 @@ in the Informatics Matters <a class="reference external" href="https://github.co
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ~/Code/im-demo
 $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
 $ cd dls-fragalysis-stack-kubernetes
-$ git checkout tags/2020.8
+$ git checkout tags/2020.9
 $ pip install -r requirements.txt
 $ ansible-galaxy install -r role-requirements.yaml
 </pre></div>
@@ -570,12 +570,16 @@ prior to deleting the cluster you should run the following Jobs: -</p>
 <li><p><strong>Fragmentation Graph [DESTROY]</strong></p></li>
 </ol>
 <img alt="_images/demo-job-templates-destroy.png" src="_images/demo-job-templates-destroy.png" />
-<p>Finally, remove the infrastructure-created namespaces, which will remove
+<p>Finally, from your <code class="docutils literal notranslate"><span class="pre">ansible-infrastructure</span></code> directory remove the
+infrastructure using the <code class="docutils literal notranslate"><span class="pre">unsite</span></code> play, which will remove
 <strong>Keycloak</strong>, <strong>PostgreSQL</strong> and the <strong>AWX application server</strong> and the
 persistent volumes it uses:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl delete namespace/im-infra \
-        namespace/im-efs-provisioner \
-        namespace/cert-manager
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ~/Code/im-demo/ansible-infrastructure
+$ ansible-playbook \
+        -e &quot;@site-im-demo-parameters.vault&quot; \
+        unsite.yaml \
+        --ask-vault-pass
+[provide the im-demo vault key]
 </pre></div>
 </div>
 <p>You can now dispose of the cluster.</p>
