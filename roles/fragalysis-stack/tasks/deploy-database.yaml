@@ -100,3 +100,49 @@
     and db_result.resources[0].status.containerStatuses[0].ready
   delay: 10
   retries: "{{ (wait_timeout|int / 10)|int }}"
+
+# Database (backups) ----------------------------------------------------------
+
+- name: Database backup
+  block:
+
+  - name: Get {{ database_bu_vol_storageclass }} StorageClass
+    k8s_info:
+      kind: StorageClass
+      name: "{{ database_bu_vol_storageclass }}"
+    register: sc_result
+    when: bu_vol_storageclass != " "
+
+  - name: Assert {{ database_bu_vol_storageclass }} StorageClass
+    assert:
+      that: sc_result.resources|length == 1
+      fail_msg: The {{ database_bu_vol_storageclass }} StorageClass must be available on the cluster
+    when: database_bu_vol_storageclass != " "
+
+  - name: Create postgres backup volume claim ({{ database_bu_vol_storageclass }})
+    k8s:
+      definition: "{{ lookup('template', 'pvc-postgres-backup.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+
+  - name: Wait for postgres backup volume claim to bind
+    k8s_info:
+      kind: PersistentVolumeClaim
+      name: bu-pvc
+      namespace: "{{ stack_namespace }}"
+    register: bu_pvc_result
+    until: >-
+      bu_pvc_result.resources|length > 0
+      and bu_pvc_result.resources[0].status is defined
+      and bu_pvc_result.resources[0].status.phase == 'Bound'
+    delay: 5
+    retries: "{{ (bind_timeout|int / 5)|int }}"
+    when: wait_for_bind|bool
+
+  - name: Deploy hourly backup
+    k8s:
+      definition: "{{ lookup('template', 'cronjob-postgres-backup.yaml.j2') }}"
+      wait: yes
+      wait_timeout: "{{ wait_timeout }}"
+
+  when: database_bu_state|string == 'present'

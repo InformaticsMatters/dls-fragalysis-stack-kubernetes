@@ -1,0 +1,69 @@
+---
+kind: CronJob
+apiVersion: batch/v1beta1
+metadata:
+  name: postgres-backup-hourly
+  namespace: {{ stack_namespace }}
+spec:
+  schedule: '{{ database_bu_hourly_schedule }}'
+  startingDeadlineSeconds: 180
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: postgres-backup
+        spec:
+          serviceAccountName: stack
+
+          # A 'preferred' (not guaranteed)
+          # node selection affinity...
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 1
+                preference:
+                  matchExpressions:
+                  - key: purpose
+                    operator: In
+                    values:
+                    - {{ stack_node_purpose }}
+
+          containers:
+          - image: informaticsmatters/sql-backup:stable
+            name: postgres-backup
+            imagePullPolicy: IfNotPresent
+            resources:
+              limits:
+                cpu: 500m
+                memory: 128Mi
+              requests:
+                cpu: 100m
+                memory: 128Mi
+            env:
+            - name: BACKUP_TYPE
+              value: hourly
+            - name: BACKUP_COUNT
+              value: '{{ database_bu_hourly_history }}'
+            - name: PGHOST
+              value: database
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: im-postgres
+                  key: database_admin_user
+            - name: PGADMINPASS
+              valueFrom:
+                secretKeyRef:
+                  name: im-postgres
+                  key: database_admin_user_password
+            volumeMounts:
+            - name: backup-data
+              mountPath: /backup
+
+          volumes:
+          - name: backup-data
+            persistentVolumeClaim:
+              claimName: pg-bu-pvc
+          restartPolicy: Never

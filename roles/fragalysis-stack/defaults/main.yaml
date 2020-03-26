@@ -69,6 +69,13 @@ database_host: ''
 # (represented by a blank, single space).
 database_vol_storageclass: ' '
 
+# Database backups
+database_bu_state: absent
+database_bu_vol_storageclass: ' '
+database_bu_vol_size_g: 10
+database_bu_hourly_schedule: '21 * * * *'
+database_bu_hourly_history: 24
+
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,
 # so their variables names are not to be altered. If not using AWX

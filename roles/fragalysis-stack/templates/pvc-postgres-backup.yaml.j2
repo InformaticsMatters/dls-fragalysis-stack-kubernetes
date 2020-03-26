@@ -1,0 +1,13 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: bu-pvc
+  namespace: {{ stack_namespace }}
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: '{{ pvc-postgres-backup.yaml.j2 }}'
+  resources:
+    requests:
+      storage: '{{ database_bu_vol_size_g }}Gi'
