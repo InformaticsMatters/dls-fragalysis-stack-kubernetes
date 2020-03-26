@@ -7,7 +7,7 @@ metadata:
 spec:
   accessModes:
   - ReadWriteMany
-  storageClassName: '{{ pvc-postgres-backup.yaml.j2 }}'
+  storageClassName: '{{ database_bu_vol_storageclass }}'
   resources:
     requests:
       storage: '{{ database_bu_vol_size_g }}Gi'
