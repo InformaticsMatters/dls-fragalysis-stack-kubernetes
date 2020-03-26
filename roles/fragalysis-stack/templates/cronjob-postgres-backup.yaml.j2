@@ -49,15 +49,12 @@ spec:
             - name: PGHOST
               value: database
             - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: im-postgres
-                  key: database_admin_user
+              value: admin
             - name: PGADMINPASS
               valueFrom:
                 secretKeyRef:
-                  name: im-postgres
-                  key: database_admin_user_password
+                  name: database
+                  key: root_password
             volumeMounts:
             - name: backup-data
               mountPath: /backup
@@ -65,5 +62,5 @@ spec:
           volumes:
           - name: backup-data
             persistentVolumeClaim:
-              claimName: pg-bu-pvc
+              claimName: database-backup
           restartPolicy: Never
