@@ -111,7 +111,7 @@
       kind: StorageClass
       name: "{{ database_bu_vol_storageclass }}"
     register: sc_result
-    when: bu_vol_storageclass != " "
+    when: database_bu_vol_storageclass != " "
 
   - name: Assert {{ database_bu_vol_storageclass }} StorageClass
     assert:
