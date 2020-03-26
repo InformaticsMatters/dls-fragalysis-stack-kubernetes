@@ -128,7 +128,7 @@
   - name: Wait for postgres backup volume claim to bind
     k8s_info:
       kind: PersistentVolumeClaim
-      name: bu-pvc
+      name: database-backup
       namespace: "{{ stack_namespace }}"
     register: bu_pvc_result
     until: >-
