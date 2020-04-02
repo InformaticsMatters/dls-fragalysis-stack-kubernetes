@@ -31,7 +31,7 @@ spec:
                     - {{ stack_node_purpose }}
 
           containers:
-          - image: informaticsmatters/sql-backup:stable
+          - image: informaticsmatters/sql-backup:{{ database_bu_image_tag }}
             name: postgres-backup
             imagePullPolicy: IfNotPresent
             resources:
