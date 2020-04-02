@@ -156,6 +156,10 @@
   debug:
     msg: Your stack URL is 'https://{{ stack_url }}'
 
+- name: Display graph service
+  debug:
+    msg: The graph service is expected at '{{ graph_hostname }}'
+
 # The stack's a StatefulSet with {{ stack_replicas }} instances.
 # They are initialised one after the other from Pod 'stack-0'
 # to Pod 'stack-{{ stack_replicas - 1 }}'.
