@@ -71,7 +71,7 @@ database_vol_storageclass: ' '
 
 # Database backups
 database_bu_state: absent
-database_bu_image_tag: '2020.2'
+database_bu_image_tag: '2020.3'
 database_bu_vol_storageclass: ' '
 database_bu_vol_size_g: 4
 database_bu_hourly_schedule: '51 * * * *'
