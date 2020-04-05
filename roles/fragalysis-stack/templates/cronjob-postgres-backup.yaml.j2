@@ -34,6 +34,7 @@ spec:
           - image: informaticsmatters/sql-backup:{{ database_bu_image_tag }}
             name: postgres-backup
             imagePullPolicy: IfNotPresent
+            terminationMessagePolicy: FallbackToLogsOnError
             resources:
               limits:
                 cpu: 500m

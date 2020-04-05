@@ -19,16 +19,6 @@ spec:
     spec:
       serviceAccountName: stack
 
-      initContainers:
-{% if database_host|string|length > 0 %}
-      - image: 'busybox:1.28.0'
-        name: wait-for-db
-        command:
-        - 'sh'
-        - '-c'
-        - 'until nslookup {{ databse_host }}; do echo waiting for db; sleep 1; done;'
-{% endif %}
-
       # A 'preferred' (not guaranteed)
       # node selection affinity...
       affinity:
@@ -50,6 +40,7 @@ spec:
         - 'sh'
         - '-c'
         - 'until nslookup {{ graph_hostname }}; do echo waiting for neo4j; sleep 1; done;'
+        terminationMessagePolicy: FallbackToLogsOnError
 
       containers:
       - name: stack
@@ -59,6 +50,7 @@ spec:
 {% else %}
         imagePullPolicy: IfNotPresent
 {% endif %}
+        terminationMessagePolicy: FallbackToLogsOnError
         ports:
         - containerPort: 80
         resources:

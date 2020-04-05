@@ -43,6 +43,7 @@ spec:
       - name: database
         image: '{{ database_image_registry }}/{{ database_image }}:{{ database_image_tag }}'
         imagePullPolicy: IfNotPresent
+        terminationMessagePolicy: FallbackToLogsOnError
         ports:
         - containerPort: 5432
         resources:
