@@ -1,5 +1,0 @@
----
-
-- name: Add job-templates
-  include_tasks: add-job-template.yaml
-  loop: "{{ tower.job_templates }}"

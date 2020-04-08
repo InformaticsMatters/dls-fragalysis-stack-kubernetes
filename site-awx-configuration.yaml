@@ -1,7 +1,0 @@
----
-
-- hosts: localhost
-  tasks:
-  - include_role:
-      name: awx-configuration
-    tags: always
