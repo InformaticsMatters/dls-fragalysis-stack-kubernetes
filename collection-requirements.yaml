@@ -1,7 +1,4 @@
 ---
-
-- src: informaticsmatters.awx_compose
-
 collections:
 - name: awx.awx
   version: 10.0.0

@@ -7,7 +7,7 @@ From the project root (in a suitable environment): -
 
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r requirements.yaml
-    $ ansible-galaxy collection install -r requirements.yaml
+    $ ansible-galaxy collection install -r collection-requirements.yaml
     
     $ ansible localhost \
         -m include_role -a name=informaticsmatters.awx_composer \
