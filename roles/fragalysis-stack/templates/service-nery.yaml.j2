@@ -1,0 +1,13 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nery
+  namespace: {{ stack_namespace }}
+spec:
+  selector:
+    name: nery
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080

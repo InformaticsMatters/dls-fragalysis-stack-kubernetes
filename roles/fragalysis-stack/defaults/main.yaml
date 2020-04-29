@@ -7,6 +7,8 @@ stack_image_registry: docker.io
 stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
 stack_replicas: 2
+# Deploy the nery service?
+stack_deploy_nery: no
 
 # A boolean, set if the stack deployment is for a developer
 # i.e. not a PRODUCTION, STAGING or DEVELOPMENT deployment.

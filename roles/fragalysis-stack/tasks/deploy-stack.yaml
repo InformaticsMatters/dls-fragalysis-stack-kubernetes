@@ -152,6 +152,15 @@
   - service-stack
   - ingress-stack
 
+- name: Deploy nery
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - statefulset-nery
+  - service-nery
+  when: stack_deploy_nery|bool
+
 - name: Display stack URL
   debug:
     msg: Your stack URL is 'https://{{ stack_url }}'

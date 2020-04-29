@@ -1,0 +1,67 @@
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: nery
+  namespace: {{ stack_namespace }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: nery
+  serviceName: nery
+  replicas: 1
+  template:
+    metadata:
+      name: nery
+      labels:
+        name: nery
+    spec:
+      serviceAccountName: stack
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ stack_node_purpose }}
+
+      containers:
+      - name: nery
+        image: 'informaticsmatters/fragalysis-nery:latest'
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 250m
+            memory: 64Mi
+          requests:
+            cpu: 250m
+            memory: 64Mi
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 3
+          tcpSocket:
+            port: 8080
+        livenessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 3
+          tcpSocket:
+            port: 8080
+        env:
+        - name: DUMP_MESSAGES
+          value: 'yes'
+        - name: NEO4J_QUERY
+          value: {{ graph_hostname }}
+        - name: NEO4J_AUTH
+          value: 'neo4j/{{ graph_password }}'
