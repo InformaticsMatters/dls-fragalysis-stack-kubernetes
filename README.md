@@ -8,6 +8,19 @@ application to Kubernetes. This repository builds on the work accomplished
 by our [OpenShift deployment] and yields plays that can be run from an [AWX]
 server.
 
+## Preparation
+You'll need a Python environment where you need to install the project
+requirements (for Python and Ansible): -
+
+    $ conda activate dls-fragalysis-stack-kubernetes
+    $ pip install -r requirements.txt
+    $ ansible-galaxy install -r requirements.yaml --force
+    $ ansible-galaxy collection install -r collection-requirements.yaml --force
+
+## Configuring the AWX server
+To setup the AWX server for a specific cluster refer to the `README`
+in the `awx-configuration` directory.
+
 ## Editing the sensitive.vault
 Certain, sensitive, variables are located in the encrypted file
 `roles/fragalysis-stack/vars/sensitive.vault`. This file should not be
