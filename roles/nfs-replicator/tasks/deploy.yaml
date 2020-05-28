@@ -42,6 +42,10 @@
   assert:
     that: pvc_result.resources|length == 1
 
+- name: Diaplay PVC
+  debug:
+    var: pvc_result
+
 # Launch the replicator
 
 - name: Remove any existing replicator Job
