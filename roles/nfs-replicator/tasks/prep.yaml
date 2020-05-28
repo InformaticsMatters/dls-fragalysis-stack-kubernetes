@@ -6,6 +6,79 @@
 - debug:
     var: ansible_version.full
 
+# Before moving on, this play is expected to be executed from an AWX/Tower
+# instance. If so, a number of AWX/Tower variables should be injected.
+# See https://docs.ansible.com/ansible-tower/latest/html/userguide/job_templates.html
+# for an up-to-date set, but ones we rely on in order to protect the
+# job for malfunctioning are: -
+#
+# - tower_user_id (the ID, a number, used to create a unique namespace)
+# - tower_user_name (The username for logging)
+
+- name: Assert AWX user_id defined
+  assert:
+    that:
+    - tower_user_id is defined
+    fail_msg: This job must run from AWX but the 'user_id' has not been defined
+
+- name: Assert AWX user_id value
+  assert:
+    that:
+    - tower_user_id|int > 0
+    fail_msg: The 'user_id' is invalid ({{ tower_user_id }})
+
+- name: Assert AWX user_name
+  assert:
+    that:
+    - tower_user_name is defined
+    - tower_user_name|string|length > 0
+    fail_msg: >-
+      This job must run from AWX but the 'user_name'
+      were either not defined or blank.
+
+- name: Developer stack preparation
+  block:
+
+  # If developer then the production namespace must not be set.
+
+  - name: Check namespace value (developer)
+    assert:
+      that:
+      - replicator_production_stack_ns|string|length == 0
+
+  # Also, check the stack name provided.
+  # It cannot be blank and must only consist of lower-case letters.
+  # It will form the basis of the namespace and ingress.
+
+  - name: Check stack name
+    assert:
+      that: replicator_stack_name is match('[a-z]+')
+      fail_msg: >-
+        You must prove a value for stack_name.
+        It cannot be blank must only contain lower-case letters.
+
+  - name: Set namespace fact (for user_id '{{ tower_user_id }}')
+    set_fact:
+      stack_namespace_fact: stack-{{ tower_user_id }}-{{ stack_name }}
+
+  when: replicator_stack_name|string|length > 0
+
+- name: Production stack preparation
+  block:
+
+  # The developer stack name must not be set
+
+  - name: Check stack_name value (production)
+    assert:
+      that:
+      - replicator_stack_name|string|length == 0
+
+  - name: Set namespace fact (production)
+    set_fact:
+      stack_namespace_fact: "{{ replicator_production_stack_ns }}"
+
+  when: replicator_production_stack_ns|string|length > 0
+
 # Basic pre-playbook prerequisites.
 # We need the openshift/kubernetes module amongst other things...
 

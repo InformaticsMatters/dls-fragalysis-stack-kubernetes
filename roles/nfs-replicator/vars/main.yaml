@@ -1,5 +1,12 @@
 ---
 
+# Delete the destination directory?
+# Basically invokes '--delete' to the replicator's rsync operation.
+replicator_delete_destination: yes
+
+# The service account (typically stack)
+replicator_sa_name: stack
+
 # Purpose label for the desired execution node
 replicator_node_purpose: application
 

@@ -13,7 +13,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: nfs-replicator
-  namespace: {{ replicator_namespace }}
+  namespace: {{ stack_namespace_fact }}
 spec:
   # Clean-up completed (or failed) Jobs
   # after 5 minutes...
@@ -51,8 +51,11 @@ spec:
         env:
         - name: REPLICATE_DIRECTION
           value: {{ replicator_direction }}
+{% if not replicator_delete_destination %}
+        # Default is 'yes'
         - name: REPLICATE_DELETE
-          value: 'yes'
+          value: 'no'
+{% endif %}
         volumeMounts:
         - name: volume-a
           mountPath: /volume-a

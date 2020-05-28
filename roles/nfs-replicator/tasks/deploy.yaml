@@ -3,8 +3,6 @@
 - name: Check key variables
   assert:
     that:
-    - replicator_namepsace|string|length > 0
-    - replicator_namepsace|string != 'SetMe'
     - replicator_a_nfs_server|string|length > 0
     - replicator_a_nfs_server|string != 'SetMe'
     - replicator_a_nfs_path|string|length > 0
@@ -18,15 +16,15 @@
 
 # The namespace (project) and PVC claim must exist.
 
-- name: Check the namespace ({{ replicator_namepsace }})
+- name: Check the namespace ({{ stack_namespace_fact }})
   assert:
     that:
-    - stack_namespace|string|length > 0
+    - stack_namespace_fact|string|length > 0
 
 - name: Get the namespace
   k8s_info:
     kind: Namespace
-    name: "{{ replicator_namespace }}"
+    name: "{{ stack_namespace_fact }}"
   register: n_result
 
 - name: Assert namepsace exists
@@ -36,7 +34,7 @@
 - name: Get the PVC
   k8s_info:
     kind: PersistentVolumeClaim
-    namespace: "{{ replicator_namespace }}"
+    namespace: "{{ stack_namespace_fact }}"
     name: "{{ replicator_b_pvc_name }}"
   register: pvc_result
 
@@ -62,8 +60,8 @@
 - name: Wait for replicator Job
   k8s_info:
     kind: Job
-    namespace: "{{ stack_namespace }}"
-    name: loader
+    namespace: "{{ stack_namespace_fact }}"
+    name: nfs-replicator
   register: result
   until: >-
     result.resources[0].status.completionTime is defined

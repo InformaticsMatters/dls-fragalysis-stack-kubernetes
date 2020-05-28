@@ -1,8 +1,9 @@
 ---
 
-# The namespace and service account
-replicator_namepsace: SetMe
-replicator_sa_name: stack
+# Set one of 'developer stack name' (typically 'default')
+# or 'production stack namespace'.
+replicator_stack_name: ''
+replicator_production_stack_ns: ''
 
 # Details of the statically assigned replica volume (on an NFS server)
 # (volume-a)
