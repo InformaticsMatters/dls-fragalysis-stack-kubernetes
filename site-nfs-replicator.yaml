@@ -3,4 +3,4 @@
 - hosts: localhost
   tasks:
   - include_role:
-      name: nfs-repliator
+      name: nfs-replicator

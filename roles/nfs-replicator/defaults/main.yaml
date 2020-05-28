@@ -10,7 +10,7 @@ replicator_production_stack_ns: ''
 replicator_a_nfs_server: SetMe
 replicator_a_nfs_path: SetMe
 # Details of the PVC to copy from or copy into (based on direction)
-# (volume-b)
+# (volume-b). Typically 'media' for a stack.
 replicator_b_pvc_name: SetMe
 
 # The replicate direction.
