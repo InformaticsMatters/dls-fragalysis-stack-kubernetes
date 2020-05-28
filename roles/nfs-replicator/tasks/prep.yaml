@@ -39,7 +39,8 @@
 - name: Developer stack preparation
   block:
 
-  # If developer then the production namespace must not be set.
+  # It's a developer stack
+  # - the production namespace must not be set.
 
   - name: Check namespace value (developer)
     assert:
@@ -60,13 +61,15 @@
   - name: Set namespace fact (for user_id '{{ tower_user_id }}')
     set_fact:
       stack_namespace_fact: stack-{{ tower_user_id }}-{{ replicator_stack_name }}
+      replicate_direction_fact: AtoB
 
   when: replicator_stack_name|string|length > 0
 
 - name: Production stack preparation
   block:
 
-  # The developer stack name must not be set
+  # It's the production stack
+  # - the developer stack name must not be set
 
   - name: Check stack_name value (production)
     assert:
@@ -76,6 +79,7 @@
   - name: Set namespace fact (production)
     set_fact:
       stack_namespace_fact: "{{ replicator_production_stack_ns }}"
+      replicate_direction_fact: BtoA
 
   when: replicator_production_stack_ns|string|length > 0
 

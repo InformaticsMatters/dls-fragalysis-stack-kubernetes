@@ -50,7 +50,7 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError
         env:
         - name: REPLICATE_DIRECTION
-          value: {{ replicator_direction }}
+          value: {{ replicate_direction_fact }}
 {% if not replicator_delete_destination %}
         # Default is 'yes'
         - name: REPLICATE_DELETE

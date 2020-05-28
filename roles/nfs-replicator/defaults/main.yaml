@@ -2,6 +2,10 @@
 
 # Set one of 'developer stack name' (typically 'default')
 # or 'production stack namespace'.
+#
+# The direction replica direction is based on which variable is set.
+# If 'stack_name' is used the direction will be 'AtoB',
+# otherwise it's 'BtoA'
 replicator_stack_name: ''
 replicator_production_stack_ns: ''
 
@@ -12,8 +16,3 @@ replicator_a_nfs_path: SetMe
 # Details of the PVC to copy from or copy into (based on direction)
 # (volume-b). Typically 'media' for a stack.
 replicator_b_pvc_name: SetMe
-
-# The replicate direction.
-# Must be one of 'AtoB' (in the development cluster)
-# or 'BtoA' (in the production cluster)
-replicator_direction: SetMe
