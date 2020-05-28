@@ -54,12 +54,12 @@
     assert:
       that: replicator_stack_name is match('[a-z]+')
       fail_msg: >-
-        You must prove a value for stack_name.
+        You must prove a value for replicator_stack_name.
         It cannot be blank must only contain lower-case letters.
 
   - name: Set namespace fact (for user_id '{{ tower_user_id }}')
     set_fact:
-      stack_namespace_fact: stack-{{ tower_user_id }}-{{ stack_name }}
+      stack_namespace_fact: stack-{{ tower_user_id }}-{{ replicator_stack_name }}
 
   when: replicator_stack_name|string|length > 0
 
