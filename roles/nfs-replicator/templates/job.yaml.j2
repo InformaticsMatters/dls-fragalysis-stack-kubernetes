@@ -1,0 +1,72 @@
+---
+
+# Job that relies on a statically-provisioned NFS export (volume-a).
+# The export is assumed to contain the 'replica'
+# that is either copied into (from production)
+# or copied out of (into development).
+#
+# It uses the volume-replicator container to 'rsync' data
+# into (or out of) the replica volume (volume-a) based
+# on the environment variable REPLICATE_DIRECTION.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nfs-replicator
+  namespace: {{ replicator_namespace }}
+spec:
+  # Clean-up completed (or failed) Jobs
+  # after 5 minutes...
+  ttlSecondsAfterFinished: 300
+
+  template:
+    metadata:
+      labels:
+        name: nfs-replicator
+    spec:
+      serviceAccountName: {{ replicator_sa_name }}
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ replicator_node_purpose }}
+
+      containers:
+      - name: nfs-replicator
+        image: '{{ replicator_image_registry }}/{{ replicator_image }}:{{ replicator_image_tag }}'
+{% if replicator_image_tag in ['latest', 'stable'] %}
+        imagePullPolicy: Always
+{% else %}
+        imagePullPolicy: IfNotPresent
+{% endif %}
+        terminationMessagePolicy: FallbackToLogsOnError
+        env:
+        - name: REPLICATE_DIRECTION
+          value: {{ replicator_direction }}
+        - name: REPLICATE_DELETE
+          value: 'yes'
+        volumeMounts:
+        - name: volume-a
+          mountPath: /volume-a
+        - name: volume-b
+          mountPath: /volume-b
+
+      volumes:
+      - name: volume-a
+        nfs:
+          server: {{ replicator_a_nfs_server }}
+          path: {{ replicator_a_nfs_path }}
+      - name: volume-b
+        persistentVolumeClaim:
+          claimName: {{ replicator_b_pvc_name }}
+
+      restartPolicy: Never
+  backoffLimit: 1

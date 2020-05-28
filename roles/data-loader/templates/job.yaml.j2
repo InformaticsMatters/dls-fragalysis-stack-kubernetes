@@ -32,7 +32,7 @@ spec:
       containers:
       - name: loader
         image: '{{ loader_image_registry }}/{{ loader_image }}:{{ loader_image_tag }}'
-{% if loader_image_tag == 'latest' %}
+{% if loader_image_tag in ['latest', 'stable'] %}
         imagePullPolicy: Always
 {% else %}
         imagePullPolicy: IfNotPresent

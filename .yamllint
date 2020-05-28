@@ -9,6 +9,7 @@ ignore: |
   roles/fragalysis-stack/templates/statefulset-stack.yaml.j2
   roles/fragalysis-stack/templates/ingress-stack.yaml.j2
   roles/data-loader/templates/job.yaml.j2
+  roles/nfs-replicator/templates/job.yaml.j2
 
 rules:
   indentation:

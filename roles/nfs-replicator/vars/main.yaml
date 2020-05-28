@@ -1,0 +1,14 @@
+---
+
+# Purpose label for the desired execution node
+replicator_node_purpose: application
+
+# The image you want to deploy,
+# consisting of a (public) container registry,
+# image and image tag...
+replicator_image_registry: docker.io
+replicator_image: informaticsmatters/volume-replicator
+replicator_image_tag: latest
+
+# Length of time to wait for the replicator to complete
+replicator_timeout_minutes: 5

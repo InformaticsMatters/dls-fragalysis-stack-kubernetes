@@ -1,0 +1,18 @@
+---
+
+# The namespace and service account
+replicator_namepsace: SetMe
+replicator_sa_name: stack
+
+# Details of the statically assigned replica volume (on an NFS server)
+# (volume-a)
+replicator_a_nfs_server: SetMe
+replicator_a_nfs_path: SetMe
+# Details of the PVC to copy from or copy into (based on direction)
+# (volume-b)
+replicator_b_pvc_name: SetMe
+
+# The replicate direction.
+# Must be one of 'AtoB' (in the development cluster)
+# or 'BtoA' (in the production cluster)
+replicator_direction: SetMe
