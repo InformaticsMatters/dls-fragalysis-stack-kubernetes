@@ -12,7 +12,7 @@
 
 - name: Check direction
   assert:
-    that: replicator_direction|string in ['AtoB', 'BtoA']
+    that: replicate_direction_fact|string in ['AtoB', 'BtoA']
 
 # The namespace (project) and PVC claim must exist.
 
