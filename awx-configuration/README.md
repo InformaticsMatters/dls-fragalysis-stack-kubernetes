@@ -3,8 +3,8 @@ The AWX server configuration files for use with the [AWX Composer] Ansible
 Galaxy Role.
 
 These vault files, one for each cluster, configure an AWX instance
-for that cluster. For example, `config-xchem-dev` is intended to be used with
-the development cluster.
+for that cluster. For example, `config-xchem-developer` is intended to be used
+with the developer cluster.
 
 >   The `config-demo` file is used for demonstrations.
 
@@ -24,17 +24,23 @@ Ansible: -
 -   `K8S_AUTH_API_KEY` (i.e. `kubeconfig-user-xvgfv.a-abcde:0000000000000`)
 
 ## Configuring AWX
-Armed with the project vault key, from the project root,
-verify your _encrypted_ developer cluster configuration: -
+There is an AWX server deployed to each cluster. The credentials are different
+as is the configuration. The production and developer AWX servers will have
+different Projects, Job Templates and Users - all configured via separate
+configuration, encrypted with different vault passwords.
 
-    $ ansible-vault edit awx-configuration/config-xchem-dev.vault
+Armed with the appropriate configuration's vault key, from the project root,
+first check your _encrypted_ developer cluster configuration is as required: -
 
-And then configure the AWX server for the `xchem-dev` cluster run
+    $ CONFIG_NAME=xchem-developer
+    $ ansible-vault edit awx-configuration/config-$CONFIG_NAME.vault
+
+And then configure the AWX server for the developer cluster by running
 the following, providing the vault password when prompted: -
 
     $ ansible localhost \
         -m include_role -a name=informaticsmatters.awx_composer \
-        -e @awx-configuration/config-xchem-dev.vault \
+        -e @awx-configuration/config-$CONFIG_NAME.vault \
         --ask-vault-pass
 
 ---

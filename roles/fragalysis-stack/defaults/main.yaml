@@ -11,7 +11,7 @@ stack_replicas: 2
 stack_deploy_nery: no
 
 # A boolean, set if the stack deployment is for a developer
-# i.e. not a PRODUCTION, STAGING or DEVELOPMENT deployment.
+# i.e. not a PRODUCTION deployment.
 # Developer stacks get their own auto-generated namespaces
 # and ingress routes. Non-developer stacks need an explicit
 # 'stack_namespace' and 'stack_hostname'.
@@ -24,9 +24,13 @@ stack_namespace: ''
 
 # The hostname that will be used to connect to the stacks.
 # This will be a URL directed at the cluster.
+#
 # Developer stacks will prepend a unique value to to make the route
-# specific for that developer
-# i.e. https://{{ id }}-{{ stack_name }}.{{ stack_hostname }}.
+# specific for that developer they wil get somethign like
+# https://{{ id }}-{{ stack_name }}.{{ stack_hostname }}.
+#
+# Production stacks must provide an explicit `stack_hostname` here,
+# i.e. 'fragalysis.diamond.ac.uk'
 stack_hostname: ''
 
 # A symbolic name for your stack, used if you do not provide your own
