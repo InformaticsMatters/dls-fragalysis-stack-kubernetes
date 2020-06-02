@@ -1,5 +1,24 @@
 ---
 
+# The nfs-replicator provides the ability to replicate files from one volume
+# to another, where one volume is for a PVC in one cluster and the other a
+# static volume available to other clusters. So data can be replicated out of
+# one cluster (onto the static volume) and into another (from the static
+# volume).
+#
+# In this role the static volume is mounted into the Pod as 'volume-a'
+# and the (dynamic) PVC as 'volume-b'. The replicator then accepts
+# a 'REPLICATE_DIRECTION' environment variable that is either
+# 'AtoB' or 'BtoA'.
+#
+# The replica Pod employs 'rsync' where '--delete' is used to ensure
+# the destination is a copy of the source (with extraneous files removed).
+# This can be controlled by the 'REPLICATE_DELETE' Pod environment variable.
+#
+# We provide Job and CronJob templates - for single-shot and
+# recurring replication where the default role behaviour (i.e. via main)
+# id to run a 'single-shot' replication.
+
 # Set one of 'developer stack name' (typically 'default')
 # or 'production stack namespace'.
 #
@@ -16,3 +35,11 @@ replicator_a_nfs_path: SetMe
 # Details of the PVC to copy from or copy into (based on direction)
 # (volume-b). Typically 'media' for a stack.
 replicator_b_pvc_name: SetMe
+
+# Run as a CronJob?
+replicator_as_cronjob: no
+
+# For cron-job replication
+# Used for ConJob template, typically from Production to replica.
+# By default, 21 minutes past each hour.
+replicator_schedule: '21 * * * *'

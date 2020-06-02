@@ -42,40 +42,12 @@
   assert:
     that: pvc_result.resources|length == 1
 
-# Launch the replicator
+# Run Job or CronJob
 
-- name: Remove any existing replicator Job
-  k8s:
-    state: absent
-    definition: "{{ lookup('template', 'job.yaml.j2') }}"
-    wait: yes
+- name: Run Job
+  include_tasks: deploy-job.yaml
+  when: not replicator_as_cronjob|bool
 
-- name: Launching new replicator Job
-  k8s:
-    definition: "{{ lookup('template', 'job.yaml.j2') }}"
-    wait: yes
-
-# Wait for the replicator to complete
-
-- name: Wait for replicator Job
-  k8s_info:
-    kind: Job
-    namespace: "{{ stack_namespace_fact }}"
-    name: nfs-replicator
-  register: result
-  until: >-
-    result.resources[0].status.completionTime is defined
-    or result.resources[0].status.failed is defined
-  delay: 15
-  retries: "{{ (replicator_timeout_minutes|int * 60 / 15)|int }}"
-
-- name: Display replicator Job status
-  debug:
-    var: result.resources[0].status
-
-- name: Assert replicator Job success
-  assert:
-    that:
-    - result.resources[0].status.succeeded is defined
-    - result.resources[0].status.succeeded == 1
-    - result.resources[0].status.failed is not defined
+- name: Run CronJob
+  include_tasks: deploy-cronjob.yaml
+  when: replicator_as_cronjob|bool

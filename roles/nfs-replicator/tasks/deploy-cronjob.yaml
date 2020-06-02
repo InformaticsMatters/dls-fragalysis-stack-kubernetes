@@ -1,0 +1,8 @@
+---
+
+# Launch the replicator (as a CronJob)
+
+- name: Launching replicator CronJob
+  k8s:
+    definition: "{{ lookup('template', 'cronjob.yaml.j2') }}"
+    wait: yes

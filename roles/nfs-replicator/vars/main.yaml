@@ -19,3 +19,9 @@ replicator_image_tag: latest
 
 # Length of time to wait for the replicator to complete
 replicator_timeout_minutes: 5
+
+# Container requests/limits
+replicator_cpu_limit: 500m
+replicator_mem_limit: 128Mi
+replicator_cpu_request: 10m
+replicator_mem_request: 128Mi

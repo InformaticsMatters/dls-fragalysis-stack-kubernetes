@@ -48,6 +48,13 @@ spec:
         imagePullPolicy: IfNotPresent
 {% endif %}
         terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+          limits:
+            cpu: {{ replicator_cpu_limit }}
+            memory: {{ replicator_mem_limit }}
+          requests:
+            cpu: {{ replicator_cpu_request }}
+            memory: {{ replicator_mem_request }}
         env:
         - name: REPLICATE_DIRECTION
           value: {{ replicate_direction_fact }}
