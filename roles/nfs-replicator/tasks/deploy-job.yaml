@@ -24,8 +24,8 @@
   until: >-
     result.resources[0].status.completionTime is defined
     or result.resources[0].status.failed is defined
-  delay: 15
-  retries: "{{ (replicator_timeout_minutes|int * 60 / 15)|int }}"
+  delay: 60
+  retries: "{{ (replicator_job_timeout_minutes|int * 60 / 60)|int }}"
 
 - name: Display replicator Job status
   debug:

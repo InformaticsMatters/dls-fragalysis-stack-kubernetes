@@ -39,7 +39,14 @@ replicator_b_pvc_name: SetMe
 # Run as a CronJob?
 replicator_as_cronjob: no
 
-# For cron-job replication
-# Used for ConJob template, typically from Production to replica.
-# By default, 21 minutes past each hour.
-replicator_schedule: '21 * * * *'
+# If 'replicator_as_cronjob' is 'yes' the playbook will use the following
+# schedule in the 'ConJob' template - i.e. 21 minutes past each hour.
+# Replication can take a significant time - so ensure you're not
+# running this too often! Here we run at 40 minutes past each 'odd' hour.
+replicator_schedule: '40 1,3,5,7,9,11,13,15,17,19,21,23 * * *'
+
+# If 'replicator_as_cronjob' is 'no' the playbook will use this as the
+# length of time to wait for the replicator 'Job' to complete.
+# But expect replication of production media data (say around 4.5Gi)
+# to take at least 10 minutes to complete over NFS.
+replicator_job_timeout_minutes: 30
