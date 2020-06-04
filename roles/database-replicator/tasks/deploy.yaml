@@ -25,7 +25,18 @@
   assert:
     that: n_result.resources|length == 1
 
-# Run Backup or Restore or CronJob
+- name: Get the database secrets
+  k8s_info:
+    kind: Secret
+    namespace: "{{ migrator_namespace }}"
+    name: database
+  register: s_result
+
+- name: Assert database secrets exist
+  assert:
+    that: s_result.resources|length == 1
+
+# Run Backup or Restore CronJob
 
 - name: Create Backup CronJob
   k8s:
