@@ -10,6 +10,8 @@
     that:
     - stack_hostname|string|length > 0
     - stack_replicas|int > 0
+    - database_root_password|string != 'SetMe'
+    - database_user_password|string != 'SetMe'
 
 # Include sensitive (encrypted) material.
 
