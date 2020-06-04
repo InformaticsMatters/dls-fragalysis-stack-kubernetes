@@ -28,7 +28,7 @@
 - name: Get the database secrets
   k8s_info:
     kind: Secret
-    namespace: "{{ migrator_namespace }}"
+    namespace: "{{ stack_namespace_fact }}"
     name: database
   register: s_result
 
