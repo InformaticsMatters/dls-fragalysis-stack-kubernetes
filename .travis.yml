@@ -9,5 +9,5 @@ install:
 - ansible-galaxy collection install -r collection-requirements.yaml
 script:
 - yamllint .
-- find . -type f -iname '*.yaml.j2' -exec yamllint {} \;
+- find . -type f -name '*.yaml.j2' -exec yamllint {} \;
 - sphinx-build -Eab html docs/source docs/build/html

@@ -36,7 +36,7 @@ services:
       retention: 21
       s3backupconfig:
         access_key: "access-key"
-        secret_key:  "secret-key"
+        secret_key: "secret-key"
         bucket_name: im-rancher
         folder: rancher-xchem
         endpoint: s3.eu-central-1.amazonaws.com
