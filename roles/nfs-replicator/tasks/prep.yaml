@@ -45,7 +45,7 @@
   - name: Check namespace value (developer)
     assert:
       that:
-      - replicator_production_stack_ns|string|length == 0
+      - replicator_stack_ns|string|length == 0
 
   # Also, check the stack name provided.
   # It cannot be blank and must only consist of lower-case letters.
@@ -65,23 +65,47 @@
 
   when: replicator_stack_name|string|length > 0
 
-- name: Production stack preparation
+- name: Production/Staging stack preparation
   block:
 
-  # It's the production stack
+  # It's the production or staging stack
+  # - the production stack MUST be in the 'production-stack' namespace
+  # - the staging stack MUST be in the 'staging-stack' namespace
   # - the developer stack name must not be set
 
-  - name: Check stack_name value (production)
+  - name: Check stack_name value (production/staging)
     assert:
       that:
       - replicator_stack_name|string|length == 0
 
-  - name: Set namespace fact (production)
+  - name: Set namespace fact (productionstaging)
     set_fact:
-      stack_namespace_fact: "{{ replicator_production_stack_ns }}"
-      replicate_direction_fact: BtoA
+      stack_namespace_fact: "{{ replicator_stack_ns }}"
 
-  when: replicator_production_stack_ns|string|length > 0
+  # Production is B (PVC) to A (static)
+  # Staging is A (static) to B (PVC)
+
+  - name: Set direction (production)
+    set_fact:
+      replicate_direction_fact: BtoA
+    when: replicator_stack_ns|string == 'production-stack'
+
+  - name: Set direction (staging)
+    set_fact:
+      replicate_direction_fact: AtoB
+    when: replicator_stack_ns|string == 'staging-stack'
+
+  when: replicator_stack_ns|string|length > 0
+
+- name: Assert replicate_direction_fact is set
+  assert:
+    that:
+    - replicate_direction_fact is defined
+    - replicate_direction_fact|string in ['AtoB', 'BtoA']
+
+- name: Display replicate_direction_fact
+  debug:
+    var: replicate_direction_fact
 
 # Basic pre-playbook prerequisites.
 # We need the openshift/kubernetes module amongst other things...

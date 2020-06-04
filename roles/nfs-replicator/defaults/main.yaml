@@ -26,7 +26,7 @@
 # If 'stack_name' is used the direction will be 'AtoB',
 # otherwise it's 'BtoA'
 replicator_stack_name: ''
-replicator_production_stack_ns: ''
+replicator_stack_ns: ''
 
 # Details of the statically assigned replica volume (on an NFS server)
 # (volume-a)
