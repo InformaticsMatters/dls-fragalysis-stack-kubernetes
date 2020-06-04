@@ -61,7 +61,6 @@
   - name: Set namespace fact (for user_id '{{ tower_user_id }}')
     set_fact:
       stack_namespace_fact: stack-{{ tower_user_id }}-{{ replicator_stack_name }}
-      replicate_direction_fact: AtoB
 
   when: replicator_stack_name|string|length > 0
 
@@ -82,30 +81,7 @@
     set_fact:
       stack_namespace_fact: "{{ replicator_stack_ns }}"
 
-  # Production is B (PVC) to A (static)
-  # Staging is A (static) to B (PVC)
-
-  - name: Set direction (production)
-    set_fact:
-      replicate_direction_fact: BtoA
-    when: replicator_stack_ns|string == 'production-stack'
-
-  - name: Set direction (staging)
-    set_fact:
-      replicate_direction_fact: AtoB
-    when: replicator_stack_ns|string == 'staging-stack'
-
   when: replicator_stack_ns|string|length > 0
-
-- name: Assert replicate_direction_fact is set
-  assert:
-    that:
-    - replicate_direction_fact is defined
-    - replicate_direction_fact|string in ['AtoB', 'BtoA']
-
-- name: Display replicate_direction_fact
-  debug:
-    var: replicate_direction_fact
 
 # Basic pre-playbook prerequisites.
 # We need the openshift/kubernetes module amongst other things...

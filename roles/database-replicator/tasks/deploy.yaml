@@ -1,0 +1,40 @@
+---
+
+- name: Check key variables
+  assert:
+    that:
+    - replicator_nfs_server|string != 'SetMe'
+    - replicator_nfs_path|string != 'SetMe'
+    - replicator_type|string != 'SetMe'
+    - replicator_type|string in ['backup', 'restore']
+
+# The namespace (project) and PVC claim must exist.
+
+- name: Check the namespace ({{ stack_namespace_fact }})
+  assert:
+    that:
+    - stack_namespace_fact|string|length > 0
+
+- name: Get the namespace
+  k8s_info:
+    kind: Namespace
+    name: "{{ stack_namespace_fact }}"
+  register: n_result
+
+- name: Assert namepsace exists
+  assert:
+    that: n_result.resources|length == 1
+
+# Run Backup or Restore or CronJob
+
+- name: Create Backup CronJob
+  k8s:
+    definition: "{{ lookup('template', 'cronjob-database-backup.yaml.j2') }}"
+    wait: yes
+  when: replicaior_type|string == 'backup'
+
+- name: Create Restore CronJob
+  k8s:
+    definition: "{{ lookup('template', 'cronjob-database-restore.yaml.j2') }}"
+    wait: yes
+  when: replicaior_type|string == 'restore'
