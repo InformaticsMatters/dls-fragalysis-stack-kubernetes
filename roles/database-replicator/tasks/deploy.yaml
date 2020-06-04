@@ -6,7 +6,7 @@
     - replicator_nfs_server|string != 'SetMe'
     - replicator_nfs_path|string != 'SetMe'
     - replicator_type|string != 'SetMe'
-    - replicator_type|string in ['backup', 'restore']
+    - replicator_type|string in ['backup', 'recovery']
 
 # The namespace (project) and PVC claim must exist.
 
@@ -44,8 +44,8 @@
     wait: yes
   when: replicator_type|string == 'backup'
 
-- name: Create Restore CronJob
+- name: Create Recovery CronJob
   k8s:
-    definition: "{{ lookup('template', 'cronjob-database-restore.yaml.j2') }}"
+    definition: "{{ lookup('template', 'cronjob-database-recovery.yaml.j2') }}"
     wait: yes
-  when: replicator_type|string == 'restore'
+  when: replicator_type|string == 'recovery'

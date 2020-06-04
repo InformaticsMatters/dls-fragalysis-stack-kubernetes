@@ -5,9 +5,9 @@
 replicator_stack_name: ''
 replicator_stack_ns: ''
 
-# The replicator type - one of 'backup' or 'restore'
+# The replicator type - one of 'backup' or 'recovery'
 replicator_type: SetMe
-# The replication (back/restore) schedule
+# The replication (back/recovery) schedule
 replicator_schedule: '15 * * * *'
 
 # Details of the statically assigned replica volume (on an NFS server)

@@ -2,7 +2,7 @@
 kind: CronJob
 apiVersion: batch/v1beta1
 metadata:
-  name: postgres-replicator-restore
+  name: postgres-replicator-recovery
   namespace: {{ stack_namespace_fact }}
 spec:
   schedule: '{{ replicator_schedule }}'
@@ -13,7 +13,7 @@ spec:
       template:
         metadata:
           labels:
-            name: postgres-replicator-restore
+            name: postgres-replicator-recovery
         spec:
           serviceAccountName: stack
 
@@ -31,8 +31,8 @@ spec:
                     - {{ replicator_node_purpose }}
 
           containers:
-          - image: informaticsmatters/sql-restore:{{ replicator_image_tag }}
-            name: postgres-replicator-restore
+          - image: informaticsmatters/sql-recovery:{{ replicator_image_tag }}
+            name: postgres-replicator-recovery
             imagePullPolicy: IfNotPresent
             terminationMessagePolicy: FallbackToLogsOnError
             resources:
