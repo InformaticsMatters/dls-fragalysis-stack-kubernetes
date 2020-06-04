@@ -36,16 +36,40 @@
   assert:
     that: s_result.resources|length == 1
 
-# Run Backup or Restore CronJob
+# Deploy as CronJob?
 
-- name: Create Backup CronJob
-  k8s:
-    definition: "{{ lookup('template', 'cronjob-database-backup.yaml.j2') }}"
-    wait: yes
-  when: replicator_type|string == 'backup'
+- name: Run Backup or Restore CronJob
+  block:
 
-- name: Create Recovery CronJob
-  k8s:
-    definition: "{{ lookup('template', 'cronjob-database-recovery.yaml.j2') }}"
-    wait: yes
-  when: replicator_type|string == 'recovery'
+  - name: Create Backup CronJob
+    k8s:
+      definition: "{{ lookup('template', 'cronjob-database-backup.yaml.j2') }}"
+      wait: yes
+    when: replicator_type|string == 'backup'
+
+  - name: Create Recovery CronJob
+    k8s:
+      definition: "{{ lookup('template', 'cronjob-database-recovery.yaml.j2') }}"
+      wait: yes
+    when: replicator_type|string == 'recovery'
+
+  when: replicator_schedule|string|length > 0
+
+# Or Deploy as Job?
+
+- name: Run Backup or Restore Job
+  block:
+
+  - name: Create Backup Job
+    k8s:
+      definition: "{{ lookup('template', 'job-database-backup.yaml.j2') }}"
+      wait: yes
+    when: replicator_type|string == 'backup'
+
+  - name: Create Recovery Job
+    k8s:
+      definition: "{{ lookup('template', 'job-database-recovery.yaml.j2') }}"
+      wait: yes
+    when: replicator_type|string == 'recovery'
+
+  when: replicator_schedule|string|length == 0

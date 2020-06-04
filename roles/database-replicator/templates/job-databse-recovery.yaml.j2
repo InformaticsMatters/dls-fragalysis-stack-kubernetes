@@ -1,0 +1,64 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-replicator-recovery
+  namespace: {{ stack_namespace_fact }}
+spec:
+  # Clean-up completed (or failed) Jobs
+  # after 5 minutes...
+  ttlSecondsAfterFinished: 300
+
+  template:
+    metadata:
+      labels:
+        name: postgres-replicator-recovery
+    spec:
+      serviceAccountName: stack
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ replicator_node_purpose }}
+
+      containers:
+      - image: informaticsmatters/sql-recovery:{{ replicator_image_tag }}
+        name: postgres-replicator-recovery
+        imagePullPolicy: IfNotPresent
+        terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        env:
+        - name: PGHOST
+          value: database
+        - name: PGUSER
+          value: admin
+        - name: PGADMINPASS
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: root_password
+        volumeMounts:
+        - name: source
+          mountPath: /backup
+
+      volumes:
+      - name: source
+        nfs:
+          server: {{ replicator_nfs_server }}
+          path: {{ replicator_nfs_path }}
+      restartPolicy: Never
+  backoffLimit: 1

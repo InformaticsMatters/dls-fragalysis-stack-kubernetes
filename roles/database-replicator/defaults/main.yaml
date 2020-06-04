@@ -7,7 +7,8 @@ replicator_stack_ns: ''
 
 # The replicator type - one of 'backup' or 'recovery'
 replicator_type: SetMe
-# The replication (back/recovery) schedule
+# The replication (back/recovery) schedule.
+# If the schedule is empty the replication occurs only once (i.e. it's a Job)
 replicator_schedule: '15 * * * *'
 
 # Details of the statically assigned replica volume (on an NFS server)
