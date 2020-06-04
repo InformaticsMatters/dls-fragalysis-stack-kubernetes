@@ -1,5 +1,10 @@
 ---
 
+# Set one of 'developer stack name' (typically 'default')
+# or 'production stack namespace'.
+replicator_stack_name: ''
+replicator_stack_ns: ''
+
 # The replicator type - one of 'backup' or 'restore'
 replicator_type: SetMe
 # The replication (back/restore) schedule
