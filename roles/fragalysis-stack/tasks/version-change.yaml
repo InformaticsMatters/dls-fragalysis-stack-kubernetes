@@ -89,13 +89,9 @@
       stack_db_root_password_fact: "{{ s_result.resources[0].data.root_password|b64decode }}"
       stack_db_user_password_fact: "{{ s_result.resources[0].data.user_password|b64decode }}"
 
-  - name: Alter stack_cicd_trigger_id
-    set_fact:
-      stack_cicd_trigger_id: '{{ ansible_date_time.iso8601_micro }}'
-
-  - name: Display new stack_cicd_trigger_id
+  - name: Display ansible_date_time.iso8601_micro
     debug:
-      var: stack_cicd_trigger_id
+      var: ansible_date_time.iso8601_micro
 
   - name: Deploy stack change
     k8s:
