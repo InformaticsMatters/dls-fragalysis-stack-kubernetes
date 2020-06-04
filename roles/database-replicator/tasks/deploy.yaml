@@ -42,10 +42,10 @@
   k8s:
     definition: "{{ lookup('template', 'cronjob-database-backup.yaml.j2') }}"
     wait: yes
-  when: replicaior_type|string == 'backup'
+  when: replicator_type|string == 'backup'
 
 - name: Create Restore CronJob
   k8s:
     definition: "{{ lookup('template', 'cronjob-database-restore.yaml.j2') }}"
     wait: yes
-  when: replicaior_type|string == 'restore'
+  when: replicator_type|string == 'restore'
