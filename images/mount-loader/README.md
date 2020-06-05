@@ -4,8 +4,9 @@ copies files form an S3 bucket before calling the loader's
 `run_loader.sh` script.
 
 ## Building
-Build and push a custom image with: -
+Build and push with: -
 
     $ docker build . -t informaticsmatters/fragalysis-s3-loader:latest \
-        --build-arg from_image=informaticsmatters/fragalysis-loader
+        --build-arg from_image=informaticsmatters/fragalysis-loader \
+        --build-arg from_tag=im-travis
     $ docker push informaticsmatters/fragalysis-s3-loader:latest

@@ -1,0 +1,91 @@
+---
+
+# Template for the AWS S3 Fragalysis Media Loader.
+# A loader that expects the source data in an S3 bucket.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: s3-loader
+  namespace: {{ stack_namespace }}
+spec:
+  # Clean-up completed (or failed) Jobs
+  # after 5 minutes...
+  ttlSecondsAfterFinished: 300
+
+  template:
+    metadata:
+      labels:
+        name: s3-loader
+    spec:
+      serviceAccountName: stack
+
+      # A 'preferred' (not guaranteed)
+      # node selection affinity...
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: purpose
+                operator: In
+                values:
+                - {{ loader_node_purpose }}
+
+      containers:
+      - name: s3-loader
+        image: '{{ loader_s3_image_registry }}/{{ loader_s3_image }}:{{ loader_s3_image_tag }}'
+{% if loader_s3_image_tag in ['latest', 'stable'] %}
+        imagePullPolicy: Always
+{% else %}
+        imagePullPolicy: IfNotPresent
+{% endif %}
+        terminationMessagePolicy: FallbackToLogsOnError
+        env:
+        # AWS S3 credentials, bucket and data-origin
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: loader
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loader
+              key: aws_secret_access_key
+        - name: BUCKET_NAME
+          value: '{{ loader_bucket_name }}'
+        - name: DATA_ORIGIN
+          value: '{{ loader_data_origin }}'
+        # Database credentials
+        - name: POSTGRESQL_DATABASE
+          value: frag
+        - name: POSTGRESQL_USER
+          value: fragalysis
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: user_password
+        - name: POSTGRESQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: host
+        - name: POSTGRESQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: port
+        volumeMounts:
+        - name: media
+          mountPath: /code/media
+
+      volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: media
+
+      restartPolicy: Never
+  backoffLimit: 1

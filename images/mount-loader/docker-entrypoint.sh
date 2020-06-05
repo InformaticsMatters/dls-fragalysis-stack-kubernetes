@@ -18,7 +18,7 @@ fi
 # We expect data to be available on S3 in the BUCKET_NAME provided in the
 # 'django-data' sub-directory using the path specified in DATA_ORIGIN.
 # The bucket data is copied to the mount point '/code/media',
-# i.e. data in s3://${BUCKET_NAME)/django-data/${DATA_ORIGIN}
+# i.e. data in s3://${BUCKET_NAME)/django-data/${DATAT_ORIGIN}
 # is written to '/code/media/NEW_DATA'.
 #
 # - Wipe the (temporary) destination directory

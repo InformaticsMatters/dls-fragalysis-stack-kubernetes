@@ -17,14 +17,30 @@ stack_namespace: ''
 # (a combination of 'stack-{{ user_id }}-{{ name }}.
 stack_name: default
 
-# The loader image you want to deploy,
-# consisting of a (public) container registry,
-# image and image tag...
-loader_image_registry: docker.io
-loader_image: xchem/fragalysis-s3-loader
-loader_image_tag: latest
-
 # The origin of the data to load.
 # Essentially a sub-path in the designated S3 bucket.
 # This must be set by the user.
 loader_data_origin: SetMe
+
+# The type of loader - controls the Task file (and Job) that is actually run.
+# There should be a corresponding 'deploy-{{ loader_type }}.yaml' in tasks.
+loader_type: s3
+
+# Variables for the NFS Loader ------------------------------------------------
+
+loader_nfs_server: SetMe
+loader_nfs_path: SetMe
+
+loader_nfs_image_registry: docker.io
+loader_nfs_image: xchem/fragalysis-mounted-loader
+loader_nfs_image_tag: latest
+
+# Variables for the S3 loader -------------------------------------------------
+# (more kept in vars/sensitive.yaml)
+
+# The loader image you want to deploy,
+# consisting of a (public) container registry,
+# image and image tag...
+loader_s3_image_registry: docker.io
+loader_s3_image: xchem/fragalysis-s3-loader
+loader_s3_image_tag: latest

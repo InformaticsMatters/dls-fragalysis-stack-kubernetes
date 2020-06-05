@@ -1,8 +1,13 @@
 ---
+
+# Template for the 'mounted' Fragalysis Media Loader.
+# A loader that expects the source data in a mounted volume
+# declared as a s'static' export on an  on an NFS server.
+
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: loader
+  name: nfs-loader
   namespace: {{ stack_namespace }}
 spec:
   # Clean-up completed (or failed) Jobs
@@ -12,7 +17,7 @@ spec:
   template:
     metadata:
       labels:
-        name: loader
+        name: nfs-loader
     spec:
       serviceAccountName: stack
 
@@ -30,28 +35,15 @@ spec:
                 - {{ loader_node_purpose }}
 
       containers:
-      - name: loader
-        image: '{{ loader_image_registry }}/{{ loader_image }}:{{ loader_image_tag }}'
-{% if loader_image_tag in ['latest', 'stable'] %}
+      - name: nfs-loader
+        image: '{{ loader_nfs_image_registry }}/{{ loader_nfs_image }}:{{ loader_nfs_image_tag }}'
+{% if loader_nfs_image_tag in ['latest', 'stable'] %}
         imagePullPolicy: Always
 {% else %}
         imagePullPolicy: IfNotPresent
 {% endif %}
         terminationMessagePolicy: FallbackToLogsOnError
         env:
-        # AWS S3 credentials, bucket and data-origin
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: loader
-              key: aws_access_key_id
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: loader
-              key: aws_secret_access_key
-        - name: BUCKET_NAME
-          value: '{{ loader_bucket_name }}'
         - name: DATA_ORIGIN
           value: '{{ loader_data_origin }}'
         # Database credentials
@@ -75,10 +67,16 @@ spec:
               name: database
               key: port
         volumeMounts:
+        - name: mounted-media
+          mountPath: /mounted-media
         - name: media
           mountPath: /code/media
 
       volumes:
+      - name: mounted-media
+        nfs:
+          server: {{ loader_nfs_server }}
+          path: {{ loader_nfs_path }}
       - name: media
         persistentVolumeClaim:
           claimName: media
