@@ -6,6 +6,7 @@ metadata:
   namespace: {{ stack_namespace }}
 spec:
   schedule: '{{ database_bu_hourly_schedule }}'
+  successfulJobsHistoryLimit: 1
   startingDeadlineSeconds: 180
   concurrencyPolicy: Forbid
   jobTemplate:

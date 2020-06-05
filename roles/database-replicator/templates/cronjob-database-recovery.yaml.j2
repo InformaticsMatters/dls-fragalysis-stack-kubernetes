@@ -6,6 +6,7 @@ metadata:
   namespace: {{ stack_namespace_fact }}
 spec:
   schedule: '{{ replicator_schedule }}'
+  successfulJobsHistoryLimit: 1
   startingDeadlineSeconds: 180
   concurrencyPolicy: Forbid
   jobTemplate:
