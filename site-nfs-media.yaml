@@ -1,0 +1,24 @@
+---
+
+# Configure the NFS server.
+#
+# A playbook normally run from the cluster bastion
+# (as the NFS server is not public)
+#
+# The 'nfs' role configures the shared volume and mounts it
+# onto the server prior to setting up NFS using the geerlingguy.nfs
+# Galaxy role.
+
+- hosts: nfs_media
+  roles:
+  - role: nfs
+    vars:
+      nfs_devices:
+        fs_media:
+          device: /dev/vdb
+          mount_path: /nfs/kubernetes-fs-media
+  - role: geerlingguy.nfs
+    vars:
+      nfs_exports:
+      - '/nfs/kubernetes-fs-media *(rw,sync,no_subtree_check,no_root_squash,no_all_squash,insecure)'
+    become: yes

@@ -1,0 +1,8 @@
+---
+
+# The NFS server's external volumes.
+# A map of devices and mount paths.
+nfs_devices:
+  a_device:
+    device: /dev/vdb
+    mount_path: /nfs/blob

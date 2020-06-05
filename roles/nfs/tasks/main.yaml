@@ -1,0 +1,66 @@
+---
+
+# Format and mount the designated drive (used as the NFS share)
+# and then mount it...
+
+# Get the list of exiting mounts, present in the built-in 'ansible_mounts'
+# variable, which looks little like this...
+#
+# "ansible_mounts": [
+#        {
+#            "block_available": 0,
+#            "block_size": 2048,
+#            "block_total": 236,
+#            "block_used": 236,
+#            "device": "/dev/sr0",
+#            "fstype": "iso9660",
+#            "inode_available": 0,
+#            "inode_total": 0,
+#            "inode_used": 0,
+#            "mount": "/mnt/context",
+#            "options": "ro,relatime",
+#            "size_available": 0,
+#            "size_total": 483328,
+#            "uuid": "2020-04-20-10-00-40-00"
+#        }
+#      ]
+- name: Get list of devices mounted
+  set_fact:
+    mounted_devices: "{{ ansible_mounts|json_query('[*].device')|flatten }}"
+
+- name: Display mounts
+  debug:
+    var: mounted_devices
+
+- name: Create NFS volume mount paths
+  file:
+    path: "{{ item.value.mount_path }}"
+    state: directory
+    mode: '0777'
+  loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
+  become: yes
+
+- name: Create NFS volume ext4 filesystem
+  filesystem:
+    fstype: ext4
+    dev: "{{ item.value.device }}"
+  loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
+  become: yes
+  when: item.value.device not in mounted_devices
+
+- name: Mount NFS volumes
+  mount:
+    path: "{{ item.value.mount_path }}"
+    src: "{{ item.value.device }}"
+    fstype: ext4
+    state: mounted
+  loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
+  become: yes
+  when: item.value.device not in mounted_devices
+
+# Install rsync (for external media import)
+
+- name: Install packages
+  package:
+    name: rsync
+  become: yes

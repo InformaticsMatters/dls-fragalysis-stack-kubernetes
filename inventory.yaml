@@ -7,3 +7,11 @@ all:
     server:
       hosts:
         localhost:
+    # The Cluster's Main NFS server
+    nfs:
+      hosts:
+        130.246.213.182:
+    # The Cluster's Fragalysis Stack 'media' server
+    nfs_media:
+      hosts:
+        130.246.213.186:
