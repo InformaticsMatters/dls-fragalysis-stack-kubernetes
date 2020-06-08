@@ -2,6 +2,10 @@
 
 # The NFS server's external volumes.
 # A map of devices and mount paths.
+#
+# If the device is 'blank' a directory is created
+# btu nothing mounted - handy for exporting directories from
+# the root volume.
 nfs_devices:
   a_device:
     device: /dev/vdb

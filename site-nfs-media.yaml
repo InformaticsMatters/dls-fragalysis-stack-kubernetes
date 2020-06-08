@@ -15,7 +15,7 @@
     vars:
       nfs_devices:
         fs_media:
-          device: /dev/vdb
+          device: ''
           mount_path: /nfs/kubernetes-fs-media
   - role: geerlingguy.nfs
     vars:

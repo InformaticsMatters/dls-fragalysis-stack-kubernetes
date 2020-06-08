@@ -46,7 +46,9 @@
     dev: "{{ item.value.device }}"
   loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
   become: yes
-  when: item.value.device not in mounted_devices
+  when:
+  - item.value.device|string|length > 0
+  - item.value.device not in mounted_devices
 
 - name: Mount NFS volumes
   mount:
@@ -56,7 +58,9 @@
     state: mounted
   loop: "{{ lookup('dict', nfs_devices, wantlist=True) }}"
   become: yes
-  when: item.value.device not in mounted_devices
+  when:
+  - item.value.device|string|length > 0
+  - item.value.device not in mounted_devices
 
 # Install rsync (for external media import)
 
