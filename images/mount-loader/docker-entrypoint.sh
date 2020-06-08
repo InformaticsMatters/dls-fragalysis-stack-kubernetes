@@ -32,7 +32,7 @@ echo "+> Removing ${DST}"
 rm -rf ${DST}
 mkdir ${DST}
 echo "+> Copying ${SRC}/${DATA_ORIGIN} to ${DST}..."
-cp -R "${SRC}/${DATA_ORIGIN}/" /code/media/NEW_DATA
+cp -R "${SRC}/${DATA_ORIGIN}/"* /code/media/NEW_DATA
 echo "+> Running loader..."
 ./run_loader.sh
 echo "+> Done."
