@@ -56,10 +56,9 @@ AWX in Operation
 ================
 
 The AWX server is deployed with our Kubernetes Infrastructure, along with
-a Keycloak instance and PostgresSL database. It provides a web interface
-that allows Jbs to be executed (normally on local host) to deploy
-Fragalysis application components (like the Graph database and Fragalysis).
-
+a Keycloak instance and PostgrSQL database. It provides a web interface
+that allows Jos to be executed that deploy Fragalysis application components
+(like the Graph database and Fragalysis itself).
 Deployment of applications often depends on: -
 
 *   Access to **playbooks** resident in external Git repositories
@@ -68,3 +67,17 @@ Deployment of applications often depends on: -
     externally (e.g. on AWS S3)
 
 ..  image:: images/frag-travis.007.png
+
+
+Because the Production and Development clusters serve two very different
+purposes, and one is much more sensitive than the other, separate AWX servers
+exist - one in the Production cluster and one in the Development cluster.
+
+Users may not have access to both and Developers are unlikely to have access
+to the Production AWX server.
+
+..  toctree::
+    :maxdepth: 1
+
+    awx-production
+    awx-development

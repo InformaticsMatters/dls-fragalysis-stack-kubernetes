@@ -489,6 +489,7 @@ the debugging of your deployed applications.
 
     preparing-for-kubernetes
     cheat-sheets
+    stack-loader
 
 .. rubric:: Footnotes
 

@@ -96,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="cheat-sheet-lens.html">A Developer Cheat-Sheet for Lens</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="stack-loader.html">The Fragalysis Stack Loader</a></li>
 </ul>
 </li>
 </ul>
@@ -213,8 +214,12 @@ of the Pod, you don’t have to tell Kubernetes it’s a Pod: -</p>
 <p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">kubectl</span> <span class="pre">logs</span> <span class="pre">stack-0</span></code></p>
 <p>You can <em>follow</em> logs: -</p>
 <p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">kubectl</span> <span class="pre">logs</span> <span class="pre">stack-0</span> <span class="pre">-f</span></code></p>
-<p>Or just see the logs form the last 10 minutes: -</p>
-<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">kubectl</span> <span class="pre">logs</span> <span class="pre">stack-0</span> <span class="pre">--since=10m</span></code></p>
+<p>You can see the logs from the last 10 minutes, or the last 10 lines: -</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">kubectl</span> <span class="pre">logs</span> <span class="pre">stack-0</span> <span class="pre">--since=10m</span></code>
+<code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">kubectl</span> <span class="pre">logs</span> <span class="pre">stack-0</span> <span class="pre">--tail=10</span></code></p>
+<p>You can see the logs from the previous container instance, if it exists
+(in the case of a restarted container): -</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">kubectl</span> <span class="pre">logs</span> <span class="pre">stack-0</span> <span class="pre">-p</span></code></p>
 </dd>
 <dt>Shell into a Pod container</dt><dd><p>You can get an interactive container shell in a Pod assuming you know what
 shell the container is sing (typically <strong>bash</strong>). To get into a running

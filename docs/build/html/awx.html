@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Continuous Delivery" href="continuous-delivery.html" />
+    <link rel="next" title="The AWX Production Server" href="awx-production.html" />
     <link rel="prev" title="Deployment" href="deployment.html" /> 
 </head>
 
@@ -89,7 +89,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#objects">Objects</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#awx-in-operation">AWX in Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#awx-in-operation">AWX in Operation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="awx-production.html">The AWX Production Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="awx-development.html">The AWX Development Server</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="continuous-delivery.html">Continuous Delivery</a></li>
@@ -217,10 +221,10 @@ corresponding play</p></li>
 <div class="section" id="awx-in-operation">
 <h2>AWX in Operation<a class="headerlink" href="#awx-in-operation" title="Permalink to this headline">¶</a></h2>
 <p>The AWX server is deployed with our Kubernetes Infrastructure, along with
-a Keycloak instance and PostgresSL database. It provides a web interface
-that allows Jbs to be executed (normally on local host) to deploy
-Fragalysis application components (like the Graph database and Fragalysis).</p>
-<p>Deployment of applications often depends on: -</p>
+a Keycloak instance and PostgrSQL database. It provides a web interface
+that allows Jos to be executed that deploy Fragalysis application components
+(like the Graph database and Fragalysis itself).
+Deployment of applications often depends on: -</p>
 <ul class="simple">
 <li><p>Access to <strong>playbooks</strong> resident in external Git repositories</p></li>
 <li><p>Access to publicly available <strong>container images</strong></p></li>
@@ -228,6 +232,17 @@ Fragalysis application components (like the Graph database and Fragalysis).</p>
 externally (e.g. on AWS S3)</p></li>
 </ul>
 <img alt="_images/frag-travis.007.png" src="_images/frag-travis.007.png" />
+<p>Because the Production and Development clusters serve two very different
+purposes, and one is much more sensitive than the other, separate AWX servers
+exist - one in the Production cluster and one in the Development cluster.</p>
+<p>Users may not have access to both and Developers are unlikely to have access
+to the Production AWX server.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="awx-production.html">The AWX Production Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="awx-development.html">The AWX Development Server</a></li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -239,7 +254,7 @@ externally (e.g. on AWS S3)</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="continuous-delivery.html" class="btn btn-neutral float-right" title="Continuous Delivery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="awx-production.html" class="btn btn-neutral float-right" title="The AWX Production Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="deployment.html" class="btn btn-neutral float-left" title="Deployment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
