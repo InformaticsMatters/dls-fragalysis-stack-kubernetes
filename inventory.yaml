@@ -6,6 +6,8 @@ all:
     server:
       hosts:
         localhost:
+      vars:
+        ansible_connection: local
     # The Cluster's Main NFS server
     nfs:
       hosts:
