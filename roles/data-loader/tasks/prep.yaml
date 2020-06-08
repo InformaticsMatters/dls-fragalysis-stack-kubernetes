@@ -39,14 +39,7 @@
 - name: Developer stack preparation
   block:
 
-  # If developer then the namespace must not be set.
-
-  - name: Check namespace value (developer)
-    assert:
-      that:
-      - stack_namespace|string|length == 0
-
-  # Also, check the stack name provided.
+  # Check the stack name provided.
   # It cannot be blank and must only consist of lower-case letters.
   # It will form the basis of the namespace and ingress.
 
@@ -61,19 +54,7 @@
     set_fact:
       stack_namespace: stack-{{ tower_user_id }}-{{ stack_name }}
 
-  when: stack_is_for_developer|bool
-
-- name: Non-developer stack preparation
-  block:
-
-  # If non-developer then the namespace must be set.
-
-  - name: Check namespace value (non-developer)
-    assert:
-      that:
-      - stack_namespace|string|length > 0
-
-  when: not stack_is_for_developer|bool
+  when: stack_namespace|string|length == 0
 
 # Basic pre-playbook prerequisites.
 # We need the openshift/kubernetes module amongst other things...
