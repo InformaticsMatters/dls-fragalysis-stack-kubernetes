@@ -53,5 +53,5 @@
   assert:
     that: s_result.resources|length == 1
 
-- name: Launch the loader
+- name: Launch the loader ({{ loader_type }})
   include_tasks: deploy-{{ loader_type }}.yaml
