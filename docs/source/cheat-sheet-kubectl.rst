@@ -58,9 +58,15 @@ Display Pod logs
 
     ``$ kubectl logs stack-0 -f``
 
-    Or just see the logs form the last 10 minutes: -
+    You can see the logs from the last 10 minutes, or the last 10 lines: -
 
     ``$ kubectl logs stack-0 --since=10m``
+    ``$ kubectl logs stack-0 --tail=10``
+
+    You can see the logs from the previous container instance, if it exists
+    (in the case of a restarted container): -
+
+    ``$ kubectl logs stack-0 -p``
 
 Shell into a Pod container
     You can get an interactive container shell in a Pod assuming you know what
