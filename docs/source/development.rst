@@ -478,6 +478,18 @@ build command::
     project in Docker Hub. I can push it to my own Docker Hub project if I
     re-tag the image (or just use a different tag in the first place).
 
+Development Prep and Cheat-Sheets
+=================================
+
+The following documents provide helpful start-up guides for development,
+the debugging of your deployed applications.
+
+..  toctree::
+    :maxdepth: 1
+
+    preparing-for-kubernetes
+    cheat-sheets
+
 .. rubric:: Footnotes
 
 .. [#f1] Publishing to PyPi does not currently result in a trigger of the
