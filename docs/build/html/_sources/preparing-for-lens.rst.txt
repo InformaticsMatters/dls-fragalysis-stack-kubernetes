@@ -48,6 +48,6 @@ Use the **Browse for new icon...** to select an icon of your choice.
 
     Two icons can be found in this repository that can be used for the
     Development and Production clusters (whcih can be found in the project's
-    `lens/icons` directory).
+    ``lens/icons`` directory).
 
 .. _lens: https://k8slens.dev
