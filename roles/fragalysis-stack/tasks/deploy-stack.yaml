@@ -149,6 +149,7 @@
 - name: Set the stack's URL (non-developer)
   set_fact:
     stack_url: "{{ stack_hostname }}"
+    stack_url_2: "{{ stack_hostname_2 }}"
   when: not stack_is_for_developer|bool
 
 - name: Deploy stack

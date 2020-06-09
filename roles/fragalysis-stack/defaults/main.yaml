@@ -32,6 +32,7 @@ stack_namespace: ''
 # Production stacks must provide an explicit `stack_hostname` here,
 # i.e. 'fragalysis.diamond.ac.uk'
 stack_hostname: ''
+stack_hostname_2: ''
 
 # A symbolic name for your stack, used if you do not provide your own
 # 'stack_namespace' value. When you do not provide a namespace the stack

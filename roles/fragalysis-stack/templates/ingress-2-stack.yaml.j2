@@ -1,0 +1,23 @@
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: stack
+  namespace: {{ stack_namespace }}
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ stack_cert_issuer|lower }}"
+spec:
+  tls:
+  - hosts:
+    - {{ stack_url_2 }}
+    secretName: stack-tls
+  rules:
+  - host: {{ stack_url_2 }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: stack
+          servicePort: http
