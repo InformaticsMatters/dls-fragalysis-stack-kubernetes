@@ -160,6 +160,7 @@
   - statefulset-stack
   - service-stack
   - ingress-stack
+  - ingres-2-stack
 
 - name: Deploy nery
   k8s:
