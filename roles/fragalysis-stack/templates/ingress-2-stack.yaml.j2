@@ -2,7 +2,7 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1beta1
 metadata:
-  name: stack
+  name: stack-2
   namespace: {{ stack_namespace }}
   annotations:
     ingress.kubernetes.io/rewrite-target: /
@@ -12,7 +12,7 @@ spec:
   tls:
   - hosts:
     - {{ stack_url_2 }}
-    secretName: stack-tls
+    secretName: stack-2-tls
   rules:
   - host: {{ stack_url_2 }}
     http:
