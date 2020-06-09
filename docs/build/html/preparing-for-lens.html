@@ -183,11 +183,32 @@ version 3.4 or better.</p>
 </div>
 <div class="section" id="provide-your-kubeconfig">
 <h2>Provide your KUBECONFIG<a class="headerlink" href="#provide-your-kubeconfig" title="Permalink to this headline">¶</a></h2>
-<p>The first time you start lens you will need to provide a cluster configuration.
-CLick the <strong>Add clusters</strong> icon in the application side-bar and then select
-<strong>Custom …</strong> from the <strong>Choose config:</strong> drop-down, and then paste
+<p>The first time you start lens you will need to provide a cluster configuration.</p>
+<p>Click the <strong>Add clusters</strong> icon in the application side-bar…</p>
+<img alt="_images/lens-screenshot-add-clusters.png" src="_images/lens-screenshot-add-clusters.png" />
+<p>Then select <strong>Custom …</strong> from the <strong>Choose config:</strong> drop-down, and then paste
 the content of the kubernetes configuration file into the <strong>Kubeconfig:</strong>
-panel and then click <strong>Add Cluster(s)</strong>.</p>
+panel and then finish by clicking <strong>Add Cluster(s)</strong>…</p>
+<img alt="_images/lens-screenshot-kubeconfig.png" src="_images/lens-screenshot-kubeconfig.png" />
+<p>If successful you should be presented with an overview of the cluster
+workloads (as shown below).</p>
+<img alt="_images/lens-screenshot-workloads-overview.png" src="_images/lens-screenshot-workloads-overview.png" />
+<p>Now that you’re connected to the cluster through Lens you can quickly navigate
+to the <strong>Workloads</strong> (which includes Pods, Deployments, StatefulSets and Jobs),
+<strong>Configuration</strong> (for ConfigMaps, Secrets etc.), <strong>Network</strong> (for Services
+and Ingresses), <strong>Storage</strong> (so see PersistentVolumes and
+PersistentVolumeClaims) and <strong>Namespaces</strong> (to see all the namespaces).</p>
+<div class="section" id="adding-a-cluster-icon">
+<h3>Adding a cluster icon<a class="headerlink" href="#adding-a-cluster-icon" title="Permalink to this headline">¶</a></h3>
+<p>If youwant to add a distinctive icon for the cluster yoy can. Simply
+right-click the exiting cluster icon in the side-bar and select <strong>Settings</strong>.
+Use the <strong>Browse for new icon…</strong> to select an icon of your choice.</p>
+<blockquote class="epigraph">
+<div><p>Two icons can be found in this repository that can be used for the
+Development and Production clusters (whcih can be found in the project’s
+<cite>lens/icons</cite> directory).</p>
+</div></blockquote>
+</div>
 </div>
 </div>
 
