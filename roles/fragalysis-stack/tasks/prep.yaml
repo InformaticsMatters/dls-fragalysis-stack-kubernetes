@@ -36,10 +36,6 @@
       This job must run from AWX but the 'user_name'
       were either not defined or blank.
 
-- name: Display user info
-  debug:
-    msg: tower_user_name={{ tower_user_name }} tower_user_id={{ tower_user_id }}
-
 - name: Developer stack preparation
   block:
 
@@ -61,9 +57,19 @@
         You must prove a value for stack_name.
         It cannot be blank must only contain lower-case letters.
 
-  - name: Set namespace fact (for user_id '{{ tower_user_id }}')
+  - name: Display tower_user_name
+    debug:
+      var: tower_user_name
+
+  - name: Check tower_user_name
+    assert:
+      that: tower_user_name is match('[A-Za-z]+')
+      fail_msg: >-
+        Your username must only consist of letters.
+
+  - name: Set namespace fact (for user_name '{{ tower_user_name }}')
     set_fact:
-      stack_namespace: stack-{{ tower_user_id }}-{{ stack_name }}
+      stack_namespace: stack-{{ tower_user_name|lower }}-{{ stack_name }}
 
   when: stack_is_for_developer|bool
 
