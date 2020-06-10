@@ -1,0 +1,15 @@
+---
+
+# Launch the backup (or recovery) as a CronJob
+
+- name: Create Backup CronJob
+  k8s:
+    definition: "{{ lookup('template', 'cronjob-database-backup.yaml.j2') }}"
+    wait: yes
+  when: replicator_type|string == 'backup'
+
+- name: Create Recovery CronJob
+  k8s:
+    definition: "{{ lookup('template', 'cronjob-database-recovery.yaml.j2') }}"
+    wait: yes
+  when: replicator_type|string == 'recovery'

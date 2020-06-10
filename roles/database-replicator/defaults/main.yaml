@@ -15,3 +15,7 @@ replicator_schedule: '15 * * * *'
 # and statically assigned replica volume (on an NFS server)
 replicator_nfs_server: 130.246.213.182
 replicator_nfs_path: /nfs/kubernetes-db-replica
+
+# If 'replicator_schedule' is blank ('') the playbook will use this as the
+# length of time to wait for the 'Job' to complete.
+replicator_job_timeout_minutes: 15

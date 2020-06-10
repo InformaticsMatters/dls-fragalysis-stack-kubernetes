@@ -15,7 +15,7 @@
 
 # Wait for the replicator to complete
 
-- name: Wait for replicator Job
+- name: Wait for replicator Job ({{ replicator_job_timeout_minutes }} minutes)
   k8s_info:
     kind: Job
     namespace: "{{ stack_namespace_fact }}"

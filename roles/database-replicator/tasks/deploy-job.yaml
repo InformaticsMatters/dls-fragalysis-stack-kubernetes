@@ -1,0 +1,74 @@
+---
+
+# Launch the backup (as a Job)
+
+- name: Run backup Job
+  block:
+
+  - name: Remove existing Backup Job
+    k8s:
+      state: absent
+      definition: "{{ lookup('template', 'job-database-backup.yaml.j2') }}"
+      wait: yes
+
+  - name: Create Backup Job
+    k8s:
+      definition: "{{ lookup('template', 'job-database-backup.yaml.j2') }}"
+      wait: yes
+
+  - name: Wait for Backup Job ({{ replicator_job_timeout_minutes }} minutes)
+    k8s_info:
+      kind: Job
+      namespace: "{{ stack_namespace_fact }}"
+      name: postgres-replicator-backup
+    register: result
+    until: >-
+      result.resources[0].status.completionTime is defined
+      or result.resources[0].status.failed is defined
+    delay: 60
+    retries: "{{ (replicator_job_timeout_minutes|int * 60 / 60)|int }}"
+
+  when: replicator_type|string == 'backup'
+
+# Launch the recovery (as a Job)
+
+- name: Run Recovery Job
+  block:
+
+  - name: Remove existing Backup Job
+    k8s:
+      state: absent
+      definition: "{{ lookup('template', 'job-database-recovery.yaml.j2') }}"
+      wait: yes
+
+  - name: Create Backup Job
+    k8s:
+      definition: "{{ lookup('template', 'job-database-recovery.yaml.j2') }}"
+      wait: yes
+
+  - name: Wait for Recovery Job ({{ replicator_job_timeout_minutes }} minutes)
+    k8s_info:
+      kind: Job
+      namespace: "{{ stack_namespace_fact }}"
+      name: postgres-replicator-recovery
+    register: result
+    until: >-
+      result.resources[0].status.completionTime is defined
+      or result.resources[0].status.failed is defined
+    delay: 60
+    retries: "{{ (replicator_job_timeout_minutes|int * 60 / 60)|int }}"
+
+  when: replicator_type|string == 'recovery'
+
+# Display Job results
+
+- name: Display replicator Job status
+  debug:
+    var: result.resources[0].status
+
+- name: Assert replicator Job success
+  assert:
+    that:
+    - result.resources[0].status.succeeded is defined
+    - result.resources[0].status.succeeded == 1
+    - result.resources[0].status.failed is not defined

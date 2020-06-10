@@ -38,38 +38,12 @@
 
 # Deploy as CronJob?
 
-- name: Run Backup or Restore CronJob
-  block:
-
-  - name: Create Backup CronJob
-    k8s:
-      definition: "{{ lookup('template', 'cronjob-database-backup.yaml.j2') }}"
-      wait: yes
-    when: replicator_type|string == 'backup'
-
-  - name: Create Recovery CronJob
-    k8s:
-      definition: "{{ lookup('template', 'cronjob-database-recovery.yaml.j2') }}"
-      wait: yes
-    when: replicator_type|string == 'recovery'
-
+- name: Run Backup or Recovery CronJob
+  include_tasks: deploy-cronjob.yaml
   when: replicator_schedule|string|length > 0
 
 # Or Deploy as Job?
 
-- name: Run Backup or Restore Job
-  block:
-
-  - name: Create Backup Job
-    k8s:
-      definition: "{{ lookup('template', 'job-database-backup.yaml.j2') }}"
-      wait: yes
-    when: replicator_type|string == 'backup'
-
-  - name: Create Recovery Job
-    k8s:
-      definition: "{{ lookup('template', 'job-database-recovery.yaml.j2') }}"
-      wait: yes
-    when: replicator_type|string == 'recovery'
-
+- name: Run Backup or Recovery Job
+  include_tasks: deploy-job.yaml
   when: replicator_schedule|string|length == 0
