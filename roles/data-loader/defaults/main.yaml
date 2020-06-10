@@ -32,7 +32,7 @@ loader_nfs_server: 130.246.213.186
 loader_nfs_path: /nfs/kubernetes-fs-media
 
 loader_nfs_image_registry: docker.io
-loader_nfs_image: xchem/fragalysis-mounted-loader
+loader_nfs_image: xchem/fragalysis-mount-loader
 loader_nfs_image_tag: latest
 
 # Variables for the S3 loader -------------------------------------------------
