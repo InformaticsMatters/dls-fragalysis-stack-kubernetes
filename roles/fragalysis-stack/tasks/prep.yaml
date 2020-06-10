@@ -36,6 +36,10 @@
       This job must run from AWX but the 'user_name'
       were either not defined or blank.
 
+- name: Display user info
+  debug:
+    msg: tower_user_name={{ tower_user_name }} tower_user_id={{ tower_user_id }}
+
 - name: Developer stack preparation
   block:
 
