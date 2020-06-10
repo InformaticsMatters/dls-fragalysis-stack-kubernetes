@@ -12,8 +12,8 @@
 # for an up-to-date set, but ones we rely on in order to protect the
 # job for malfunctioning are: -
 #
-# - tower_user_id (the ID, a number, used to create a unique namespace)
-# - tower_user_name (The username for logging)
+# - tower_user_id (the ID, a number)
+# - tower_user_name (The username for logging, namespace etc.)
 
 - name: Assert AWX user_id defined
   assert:
@@ -58,9 +58,9 @@
         You must prove a value for replicator_stack_name.
         It cannot be blank must only contain lower-case letters.
 
-  - name: Set namespace fact (for user_id '{{ tower_user_id }}')
+  - name: Set namespace fact (for user_name '{{ tower_user_name }}')
     set_fact:
-      stack_namespace_fact: stack-{{ tower_user_id }}-{{ replicator_stack_name }}
+      stack_namespace_fact: stack-{{ tower_user_name|lower }}-{{ replicator_stack_name }}
       replicate_direction_fact: AtoB
 
   when: replicator_stack_name|string|length > 0

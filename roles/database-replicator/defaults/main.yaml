@@ -1,16 +1,17 @@
 ---
 
 # Set one of 'developer stack name' (typically 'default')
-# or 'production stack namespace'.
+# or (for production/staging) the 'stack_ns'.
 replicator_stack_name: ''
 replicator_stack_ns: ''
 
 # The replicator type - one of 'backup' or 'recovery'
 replicator_type: SetMe
-# The replication (back/recovery) schedule.
+# The replication (backup/recovery) schedule.
 # If the schedule is empty the replication occurs only once (i.e. it's a Job)
 replicator_schedule: '15 * * * *'
 
-# Details of the statically assigned replica volume (on an NFS server)
-replicator_nfs_server: SetMe
-replicator_nfs_path: SetMe
+# Details of the NFS server
+# and statically assigned replica volume (on an NFS server)
+replicator_nfs_server: 130.246.213.182
+replicator_nfs_path: /nfs/kubernetes-db-replica

@@ -30,23 +30,20 @@ replicator_stack_ns: ''
 
 # Details of the statically assigned replica volume (on an NFS server)
 # (volume-a)
-replicator_a_nfs_server: SetMe
-replicator_a_nfs_path: SetMe
+replicator_a_nfs_server: 130.246.213.182
+replicator_a_nfs_path: /nfs/kubernetes-media-replica
 # Details of the PVC to copy from or copy into (based on direction)
 # (volume-b). Typically 'media' for a stack.
-replicator_b_pvc_name: SetMe
+replicator_b_pvc_name: media
 
-# Run as a CronJob?
-replicator_as_cronjob: no
-
-# If 'replicator_as_cronjob' is 'yes' the playbook will use the following
+# If a schedule is set the playbook will use the following
 # schedule in the 'ConJob' template - i.e. 21 minutes past each hour.
 # Replication can take a significant time - so ensure you're not
 # running this too often!
 replicator_schedule: '21 * * * *'
 
-# If 'replicator_as_cronjob' is 'no' the playbook will use this as the
+# If 'replicator_schedule' is blank ('') the playbook will use this as the
 # length of time to wait for the replicator 'Job' to complete.
 # But expect replication of production media data (say around 4.5Gi)
 # to take at least 10 minutes to complete over NFS.
-replicator_job_timeout_minutes: 30
+replicator_job_timeout_minutes: 45

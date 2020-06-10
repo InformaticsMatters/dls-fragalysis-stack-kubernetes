@@ -46,8 +46,8 @@
 
 - name: Run Job
   include_tasks: deploy-job.yaml
-  when: not replicator_as_cronjob|bool
+  when: replicator_schedule|string|length == 0
 
 - name: Run CronJob
   include_tasks: deploy-cronjob.yaml
-  when: replicator_as_cronjob|bool
+  when: replicator_schedule|string|length > 0

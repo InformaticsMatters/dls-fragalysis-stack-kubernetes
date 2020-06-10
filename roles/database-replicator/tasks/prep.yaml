@@ -58,9 +58,9 @@
         You must prove a value for replicator_stack_name.
         It cannot be blank must only contain lower-case letters.
 
-  - name: Set namespace fact (for user_id '{{ tower_user_id }}')
+  - name: Set namespace fact (for user_name '{{ tower_user_name }}')
     set_fact:
-      stack_namespace_fact: stack-{{ tower_user_id }}-{{ replicator_stack_name }}
+      stack_namespace_fact: stack-{{ tower_user_name|lower }}-{{ replicator_stack_name }}
 
   when: replicator_stack_name|string|length > 0
 

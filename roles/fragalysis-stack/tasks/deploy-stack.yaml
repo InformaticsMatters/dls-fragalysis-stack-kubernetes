@@ -139,11 +139,11 @@
 
 # Set the stack hostname, which will either be just the hostname of the
 # stack (if the namespace has been defined) or the hostname plus
-# the user ID and their chosen stack name.
+# the user name and their chosen stack name.
 
 - name: Set the stack's URL (developer)
   set_fact:
-    stack_url: "{{ tower_user_id }}-{{ stack_name }}.{{ stack_hostname }}"
+    stack_url: "fragalysis-{{ tower_user_name|lower }}-{{ stack_name }}.{{ stack_hostname }}"
   when: stack_is_for_developer|bool
 
 - name: Set the stack's URL (non-developer)
