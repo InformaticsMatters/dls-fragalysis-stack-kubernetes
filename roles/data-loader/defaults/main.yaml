@@ -24,12 +24,12 @@ loader_data_origin: SetMe
 
 # The type of loader - controls the Task file (and Job) that is actually run.
 # There should be a corresponding 'deploy-{{ loader_type }}.yaml' in tasks.
-loader_type: s3
+loader_type: nfs
 
 # Variables for the NFS Loader ------------------------------------------------
 
-loader_nfs_server: SetMe
-loader_nfs_path: SetMe
+loader_nfs_server: 130.246.213.186
+loader_nfs_path: /nfs/kubernetes-fs-media
 
 loader_nfs_image_registry: docker.io
 loader_nfs_image: xchem/fragalysis-mounted-loader
