@@ -94,7 +94,7 @@
 <li class="toctree-l3"><a class="reference internal" href="cheat-sheets.html">Cheat Sheets</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">The Fragalysis Stack Loader</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it works</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#providing-new-data">Providing new data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-nfs-media-volume-the-origin">The NFS media volume (the ‘origin’)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#running-the-loader">Running the loader</a></li>
 </ul>
 </li>
@@ -193,28 +193,32 @@ calling <code class="docutils literal notranslate"><span class="pre">loader.py</
 AWS S3, although this will require suitable credentials.</p>
 </div></blockquote>
 </div>
-<div class="section" id="providing-new-data">
-<h2>Providing new data<a class="headerlink" href="#providing-new-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-nfs-media-volume-the-origin">
+<h2>The NFS media volume (the ‘origin’)<a class="headerlink" href="#the-nfs-media-volume-the-origin" title="Permalink to this headline">¶</a></h2>
 <p>You will need to put new data files in a subdirectory of
 <code class="docutils literal notranslate"><span class="pre">/nfs/kubernetes-fs-media</span></code> on the NFS server that has been commissioned in
 the STFC xchem-follow-up project.</p>
 <ul class="simple">
 <li><p>The NFS server address is <code class="docutils literal notranslate"><span class="pre">130.246.213.186</span></code> (at the moment this is not
 available from outside the project’s network).</p></li>
-<li><p>The server account for connection is called <code class="docutils literal notranslate"><span class="pre">fragalysis</span></code></p></li>
+<li><p>The server account for connection is <code class="docutils literal notranslate"><span class="pre">fragalysis</span></code></p></li>
+<li><p>You will need the private part of the key-pair in order to access the
+server</p></li>
 </ul>
 <p>Data and the directory it’s in must be available to all.</p>
 </div>
 <div class="section" id="running-the-loader">
 <h2>Running the loader<a class="headerlink" href="#running-the-loader" title="Permalink to this headline">¶</a></h2>
-<p>You will find a <strong>Media Loader</strong> Template Job on the cluster’s AWX server.
+<p>You will find a <strong>Media Loader</strong> Template Job on your cluster’s AWX server.
 On the production cluster you will find one for the Production stack
 (<strong>Production media Loader</strong>) and the Staging stack (<strong>Staging media Loader</strong>).</p>
 <ul class="simple">
 <li><p>Change the Job Template’s <code class="docutils literal notranslate"><span class="pre">loader_data_origin</span></code> variable value
-before running the Job</p></li>
+before running the Job. The value must match a sub-directory that has been
+populated on the media volume, e.g. <code class="docutils literal notranslate"><span class="pre">2020-06-10T09</span></code> (i.e. the
+sub-directory not the full path).</p></li>
 </ul>
-<p>The Job runs and waits for completion of the loader.</p>
+<p>When executed, The Job runs and waits for completion of the loader.</p>
 </div>
 </div>
 

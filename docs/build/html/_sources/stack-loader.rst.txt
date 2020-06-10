@@ -27,8 +27,8 @@ calling ``loader.py`` module in the loader Pod.
     As well as an NFS loader a loaders also exists that will copy data from
     AWS S3, although this will require suitable credentials.
 
-Providing new data
-==================
+The NFS media volume (the 'origin')
+===================================
 
 You will need to put new data files in a subdirectory of
 ``/nfs/kubernetes-fs-media`` on the NFS server that has been commissioned in
@@ -36,18 +36,22 @@ the STFC xchem-follow-up project.
 
 *   The NFS server address is ``130.246.213.186`` (at the moment this is not
     available from outside the project's network).
-*   The server account for connection is called ``fragalysis``
+*   The server account for connection is ``fragalysis``
+*   You will need the private part of the key-pair in order to access the
+    server
 
 Data and the directory it's in must be available to all.
 
 Running the loader
 ==================
 
-You will find a **Media Loader** Template Job on the cluster's AWX server.
+You will find a **Media Loader** Template Job on your cluster's AWX server.
 On the production cluster you will find one for the Production stack
 (**Production media Loader**) and the Staging stack (**Staging media Loader**).
 
 *   Change the Job Template's ``loader_data_origin`` variable value
-    before running the Job
+    before running the Job. The value must match a sub-directory that has been
+    populated on the media volume, e.g. ``2020-06-10T09`` (i.e. the
+    sub-directory not the full path).
 
-The Job runs and waits for completion of the loader.
+When executed, The Job runs and waits for completion of the loader.
