@@ -61,9 +61,10 @@
       that:
       - stack_namespace|string|length == 0
 
-  # And, if it's a "User" Job Template, i.e. the template name begins "User (",
-  # the name in it must match the username.
-  # It's unwise (not possible) for user X to run user Y's Jobs.
+  # And, if it's a "User" Job Template,
+  # i.e. the template name begins "User (<name>)",
+  # the name in it must match the user's username.
+  # It's unwise for user X to run a job created for user Y.
 
   - name: Check job execution user
     block:
@@ -71,16 +72,16 @@
     - name: Get job's username
       set_fact:
         template_user_name: >-
-          {{ tower_job_template_name|regex_replace('^User \(([a-zA-Z]+)\).*$', '\\1')|lower }}
+          {{ tower_job_template_name|regex_replace('^User \(([a-zA-Z]+)\).*', '\1')|lower }}
 
     - name: Check job's user against the user
       assert:
         that: template_user_name == tower_user_name
         fail_msg: >-
           You can't run this Job Template.
-          It is for {{ template_user_name }} but you are {{ tower_user_name }}
+          It is for {{ template_user_name }} not you ({{ tower_user_name }})
 
-    when: tower_job_template_name|regex_search("^User \(([a-zA-Z]+)\).*$")
+    when: tower_job_template_name|regex_search("^User \(([a-zA-Z]+)\).*")
 
   # Also, check the stack name provided.
   # It cannot be blank and must only consist of lower-case letters.
