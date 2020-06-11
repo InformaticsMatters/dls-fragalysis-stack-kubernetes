@@ -70,7 +70,8 @@
 
     - name: Get job's username
       set_fact:
-        template_user_name: tower_job_template_name|regex_search("^User \((.*)\)")|lower
+        template_user_name: >-
+          {{ tower_job_template_name|regex_search("^User \((.*)\)")|lower }}
 
     - name: Check job's user against the user
       assert:
