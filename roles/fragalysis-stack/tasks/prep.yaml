@@ -48,7 +48,7 @@
 - name: Display AWX material
   debug:
     msg: >-
-      job_template_name="{{ tower_job_template_name }}"
+      job_template_name='{{ tower_job_template_name }}'
       user_name={{ tower_user_name }}
 
 - name: Developer stack preparation
@@ -61,16 +61,24 @@
       that:
       - stack_namespace|string|length == 0
 
-  # And, if it's a "User" Job Template, the name in it must match the username.
+  # And, if it's a "User" Job Template, i.e. the template name begins "User (",
+  # the name in it must match the username.
   # It's unwise (not possible) for user X to run user Y's Jobs.
 
-  - name: Check job's user against the user
-    assert:
-      that:
-      - tower_job_template_name|regex_search("^User \((.*)\)")|lower == tower_user_name
-      fail_msg: >-
-        You can't run this Job Template.
-        It is for {{ tower_user_name }} but you are not {{ tower_user_name }}
+  - name: Check job execution user
+    block:
+
+    - name: Get job's username
+      set_fact:
+        template_user_name: tower_job_template_name|regex_search("^User \((.*)\)")|lower
+
+    - name: Check job's user against the user
+      assert:
+        that: template_user_name == tower_user_name
+        fail_msg: >-
+          You can't run this Job Template.
+          It is for {{ template_user_name }} but you are {{ tower_user_name }}
+
     when: tower_job_template_name|regex_search("^User \(")
 
   # Also, check the stack name provided.
