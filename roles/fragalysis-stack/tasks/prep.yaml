@@ -79,7 +79,7 @@
         that: template_user_name == tower_user_name
         fail_msg: >-
           You can't run this Job Template.
-          It is for {{ template_user_name }} not you ({{ tower_user_name }})
+          It is for {{ template_user_name }}, not you ({{ tower_user_name }})
 
     when: tower_job_template_name|regex_search("^User \(([a-zA-Z]+)\).*")
 
