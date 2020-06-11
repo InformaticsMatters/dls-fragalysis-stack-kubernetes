@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>A Developer Cheat-Sheet for Lens &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
+  <title>Developer Builds (Using Docker) &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The Fragalysis Stack Loader" href="stack-loader.html" />
-    <link rel="prev" title="A Developer Cheat-Sheet for kubectl" href="cheat-sheet-kubectl.html" /> 
+    <link rel="next" title="Deploying Stacks" href="deployment.html" />
+    <link rel="prev" title="Adding Developers to AWX (Administration Tasks)" href="adding-developers.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,14 +91,13 @@
 <li class="toctree-l2"><a class="reference internal" href="development.html#impact-on-build-process-local">Impact on Build Process (Local)</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="development.html#development-prep-and-cheat-sheets">Development Prep and Cheat-Sheets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="adding-developers.html">Adding Developers to AWX (Administration Tasks)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="developer-builds-cli.html">Developer Builds (Using Docker)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="developer-builds-travis-ci.html">Developer Builds (Using Travis)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="preparing-for-kubernetes.html">Preparing for Kubernetes Development</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="cheat-sheets.html">Cheat Sheets</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="cheat-sheet-kubectl.html">A Developer Cheat-Sheet for kubectl</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">A Developer Cheat-Sheet for Lens</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Developer Builds (Using Docker)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deployment.html">Deploying Stacks</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="developer-builds-travis-ci.html">Developer Builds (Using Travis)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="preparing-for-kubernetes.html">Preparing for Kubernetes Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cheat-sheets.html">Cheat Sheets</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stack-loader.html">The Fragalysis Stack Loader</a></li>
 </ul>
 </li>
@@ -154,15 +153,13 @@
         
           <li><a href="development.html">Development</a> &raquo;</li>
         
-          <li><a href="cheat-sheets.html">Cheat Sheets</a> &raquo;</li>
-        
-      <li>A Developer Cheat-Sheet for Lens</li>
+      <li>Developer Builds (Using Docker)</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/cheat-sheet-lens.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/developer-builds-cli.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -175,57 +172,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="a-developer-cheat-sheet-for-lens">
-<h1>A Developer Cheat-Sheet for Lens<a class="headerlink" href="#a-developer-cheat-sheet-for-lens" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="developer-builds-using-docker">
+<h1>Developer Builds (Using Docker)<a class="headerlink" href="#developer-builds-using-docker" title="Permalink to this headline">¶</a></h1>
 <blockquote class="epigraph">
-<div><p>Some useful <code class="docutils literal notranslate"><span class="pre">lens</span></code> operations that might be useful during development.</p>
+<div><p>This is the simplest (often fastest) way to develop the stack - by
+building the Docker images locally and pushing them to a public registry
+like Docker Hub.</p>
 </div></blockquote>
-<dl>
-<dt>Viewing namespace Pods</dt><dd><p>Selecting <strong>Workloads -&gt; Pods</strong> will normally show ou all the Pods
-in all namespaces.</p>
-<img alt="_images/lens-screenshot-workloads-pods.png" src="_images/lens-screenshot-workloads-pods.png" />
-<p>Use the <cite>Namespace Filter</cite> to select one (or more)
-namespaces you want to view. For example the <strong>Staging Stack</strong>…</p>
-<img alt="_images/lens-screenshot-workloads-select-staging-stack.png" src="_images/lens-screenshot-workloads-select-staging-stack.png" />
-<img alt="_images/lens-screenshot-workloads-staging-stack.png" src="_images/lens-screenshot-workloads-staging-stack.png" />
-</dd>
-<dt>Display Pod container logs</dt><dd><p>With a Pod visible in the <strong>Workloads</strong> screen you can click it
-to see a description panel for the Pod slide-in from the right…</p>
-<img alt="_images/lens-screenshot-workloads-staging-stack.png" src="_images/lens-screenshot-workloads-staging-stack.png" />
-<p>In the banner of the panel that’s presented you’ll see four icons
-representing the <strong>Shell</strong>, <strong>Logs</strong>, <strong>Edit</strong> and <strong>Delete</strong>
-actions…</p>
-<img alt="_images/lens-screenshot-pod-description.png" src="_images/lens-screenshot-pod-description.png" />
-<p>Click the logs icon to see the Pod’s logs…</p>
-<img alt="_images/lens-screenshot-pod-logs.png" src="_images/lens-screenshot-pod-logs.png" />
-</dd>
-<dt>Shell into a Pod container</dt><dd><p>With a Pod visible in the <strong>Workloads</strong> screen you can click it
-to see a description panel for the Pod slide-in from the right…</p>
-<img alt="_images/lens-screenshot-workloads-staging-stack.png" src="_images/lens-screenshot-workloads-staging-stack.png" />
-<p>In the banner of the panel that’s presented you’ll see four icons
-representing the <strong>Shell</strong>, <strong>Logs</strong>, <strong>Edit</strong> and <strong>Delete</strong>
-actions…</p>
-<img alt="_images/lens-screenshot-pod-description.png" src="_images/lens-screenshot-pod-description.png" />
-<p>Click the shell icon to be taken to an interactive shell in your
-chosen Pod…</p>
-<img alt="_images/lens-screenshot-pod-shell.png" src="_images/lens-screenshot-pod-shell.png" />
-<p>To exit the shell hit the shell terminal window’s close icon.</p>
-</dd>
-<dt>Restarting a Pod (scale down and up)</dt><dd><p>In order to scale-up (or scale-down) a set of Pods you will need to edit
-their <strong>Deployment</strong>, or <strong>StatefulSet</strong>, whichever is appropriate.
-The Fragalysis Stack Pod, for example, is managed by a <strong>StatefulSet</strong>.
-With <strong>Workloads -&gt; StatefulSets</strong> selected (and the appropriate Stack’s
-namespace chosen in the namespace filter) click <strong>Stack</strong> to see
-the its description.</p>
-<img alt="_images/lens-screenshot-statefulset-description.png" src="_images/lens-screenshot-statefulset-description.png" />
-<p>Click the pencil (Edit) Icon in the description banner to be presented
-with the YAML representation of the stack’s StatefulSet.</p>
-<img alt="_images/lens-screenshot-statefulset-yaml.png" src="_images/lens-screenshot-statefulset-yaml.png" />
-<p>Scroll down if required to locate the <code class="docutils literal notranslate"><span class="pre">replicas:</span></code> field. To scale-down
-the Pods set this to 0 and then click <strong>Save &amp; Close</strong>. To scale the Pods
-up, set this field to 1 or more.</p>
-</dd>
-</dl>
+<p>Edit your code, build the <code class="docutils literal notranslate"><span class="pre">fragalysis-stack</span></code> Docker image and push it.
+You can then run the <strong>Developer Fragalysis Stack</strong> Job Template
+to deploy that image to the cluster. You wil need to make sure the
+template’s variables are set accordingly (i.e. the image and tag you’ve
+pushed):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>stack_image (i.e. mynamespace/fragalysis-stack)
+stack_image_tag (i.e. `fix-1.2`)
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">Deploying Stacks</a></li>
+</ul>
+</div>
 </div>
 
 
@@ -236,10 +203,10 @@ up, set this field to 1 or more.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="stack-loader.html" class="btn btn-neutral float-right" title="The Fragalysis Stack Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="deployment.html" class="btn btn-neutral float-right" title="Deploying Stacks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cheat-sheet-kubectl.html" class="btn btn-neutral float-left" title="A Developer Cheat-Sheet for kubectl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="adding-developers.html" class="btn btn-neutral float-left" title="Adding Developers to AWX (Administration Tasks)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

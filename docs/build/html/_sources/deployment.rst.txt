@@ -1,28 +1,24 @@
-**********
-Deployment
-**********
+****************
+Deploying Stacks
+****************
 
 .. epigraph::
 
     Fragalysis Stack deployment procedures and the role of AWX (Ansible Tower)
     in the Fragalysis Stack *kubernetes* process.
 
-The deployment of the Fragalysis Stack, i.e. it deployment
-to a cloud-based Kubernetes cluster will be managed by `Ansible`_ playbooks
+The deployment of the Fragalysis Stack, i.e. its deployment
+to a cloud-based Kubernetes cluster are managed by `Ansible`_ playbooks
 (and Roles) located in the `DLS Kubernetes`_ GitHub project and an
 installation of an `AWX`_ server, a web-based user interface, REST API, and
 task engine built on top of `Ansible`_, which will be used to initiate
 deployments.
 
-The vision is that a single playbook (Role) will be employed for both *official*
-(DEV and PROD) and *developer* stack deployments to Kubernetes. This *play*
-will employ variables and role-based access privileges on the
-AWX server in order to spin-up each *flavour* [#f1]_ of the stack.
+Separate AWX severs exists on the **Production** and **Development** clusters.
+Developers normally only have access to the server on the Development
+cluster.
 
-Other playbooks will permit, for example, the simple deployment of Graph
-databases to the cluster.
-
-Deployments (plays) are likely to require a number of sensitive values
+Deployments (plays) require a number of sensitive values
 (tokens, passwords and the like) which will need to be limited
 to specific *Teams* of *Users*. Management of this aspect of Ansible
 is complex but it is simplified through the use of `AWX`_.
@@ -46,17 +42,18 @@ the encryption key (itself encrypted) so the **Job Template** that relies on
 these variables can safely decrypt them when the corresponding playbook is
 executed.
 
-Deploying a user stack
-======================
+Developers don't need the decryption keys so they cannot see them.
+
+Deploying a user stack (Development Cluster)
+============================================
 
 The AWX server should have been setup with **Job Templates** to deploy and
-un-deploy stack instances and when you login these are likely to be called: -
+un-deploy stack instances. There are also common templates to synchronise
+the stack's built-in PostgreSQL database and Djngo media files (if required)
+to those used by the Production server.
 
-1.  **Fragalysis Stack (Kubernetes)**
-2.  **Fraglaysis Stack (Kubernetes) [DESTROY]**
-
-If you login the the AWX server instance you should see these **Job Templates**
-in the *Resources -> Templates* view.
+Developers will have been given access to the sever and a set of templates
+should be visible to them when the login.
 
 .. epigraph::
 
@@ -65,7 +62,7 @@ in the *Resources -> Templates* view.
     you will first need to have built your container image and pushed it
     to somewhere like Docker Hub.
 
-To deploy your stack you should click on the **Fragalysis Stack (Kubernetes)**
+To deploy your stack you should click on the **Developer Fragalysis Stack**
 **Job Template**, where you'll have an opportunity to fine-tune the deployment
 for you specific image. That essentially means ensuring the following variables
 are set for your needs [#f2]_: -
@@ -73,8 +70,6 @@ are set for your needs [#f2]_: -
 1.  ``stack_image`` - the container registry project and image name for
     your stack, i.e. ``xchem/fragalsyis-stack`` for official images.
 2.  ``stack_image_tag`` - the tag you've assigned to your image (i.e. ``latest``)
-3.  ``stack_hostname`` - the hostname that's used to route fragalysis traffic
-    to the cluster
 
 With variables set you just **SAVE** them (if you've changed them)
 and then click **LAUNCH** to run the deployment playbook.
@@ -86,56 +81,49 @@ Your stack is deployed to a Kubernetes `namespace`_ that's unique to you.
 The playbook will display this value at the end of the deployment along with
 the URI that should direct traffic to your stack instance.
 
-Debugging the stack
--------------------
-
-*TBD*
-
-*   **kubectl**
-*   **Pod Logs**
-*   **Pod Shells**
-
 Loading target data
 ===================
 
-You can load data into a Fragalysis Stack using the *Data Loader* role and
-accompanying AWX **Job Templates**. You should find a
-**Fragaysis Stack Data Loader** **Job Template**, which relies on a loader
-container image that can synchronise data from an AWS S3 bucket.
+You can load target data into your stack using another AWX **Job Template**.
+You should find a **Developer Data Loader** **Job Template**, which relies on
+a loader container image that can synchronise data from the internal NFS
+server that hosts the target data.
 
 When you run the loader job you simply need to ensure that the
 following Job Template variables are appropriately set::
 
-    stack_name
-    loader_image_registry
-    loader_image
-    loader_image_tag
     loader_data_origin
+    stack_name (normally just left at 'default')
 
-Preparing new target data (AWS S3)
-----------------------------------
+Replicating target data (prom Production)
+=========================================
 
-If you have new data you wish to deploy it first needs to be uploaded
-to your chosen S3 bucket. Install the `AWS CLI`_ and then run configuration
-in order to provide your AWS credentials::
+Instead of loading your own target data you can simply replicate data from the
+latest Production stack (which is made available in the early hours of each
+morning) into your stack's instance.
 
-    $ aws configure
-    [...]
+Two **Job Templates** exist to allow this, and they can be run once your
+stack has initialised: -
 
-.. epigraph::
+1.  **Common Database Replicator (One-Time)** to replicate the Production
+    PostgreSQL ``frag`` database
+2.  **Common Media Replicator (One-Time)** to replicate the Production
+    stack's media files
 
-    As the ``aws configure`` command typically writes data to ``~/.aws/config``
-    you can avoid placing sensitive information in files by providing values
-    in the environment variables ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY``
+Redeploying a Stack (a version or code change)
+==============================================
 
-With the AWS CLI configured you can, with an AWS S3 bucket of ``dls-fragalysis``
-and local target data in the directory ``2020-02-34T12``, use the following
-AWS CLI command [#f3]_ to upload it for use by the loader::
+If you've already deployed your stack and have now produced a new Docker
+image (even a new ``latest`` image) you can quickly redeploy the
+image by running the **Developer Fragalysis Stack (Version Change)** Job
+Template.
 
-    aws s3 sync 2020-02-24T12 s3://dls-fragalysis/django-data/2020-02-24T12
+This relies on the stack having been deployed (i.e. with a database and
+persistent volumes) and simply causes the Pod to restart while also re-pulling
+the image from Docker Hub.
 
-With data loaded on S3 you can use ``2020-02-24T12`` as the ``loader_data_origin``
-value in your loader Job.
+You can just run the original **Developer Fragalysis Stack** JOb template
+but that takes a little longer to run.
 
 .. rubric:: Footnotes
 

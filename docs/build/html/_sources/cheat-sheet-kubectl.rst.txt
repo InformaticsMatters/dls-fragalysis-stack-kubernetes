@@ -11,12 +11,12 @@ A Developer Cheat-Sheet for kubectl
 Setting the default namespace
     To quickly restrict your commands to a given namespace, e.g.
     your own Fragalysis Stack deployment you can use the **set-context**
-    command. If your stack is deployed to **stack-17-default** you can set the
+    command. If your stack is deployed to **stack-alan-default** you can set the
     default namespace to it with the following command: -
 
-    ``$ kubectl config set-context --current --namespace=stack-17-default``
+    ``$ kubectl config set-context --current --namespace=stack-alan-default``
 
-    From this point forward you need to add ``-n stack-17-default`` to each
+    From this point forward you need to add ``-n stack-alan-default`` to each
     command you want to run.
 
     The following *cheats* assume that you have set the default namespace.

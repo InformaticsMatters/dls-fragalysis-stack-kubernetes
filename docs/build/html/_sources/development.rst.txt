@@ -487,6 +487,9 @@ the debugging of your deployed applications.
 ..  toctree::
     :maxdepth: 1
 
+    adding-developers
+    developer-builds-cli
+    developer-builds-travis-ci
     preparing-for-kubernetes
     cheat-sheets
     stack-loader

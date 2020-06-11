@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Deployment &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
+  <title>Deploying Stacks &mdash; Fragalysis Stack (Kubernetes)  documentation</title>
   
 
   
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="AWX" href="awx.html" />
-    <link rel="prev" title="The Fragalysis Stack Loader" href="stack-loader.html" /> 
+    <link rel="prev" title="Developer Builds (Using Docker)" href="developer-builds-cli.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,19 +83,19 @@
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Deployment</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deploying Stacks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="awx.html">AWX</a></li>
 <li class="toctree-l2"><a class="reference internal" href="continuous-delivery.html">Continuous Delivery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sensitive-material-ansible-vault">Sensitive Material (Ansible Vault)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#deploying-a-user-stack">Deploying a user stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deploying-a-user-stack-development-cluster">Deploying a user stack (Development Cluster)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#ingress-and-namespace">Ingress and namespace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#debugging-the-stack">Debugging the stack</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ingress-and-namespace">Ingress and namespace</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#loading-target-data">Loading target data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#replicating-target-data-prom-production">Replicating target data (prom Production)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redeploying-a-stack-a-version-or-code-change">Redeploying a Stack (a version or code change)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#preparing-new-target-data-aws-s3">Preparing new target data (AWS S3)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rancher.html">Rancher setup</a></li>
@@ -145,7 +145,11 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Deployment</li>
+          <li><a href="development.html">Development</a> &raquo;</li>
+        
+          <li><a href="developer-builds-cli.html">Developer Builds (Using Docker)</a> &raquo;</li>
+        
+      <li>Deploying Stacks</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -164,25 +168,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="deployment">
-<h1>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="deploying-stacks">
+<h1>Deploying Stacks<a class="headerlink" href="#deploying-stacks" title="Permalink to this headline">¶</a></h1>
 <blockquote class="epigraph">
 <div><p>Fragalysis Stack deployment procedures and the role of AWX (Ansible Tower)
 in the Fragalysis Stack <em>kubernetes</em> process.</p>
 </div></blockquote>
-<p>The deployment of the Fragalysis Stack, i.e. it deployment
-to a cloud-based Kubernetes cluster will be managed by <a class="reference external" href="https://github.com/ansible/ansible">Ansible</a> playbooks
+<p>The deployment of the Fragalysis Stack, i.e. its deployment
+to a cloud-based Kubernetes cluster are managed by <a class="reference external" href="https://github.com/ansible/ansible">Ansible</a> playbooks
 (and Roles) located in the <a class="reference external" href="https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git">DLS Kubernetes</a> GitHub project and an
 installation of an <a class="reference external" href="https://github.com/ansible/awx">AWX</a> server, a web-based user interface, REST API, and
 task engine built on top of <a class="reference external" href="https://github.com/ansible/ansible">Ansible</a>, which will be used to initiate
 deployments.</p>
-<p>The vision is that a single playbook (Role) will be employed for both <em>official</em>
-(DEV and PROD) and <em>developer</em> stack deployments to Kubernetes. This <em>play</em>
-will employ variables and role-based access privileges on the
-AWX server in order to spin-up each <em>flavour</em> <a class="footnote-reference brackets" href="#f1" id="id1">1</a> of the stack.</p>
-<p>Other playbooks will permit, for example, the simple deployment of Graph
-databases to the cluster.</p>
-<p>Deployments (plays) are likely to require a number of sensitive values
+<p>Separate AWX severs exists on the <strong>Production</strong> and <strong>Development</strong> clusters.
+Developers normally only have access to the server on the Development
+cluster.</p>
+<p>Deployments (plays) require a number of sensitive values
 (tokens, passwords and the like) which will need to be limited
 to specific <em>Teams</em> of <em>Users</em>. Management of this aspect of Ansible
 is complex but it is simplified through the use of <a class="reference external" href="https://github.com/ansible/awx">AWX</a>.</p>
@@ -202,32 +203,29 @@ in an encrypted form using <a class="reference external" href="https://docs.ansi
 the encryption key (itself encrypted) so the <strong>Job Template</strong> that relies on
 these variables can safely decrypt them when the corresponding playbook is
 executed.</p>
-<div class="section" id="deploying-a-user-stack">
-<h3>Deploying a user stack<a class="headerlink" href="#deploying-a-user-stack" title="Permalink to this headline">¶</a></h3>
+<p>Developers don’t need the decryption keys so they cannot see them.</p>
+<div class="section" id="deploying-a-user-stack-development-cluster">
+<h3>Deploying a user stack (Development Cluster)<a class="headerlink" href="#deploying-a-user-stack-development-cluster" title="Permalink to this headline">¶</a></h3>
 <p>The AWX server should have been setup with <strong>Job Templates</strong> to deploy and
-un-deploy stack instances and when you login these are likely to be called: -</p>
-<ol class="arabic simple">
-<li><p><strong>Fragalysis Stack (Kubernetes)</strong></p></li>
-<li><p><strong>Fraglaysis Stack (Kubernetes) [DESTROY]</strong></p></li>
-</ol>
-<p>If you login the the AWX server instance you should see these <strong>Job Templates</strong>
-in the <em>Resources -&gt; Templates</em> view.</p>
+un-deploy stack instances. There are also common templates to synchronise
+the stack’s built-in PostgreSQL database and Djngo media files (if required)
+to those used by the Production server.</p>
+<p>Developers will have been given access to the sever and a set of templates
+should be visible to them when the login.</p>
 <blockquote class="epigraph">
 <div><p>The Fragalysis Stack application is deployed to Kubernetes from container
 images present on a public registry (i.e. Docker Hub). To deploy your stack
 you will first need to have built your container image and pushed it
 to somewhere like Docker Hub.</p>
 </div></blockquote>
-<p>To deploy your stack you should click on the <strong>Fragalysis Stack (Kubernetes)</strong>
+<p>To deploy your stack you should click on the <strong>Developer Fragalysis Stack</strong>
 <strong>Job Template</strong>, where you’ll have an opportunity to fine-tune the deployment
 for you specific image. That essentially means ensuring the following variables
-are set for your needs <a class="footnote-reference brackets" href="#f2" id="id2">2</a>: -</p>
+are set for your needs <a class="footnote-reference brackets" href="#f2" id="id1">2</a>: -</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">stack_image</span></code> - the container registry project and image name for
 your stack, i.e. <code class="docutils literal notranslate"><span class="pre">xchem/fragalsyis-stack</span></code> for official images.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">stack_image_tag</span></code> - the tag you’ve assigned to your image (i.e. <code class="docutils literal notranslate"><span class="pre">latest</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">stack_hostname</span></code> - the hostname that’s used to route fragalysis traffic
-to the cluster</p></li>
 </ol>
 <p>With variables set you just <strong>SAVE</strong> them (if you’ve changed them)
 and then click <strong>LAUNCH</strong> to run the deployment playbook.</p>
@@ -238,68 +236,59 @@ and then click <strong>LAUNCH</strong> to run the deployment playbook.</p>
 <p>Your stack is deployed to a Kubernetes <a class="reference external" href="https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/">namespace</a> that’s unique to you.
 The playbook will display this value at the end of the deployment along with
 the URI that should direct traffic to your stack instance.</p>
-</div>
-<div class="section" id="debugging-the-stack">
-<h2>Debugging the stack<a class="headerlink" href="#debugging-the-stack" title="Permalink to this headline">¶</a></h2>
-<p><em>TBD</em></p>
-<ul class="simple">
-<li><p><strong>kubectl</strong></p></li>
-<li><p><strong>Pod Logs</strong></p></li>
-<li><p><strong>Pod Shells</strong></p></li>
-</ul>
 <div class="section" id="loading-target-data">
 <h3>Loading target data<a class="headerlink" href="#loading-target-data" title="Permalink to this headline">¶</a></h3>
-<p>You can load data into a Fragalysis Stack using the <em>Data Loader</em> role and
-accompanying AWX <strong>Job Templates</strong>. You should find a
-<strong>Fragaysis Stack Data Loader</strong> <strong>Job Template</strong>, which relies on a loader
-container image that can synchronise data from an AWS S3 bucket.</p>
+<p>You can load target data into your stack using another AWX <strong>Job Template</strong>.
+You should find a <strong>Developer Data Loader</strong> <strong>Job Template</strong>, which relies on
+a loader container image that can synchronise data from the internal NFS
+server that hosts the target data.</p>
 <p>When you run the loader job you simply need to ensure that the
 following Job Template variables are appropriately set:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stack_name</span>
-<span class="n">loader_image_registry</span>
-<span class="n">loader_image</span>
-<span class="n">loader_image_tag</span>
-<span class="n">loader_data_origin</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loader_data_origin</span>
+<span class="n">stack_name</span> <span class="p">(</span><span class="n">normally</span> <span class="n">just</span> <span class="n">left</span> <span class="n">at</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="section" id="replicating-target-data-prom-production">
+<h3>Replicating target data (prom Production)<a class="headerlink" href="#replicating-target-data-prom-production" title="Permalink to this headline">¶</a></h3>
+<p>Instead of loading your own target data you can simply replicate data from the
+latest Production stack (which is made available in the early hours of each
+morning) into your stack’s instance.</p>
+<p>Two <strong>Job Templates</strong> exist to allow this, and they can be run once your
+stack has initialised: -</p>
+<ol class="arabic simple">
+<li><p><strong>Common Database Replicator (One-Time)</strong> to replicate the Production
+PostgreSQL <code class="docutils literal notranslate"><span class="pre">frag</span></code> database</p></li>
+<li><p><strong>Common Media Replicator (One-Time)</strong> to replicate the Production
+stack’s media files</p></li>
+</ol>
 </div>
-<div class="section" id="preparing-new-target-data-aws-s3">
-<h2>Preparing new target data (AWS S3)<a class="headerlink" href="#preparing-new-target-data-aws-s3" title="Permalink to this headline">¶</a></h2>
-<p>If you have new data you wish to deploy it first needs to be uploaded
-to your chosen S3 bucket. Install the <a class="reference external" href="https://aws.amazon.com/cli/">AWS CLI</a> and then run configuration
-in order to provide your AWS credentials:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ aws configure
-[...]
-</pre></div>
-</div>
-<blockquote class="epigraph">
-<div><p>As the <code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">configure</span></code> command typically writes data to <code class="docutils literal notranslate"><span class="pre">~/.aws/config</span></code>
-you can avoid placing sensitive information in files by providing values
-in the environment variables <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code></p>
-</div></blockquote>
-<p>With the AWS CLI configured you can, with an AWS S3 bucket of <code class="docutils literal notranslate"><span class="pre">dls-fragalysis</span></code>
-and local target data in the directory <code class="docutils literal notranslate"><span class="pre">2020-02-34T12</span></code>, use the following
-AWS CLI command <a class="footnote-reference brackets" href="#f3" id="id3">3</a> to upload it for use by the loader:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">s3</span> <span class="n">sync</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span><span class="n">T12</span> <span class="n">s3</span><span class="p">:</span><span class="o">//</span><span class="n">dls</span><span class="o">-</span><span class="n">fragalysis</span><span class="o">/</span><span class="n">django</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="mi">2020</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">24</span><span class="n">T12</span>
-</pre></div>
-</div>
-<p>With data loaded on S3 you can use <code class="docutils literal notranslate"><span class="pre">2020-02-24T12</span></code> as the <code class="docutils literal notranslate"><span class="pre">loader_data_origin</span></code>
-value in your loader Job.</p>
+<div class="section" id="redeploying-a-stack-a-version-or-code-change">
+<h3>Redeploying a Stack (a version or code change)<a class="headerlink" href="#redeploying-a-stack-a-version-or-code-change" title="Permalink to this headline">¶</a></h3>
+<p>If you’ve already deployed your stack and have now produced a new Docker
+image (even a new <code class="docutils literal notranslate"><span class="pre">latest</span></code> image) you can quickly redeploy the
+image by running the <strong>Developer Fragalysis Stack (Version Change)</strong> Job
+Template.</p>
+<p>This relies on the stack having been deployed (i.e. with a database and
+persistent volumes) and simply causes the Pod to restart while also re-pulling
+the image from Docker Hub.</p>
+<p>You can just run the original <strong>Developer Fragalysis Stack</strong> JOb template
+but that takes a little longer to run.</p>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
-<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="f1"><span class="brackets">1</span></dt>
 <dd><p><em>Flavours</em> being the official development (<code class="docutils literal notranslate"><span class="pre">latest</span></code>) and production
 (<em>tagged</em>) stack images along with any number of user stacks (limited
 by the available Kubernetes cluster resources).</p>
 </dd>
-<dt class="label" id="f2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dt class="label" id="f2"><span class="brackets"><a class="fn-backref" href="#id1">2</a></span></dt>
 <dd><p>There are a some other variables but these are the key ones.</p>
 </dd>
-<dt class="label" id="f3"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dt class="label" id="f3"><span class="brackets">3</span></dt>
 <dd><p>You will need AWS credentials to do this.</p>
 </dd>
 </dl>
+</div>
 </div>
 </div>
 
@@ -314,7 +303,7 @@ by the available Kubernetes cluster resources).</p>
         <a href="awx.html" class="btn btn-neutral float-right" title="AWX" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="stack-loader.html" class="btn btn-neutral float-left" title="The Fragalysis Stack Loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="developer-builds-cli.html" class="btn btn-neutral float-left" title="Developer Builds (Using Docker)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
