@@ -71,7 +71,7 @@
     - name: Get job's username
       set_fact:
         template_user_name: >-
-          {{ tower_job_template_name|regex_search("^User \((.*)\)")|lower }}
+          {{ tower_job_template_name|regex_replace('^User \(([a-zA-Z]+)\).*$', '\\1')|lower }}
 
     - name: Check job's user against the user
       assert:
@@ -80,7 +80,7 @@
           You can't run this Job Template.
           It is for {{ template_user_name }} but you are {{ tower_user_name }}
 
-    when: tower_job_template_name|regex_search("^User \(")
+    when: tower_job_template_name|regex_search("^User \(([a-zA-Z]+)\).*$")
 
   # Also, check the stack name provided.
   # It cannot be blank and must only consist of lower-case letters.
