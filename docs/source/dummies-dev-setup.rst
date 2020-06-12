@@ -262,6 +262,39 @@ Now that you've done this, every time you push a change from a branch into ``mas
 * After the image is pushed, a job is triggered in awx
 * That job takes the image that has just been pushed and re-builds the stack with it
 
+Alternative deployment strategy - Developing locally
+=====================================================
+
+On the ``xchem/fragalysis-backend`` and ``xchem/fragalysis-frontend`` repositories, there are instructions on how to set up
+a local development environment using Docker in the ``README.md`` files in the root of the respective repository.
+
+Part of the process of using this local environment includes building the backend and/or frontend images, and using them locally, and then using those images to build a stack image
+Because the stack image is all that is needed to push a new version into a live stack, the following process can be used to use those locally built images to push to your stack on awx:
+
+1. log in to docker:
+
+    ``docker login --username=yourhubusername --password=yourpassword``
+
+2. Build your image by executing the docker build command. ``DOCKER_ACC`` is the name of your account, ``$DOCKER_REPO`` is your image name and ``$IMG_TAG`` is your tag
+
+    ``docker build -t $DOCKER_ACC/$DOCKER_REPO:$IMG_TAG .``
+
+    e.g. ``docker build -t reskyner/fragalysis-stack:latest`` is the command for rachael to build her stack image, ready to push do dockerhub.
+
+3. Now, you can push this image to your hub by executing the docker push command.
+
+    ``sudo docker push $DOCKER_ACC/$DOCKER_REPO:$IMG_TAG``
+
+    This will push the image up to dockerhub. The only image you need to push is the stack image, as this is the image used by awx to build your stack.
+
+4. Go to awx, and navigate to your ``User (<name>) Developer Fragalysis Stack (Version Change)`` job template
+
+5. In the ``EXTRA VARIABLES`` section, change ``stack_image: xchem/fragalysis-stack`` to point to your image (e.g. ``reskyner/fragalysis-stack``)
+
+6. Save and launch the job
+
+7. Navigate to the stack to see the changes from your local dev environment live in the wild!
+
 
 
 
