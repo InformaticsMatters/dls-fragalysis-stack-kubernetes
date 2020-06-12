@@ -101,6 +101,9 @@ Adding variables to Travis
 4. Click on the Settings option
 5. Add the relevant options under 'Environment variables' - make sure to not show any sensitive info in the build logs
 
+Travis environment variable descriptions
+=========================================
+
 Backend variables (Optional)
 ----------------------------
 Variables related to images (Dockerhub):
@@ -108,7 +111,7 @@ Variables related to images (Dockerhub):
 * ``PUBLISH_IMAGES`` - set this to yes to push any built image to docker
 * ``DOCKER_USERNAME`` - Dockerhub username to allow you to push
 * ``DOCKER_PASSWORD`` - Dockerhub password to allow you to push
-* ``BE_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-backend``
+* ``BE_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-backend``)
 
 Variables related to GitHub fragalysis-stack repo:
 
@@ -146,18 +149,20 @@ Variables related to stack GitHub repo:
 Loader variables (Optional)
 -----------------------------
 
-c.	Loader:
-Dockerhub
-PUBLISH_IMAGES - yes to push to docker
-DOCKER_USERNAME
-DOCKER_PASSWORD
+Variables related to loader image (Dockerhub):
+* ``PUBLISH_IMAGES`` - yes to push to docker
+* ``DOCKER_USERNAME`` - dockerhubb username
+* ``DOCKER_PASSWORD`` - dockerhub password
+* ``LOADER_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/loader``)
 
-BE_NAMESPACE
-BE_IMAGE_TAG – default latest
-LOADER_NAMESPACE
+Variables to decide whick backend image to use when building the loader image (optional - will default to ``xchem/master``):
 
-Stack variables (Mandatory)
------------------------------
+* ``BE_NAMESPACE`` - the Dockerhub namespace you want to use (e.g. ``reskyner`` if you're using ``reskyner/loader``)
+* ``BE_IMAGE_TAG`` – version of image to use (optional, will default to ``:latest``)
+
+
+Stack variables (Mandatory for automated builds)
+------------------------------------------------
 
 Variables related to stack image - the one your stack will use (Dockerhub):
 
@@ -165,20 +170,20 @@ Variables related to stack image - the one your stack will use (Dockerhub):
 * ``DOCKER_USERNAME`` - dockerhub username to allow push
 * ``DOCKER_PASSWORD`` - dockerhub password to allow push
 * ``PUBLISH_IMAGES`` - yes to push to docker - make sure to change STACK_NAMESPACE to push to own docker hub account
-* ``STACK_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``
+* ``STACK_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``)
 
 Variables setting which bback-end image to use (optional - ``will default to xchem/master``):
 
-* ``BE_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``
+* ``BE_NAMESPACE`` - the Dockerhub namespace you want to use (e.g. ``reskyner`` if you're using ``reskyner/fragalysis-stack``)
 * ``BE_IMAGE_TAG`` - docker image tag (optional, will default to ``:latest``)
 
 Variables to control automatic pushing to your awx stack:
 
-* AWX_HOST - awx url (for devs: https://awx-xchem.informaticsmatters.org/)
-* AWX_USER - awx username provided by Rachael
-* AWX_USER_PASSWORD - awx password provided by Rachael
-* TRIGGER_AWX – yes to push to awx
-* AWX_DEV_JOB_NAME - name of the developer awx job to trigger stack auto build:
+* ``AWX_HOST`` - awx url (for devs: https://awx-xchem.informaticsmatters.org/)
+* ``AWX_USER`` - awx username provided by Rachael
+* ``AWX_USER_PASSWORD`` - awx password provided by Rachael
+* ``TRIGGER_AWX`` – yes to push to awx
+* ``AWX_DEV_JOB_NAME`` - name of the developer awx job to trigger stack auto build:
     * NB: This needs to be in double quotes, e.g. ``"User (Rachael) Developer Fragalysis Stack (Version Change)"``
     * NB: Change the name to your name!
 
