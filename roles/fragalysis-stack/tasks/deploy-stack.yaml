@@ -54,108 +54,80 @@
 
 # ISPyB secrets...
 
-- name: Check ISPyB secrets
-  k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ stack_namespace }}"
-    name: ispyb
-  register: s_result
+# These variables are in a vault file.
+# Make sure they exist.
 
-- name: Set (new) ISPyB secrets
-  block:
+- name: Assert ISPyB secrets are defined
+  assert:
+    that:
+    - stack_ispyb_user is defined
+    - stack_ispyb_password is defined
+    - stack_ispyb_host is defined
+    - stack_ispyb_port is defined
 
-  # These variables are in a vault file.
-  # Make sure they exist.
+- name: Set ISPyB secret facts (new)
+  set_fact:
+    stack_ispyb_user_fact: '{{ stack_ispyb_user }}'
+    stack_ispyb_password_fact: '{{ stack_ispyb_password }}'
+    stack_ispyb_host_fact: '{{ stack_ispyb_host }}'
+    stack_ispyb_port_fact: '{{ stack_ispyb_port }}'
 
-  - name: Assert ISPyB secrets are defined
-    assert:
-      that:
-      - stack_ispyb_user is defined
-      - stack_ispyb_password is defined
-      - stack_ispyb_host is defined
-      - stack_ispyb_port is defined
-
-  - name: Set ISPyB secret facts (new)
-    set_fact:
-      stack_ispyb_user_fact: '{{ stack_ispyb_user }}'
-      stack_ispyb_password_fact: '{{ stack_ispyb_password }}'
-      stack_ispyb_host_fact: '{{ stack_ispyb_host }}'
-      stack_ispyb_port_fact: '{{ stack_ispyb_port }}'
-
-  - name: Write ISPyB secrets
-    k8s:
-      definition: "{{ lookup('template', 'secret-ispyb.yaml.j2') }}"
-      wait: yes
-
-  when: s_result.resources|length == 0
+- name: Write ISPyB secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-ispyb.yaml.j2') }}"
+    wait: yes
 
 # App (ssh) secrets...
 
-- name: Check ssh secrets
-  k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ stack_namespace }}"
-    name: ssh
-  register: s_result
+# These variables are in a vault file.
+# Make sure they exist.
 
-- name: Set (new) ssh secrets
-  block:
+- name: Assert xchem secrets are defined
+  assert:
+    that:
+    - stack_ssh_host is defined
+    - stack_ssh_user is defined
+    - stack_ssh_password is defined
+    - stack_security_connector is defined
 
-  - name: Set ssh secret facts (new)
-    set_fact:
-      stack_ssh_host_fact: '{{ stack_ssh_host }}'
-      stack_ssh_user_fact: '{{ stack_ssh_user }}'
-      stack_ssh_password_fact: '{{ stack_ssh_password }}'
-      stack_security_connector_fact: '{{ stack_security_connector }}'
+- name: Set ssh secret facts
+  set_fact:
+    stack_ssh_host_fact: '{{ stack_ssh_host }}'
+    stack_ssh_user_fact: '{{ stack_ssh_user }}'
+    stack_ssh_password_fact: '{{ stack_ssh_password }}'
+    stack_security_connector_fact: '{{ stack_security_connector }}'
 
-  - name: Write ssh secrets
-    k8s:
-      definition: "{{ lookup('template', 'secret-ssh.yaml.j2') }}"
-      wait: yes
-
-  when: s_result.resources|length == 0
+- name: Write ssh secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-ssh.yaml.j2') }}"
+    wait: yes
 
 # xchem secrets...
 
-- name: Check xchem secrets
-  k8s_info:
-    kind: Secret
-    api_version: v1
-    namespace: "{{ stack_namespace }}"
-    name: xchem
-  register: s_result
+# These variables are in a vault file.
+# Make sure they exist.
 
-- name: Set (new) xchem secrets
-  block:
+- name: Assert xchem secrets are defined
+  assert:
+    that:
+    - stack_xchem_user is defined
+    - stack_xchem_password is defined
+    - stack_xchem_name is defined
+    - stack_xchem_host is defined
+    - stack_xchem_port is defined
 
-  # These variables are in a vault file.
-  # Make sure they exist.
+- name: Set xchem secret facts (new)
+  set_fact:
+    stack_xchem_user_fact: '{{ stack_xchem_user }}'
+    stack_xchem_password_fact: '{{ stack_xchem_password }}'
+    stack_xchem_name_fact: '{{ stack_xchem_name }}'
+    stack_xchem_host_fact: '{{ stack_xchem_host }}'
+    stack_xchem_port_fact: '{{ stack_xchem_port }}'
 
-  - name: Assert xchem secrets are defined
-    assert:
-      that:
-      - stack_xchem_user is defined
-      - stack_xchem_password is defined
-      - stack_xchem_name is defined
-      - stack_xchem_host is defined
-      - stack_xchem_port is defined
-
-  - name: Set xchem secret facts (new)
-    set_fact:
-      stack_xchem_user_fact: '{{ stack_xchem_user }}'
-      stack_xchem_password_fact: '{{ stack_xchem_password }}'
-      stack_xchem_name_fact: '{{ stack_xchem_name }}'
-      stack_xchem_host_fact: '{{ stack_xchem_host }}'
-      stack_xchem_port_fact: '{{ stack_xchem_port }}'
-
-  - name: Write xchem secrets
-    k8s:
-      definition: "{{ lookup('template', 'secret-xchem.yaml.j2') }}"
-      wait: yes
-
-  when: s_result.resources|length == 0
+- name: Write xchem secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-xchem.yaml.j2') }}"
+    wait: yes
 
 # Now the stack, its service and ingress
 # and give the user their stack URL.
