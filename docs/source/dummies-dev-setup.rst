@@ -67,6 +67,18 @@ Prerequisites
 * You have a travis api-token
 * You have a dockerhub account
 
+Using the right travis version
+------------------------------
+The CI/CD implementation will only work running from the newest version of travis, which is now found at https://travis-ci.com/.
+However, to set this up correctly, you will need to start from https://travis-ci.org/.
+
+1. Log in to https://travis-ci.org/ with your github account
+2. On the left-hand side of the first page that loads, under your user account, there will be a ``request beta access`` button - click it.
+3. This will take you to https://travis-ci.com/
+4. If you are using an organisation account (e.g. xchem) then you will need to request access and grant it from github
+
+Once you have granted access to Travis, your repositories should appear in the dashboard of Travis
+
 Getting a travis api token
 --------------------------
 The following should give you an API access token:
