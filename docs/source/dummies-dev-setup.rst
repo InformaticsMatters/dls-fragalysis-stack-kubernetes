@@ -118,6 +118,11 @@ Variables related to GitHub fragalysis-stack repo:
 * ``STACK_NAMESPACE`` - GitHub user for stack
 * ``STACK_BRANCH`` - Github user branch for stack
 
+Variables related to auto-triggerring stack build:
+
+* ``TRAVIS_ACCESS_TOKEN`` - your travis access token
+* ``TRIGGER_DOWNSTREAM`` - set to yes to trigger a stack build when back-end build is successful
+
 Optional (have defaults):
 
 * ``BE_IMAGE_TAG`` (default = latest) (dockerhub if not latest)
