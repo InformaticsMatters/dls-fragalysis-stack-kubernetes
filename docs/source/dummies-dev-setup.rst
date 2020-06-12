@@ -1,0 +1,191 @@
+***********************************************
+Setting up your dev stack (for dummies)
+***********************************************
+
+This document goes through the deployment of a full developer stack.
+It will show how to:
+
+* Set up the first instance of the developer stack
+* Clone the database and media from the production stack into your developer stack
+* Set Travis up to automatically push to your stack when changes are made to the master branch on your forks of the fragalysis repositories
+
+Getting started
+===============
+
+Forking from GitHub
+-------------------
+
+The fist step is to ensure that you have forked the master branch of each component of the fragalysis stack:
+
+a.	xchem/fragalysis-backend
+b.	xchem/fragalysis-frontend
+c.	xchem/fragalysis-loader
+d.	xchem/fragalysis-stack
+
+Old forks should have the current version of master put in - changes to the stack include changes to how CI/CD works,
+so it is important that all forks are brought up-to-date with the master branch of the XChem repositories
+
+Setting up awx
+---------------
+The stack image for your development environment can be accessed at https://awx-xchem.informaticsmatters.org/#/login.
+Rachael (rachael.skyner@diamond.ac.uk) will give you your username and password to log in.
+
+Once you are logged in, you can find the templates for the jobs you can run under ``template`` on the left-hand side of
+the page. For standard developers, there are two kinds of jobs:
+
+* Common... - these jobs are for duplicating the database and media components into your own stack
+* User... - these jobs are for deploying or destroying the stack
+
+If Rachael hasn't already run the first stack job for you, here's how to do it:
+
+1. Run the ``User (<name>) Developer Fragalysis Stack`` job:
+    * NB: do not navigate to your stack URL until you have completed steps 2 and 3
+    * NB: the URL for your stack is spat out in the output of this job
+    * NB: you must be logged in as your own user to create your own stack - do not run any other users job under **any** circumstances
+2. Run the ``Common Database Replicator (One-Time)`` job:
+    * NB: you must be logged in as your own user for this to populate your stack
+3. Run the ``Common Media Replicator (One-Time)`` job:
+    * NB: you must be logged in as your own user for this to populate your stack
+
+Each job can be launched by clicking on the rocket icon next to the template, this will open the job template, and allow you to launch it.
+For these first steps, it is fine to run the jobs without changing any parameters.
+
+When the jobs are finished, navigate to the URL spat out by the job in ``1``. You should now have a copy of the stack that
+is created from the ``xchem/master`` branches.
+
+Setting up Travis for CI/CD
+=====================================
+
+In this deployment, we use Travis to do CI/CD, rather than Travis for CI, and Jenkins for CD. It's much easier to customise
+how your stack is built by using travis.
+
+Prerequisites
+--------------
+* You have the new changes from all of the ``xchem/master`` branches for the code you want to develop
+* You have a travis account
+* You have added your forks to your travis account
+* You have a travis api-token
+* You have a dockerhub account
+
+Getting a travis api token
+--------------------------
+The following should give you an API access token:
+
+``gem install travis && travis login --com && travis token --com``
+
+Keep it safe - we need it to allow us to trigger builds for automated deployment.
+
+Intro to how the CI/CD works
+----------------------------
+This is a cubersome but worthwhile step. First of all, you should decide which codebases you want to work on, and therefore
+incorporated changes from into your own stack.
+
+Once you have decided, you can set up your travis jobs to automatically trigger builds when you push to certain branches,
+and automatically deploy your stack or component images to your own dockerhub account. The awx job that we set up earlier
+looks for the dockerhub stack image that you build and push with travis, by taking a single variable, which is the endpoint
+for your stack image. e.g. ``rachael/fragalysis-stack``. The stack job template assumes it is always looking for the
+stack image tagged as ``:latest`` at that endpoint.
+
+The quickest way to see what the different build variables are, and what they do, is to look at the ``.travis.yml`` file
+in each repository. The comments at the top of those files describe the variables in detail.
+
+Here, I'll list all the variables that can be added for each deployment. The backend, frontend and loader configurations are optional,
+depending on what code-base you want to work on. However, you should configure your stack variables if you want to automatically
+push to your live deployment when you push changes to a branch (I'd suggest setting this up just for ``master``)
+
+Adding variables to Travis
+--------------------------
+1. Log in to travis
+2. Navigate to the travis job on the left-hand side (it will appear there after you add them)
+3. Click on the burger menu
+4. Click on the Settings option
+5. Add the relevant options under 'Environment variables' - make sure to not show any sensitive info in the build logs
+
+Backend variables (Optional)
+----------------------------
+Variables related to images (Dockerhub):
+
+* ``PUBLISH_IMAGES`` - set this to yes to push any built image to docker
+* ``DOCKER_USERNAME`` - Dockerhub username to allow you to push
+* ``DOCKER_PASSWORD`` - Dockerhub password to allow you to push
+* ``BE_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-backend``
+
+Variables related to GitHub fragalysis-stack repo:
+
+* ``STACK_NAMESPACE`` - GitHub user for stack
+* ``STACK_BRANCH`` - Github user branch for stack
+
+Optional (have defaults):
+
+* ``BE_IMAGE_TAG`` (default = latest) (dockerhub if not latest)
+* ``LOADER_NAMESPACE`` - xchem (unless working on loader)
+* ``LOADER_BRANCH`` - master (unless working on loader)
+
+Frontend variables (Optional)
+-----------------------------
+
+Variables related to automated build (Travis):
+
+* ``TRIGGER_DOWNSTREAM`` - yes to trigger build of stack & loader
+* ``TRAVIS_ACCESS_TOKEN`` - needed for the trigger
+
+Variables related to images (Dockerhub):
+
+* ``BE_NAMESPACE`` - docker namespace (default xchem)
+
+Variables related to frontend GitHub repo:
+
+* ``FE_NAMESPACE`` – front-end user/account
+* ``FE_BRANCH`` - branch
+
+Variables related to stack GitHub repo:
+
+* ``STACK_NAMESPACE`` – stack user/account
+* ``STACK_BRANCH`` - GitHub user/account branch
+
+Loader variables (Optional)
+-----------------------------
+
+c.	Loader:
+Dockerhub
+PUBLISH_IMAGES - yes to push to docker
+DOCKER_USERNAME
+DOCKER_PASSWORD
+
+BE_NAMESPACE
+BE_IMAGE_TAG – default latest
+LOADER_NAMESPACE
+
+Stack variables (Mandatory)
+-----------------------------
+
+Variables related to stack image - the one your stack will use (Dockerhub):
+
+* ``PUBLISH_IMAGES`` - yes to push to docker
+* ``DOCKER_USERNAME`` - dockerhub username to allow push
+* ``DOCKER_PASSWORD`` - dockerhub password to allow push
+* ``PUBLISH_IMAGES`` - yes to push to docker - make sure to change STACK_NAMESPACE to push to own docker hub account
+* ``STACK_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``
+
+Variables setting which bback-end image to use (optional - ``will default to xchem/master``):
+
+* ``BE_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``
+* ``BE_IMAGE_TAG`` - docker image tag (optional, will default to ``:latest``)
+
+Variables to control automatic pushing to your awx stack:
+
+* AWX_HOST - awx url (for devs: https://awx-xchem.informaticsmatters.org/)
+* AWX_USER - awx username provided by Rachael
+* AWX_USER_PASSWORD - awx password provided by Rachael
+* TRIGGER_AWX – yes to push to awx
+* AWX_DEV_JOB_NAME - name of the developer awx job to trigger stack auto build:
+    * NB: This needs to be in double quotes, e.g. ``"User (Rachael) Developer Fragalysis Stack (Version Change)"``
+    * NB: Change the name to your name!
+
+
+
+
+
+
+
+

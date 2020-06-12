@@ -10,3 +10,4 @@ Fragalysis Stack Orchestration (Kubernetes)
     deployment
     rancher
     demo-cluster
+    dummies-dev-setup
