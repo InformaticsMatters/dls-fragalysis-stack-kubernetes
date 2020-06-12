@@ -172,7 +172,7 @@ Variables related to stack image - the one your stack will use (Dockerhub):
 * ``PUBLISH_IMAGES`` - yes to push to docker - make sure to change STACK_NAMESPACE to push to own docker hub account
 * ``STACK_NAMESPACE`` - the Dockerhub namespace you want to push to (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``)
 
-Variables setting which bback-end image to use (optional - ``will default to xchem/master``):
+Variables setting which back-end image to use (optional - ``will default to xchem/master``):
 
 * ``BE_NAMESPACE`` - the Dockerhub namespace you want to use (e.g. ``reskyner`` if you're using ``reskyner/fragalysis-stack``)
 * ``BE_IMAGE_TAG`` - docker image tag (optional, will default to ``:latest``)
@@ -186,6 +186,66 @@ Variables to control automatic pushing to your awx stack:
 * ``AWX_DEV_JOB_NAME`` - name of the developer awx job to trigger stack auto build:
     * NB: This needs to be in double quotes, e.g. ``"User (Rachael) Developer Fragalysis Stack (Version Change)"``
     * NB: Change the name to your name!
+
+Recommended set-up for front-end developers
+===========================================
+1. Fork the ``xchem/fragalysis-frontend`` repo from GitHub
+2. Fortk the ``xchem/fragalysis-stack`` repo from GitHub
+3. Add your forks to Travis
+4. Setup the following environment variables for the front-end travis jobs:
+
+    * Variables related to automated build (Travis):
+
+        * ``TRIGGER_DOWNSTREAM`` = ``yes``
+        * ``TRAVIS_ACCESS_TOKEN`` = ``<your access token here>``
+
+    * Variables related to frontend GitHub repo:
+
+        * ``FE_NAMESPACE`` = ``<your GitHub account name here>``
+        * ``FE_BRANCH`` = ``master``
+
+    * Variables related to stack GitHub repo:
+
+        * ``STACK_NAMESPACE`` = ``<your GitHub account name here>``
+        * ``STACK_BRANCH`` = ``master``
+
+5. Setup the following environment variables for the stack travis jobs:
+
+    * Variables related to stack image - the one your stack will use (Dockerhub):
+
+        * ``PUBLISH_IMAGES`` = ``yes``
+        * ``DOCKER_USERNAME`` = ``<Your dockerhub username here>``
+        * ``DOCKER_PASSWORD`` = ``<Your dockerhub password here>``
+        * ``PUBLISH_IMAGES`` = ``yes``
+        * ``STACK_NAMESPACE`` = ``<your GitHub account name here>``
+
+    * Variables setting which back-end image to use (optional - ``will default to xchem/master``):
+
+        * ``BE_NAMESPACE`` = ``<Your dockerhub username here>``
+
+    * Variables to control automatic pushing to your awx stack:
+
+        * ``AWX_HOST`` = ``https://awx-xchem.informaticsmatters.org/``
+        * ``AWX_USER`` = ``<Your awx username here>``
+        * ``AWX_USER_PASSWORD``  = ``<Your awx password here>``
+        * ``TRIGGER_AWX`` = ``yes``
+        * ``AWX_DEV_JOB_NAME`` = ``"User (<Your name here>) Developer Fragalysis Stack (Version Change)"``
+
+6. Alter the ``User (<Your name here>) Developer Fragalysis Stack (Version Change)`` job in awx:
+    1. Click on the templates on the left hand side
+    2. Click on the job name
+    3. Under ``EXTRA VARIABLES`` change ``stack_image: xchem/fragalysis-stack`` to point to your image (e.g. ``reskyner/fragalysis-stack``)
+
+
+Now that you've done this, every time you push a change from a branch into ``master`` in your frontend fork:
+
+* The tests for the front-end will run in travis
+* If the tests run, the back-end and stack jobs will be triggered
+* When the stack-job completes, an image of that stack will be pushed to your Dockerhub repo
+* After the image is pushed, a job is triggered in awx
+* That job takes the image that has just been pushed and re-builds the stack with it
+
+
 
 
 
