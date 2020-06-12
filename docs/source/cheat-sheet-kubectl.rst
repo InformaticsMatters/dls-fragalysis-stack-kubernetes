@@ -11,13 +11,18 @@ A Developer Cheat-Sheet for kubectl
 Setting the default namespace
     To quickly restrict your commands to a given namespace, e.g.
     your own Fragalysis Stack deployment you can use the **set-context**
-    command. If your stack is deployed to **stack-17-default** you can set the
+    command. If your stack is deployed to **stack-alan-default** you can set the
     default namespace to it with the following command: -
 
-    ``$ kubectl config set-context --current --namespace=stack-17-default``
+    ``$ kubectl config set-context --current --namespace=stack-alan-default``
 
-    From this point forward you need to add ``-n stack-17-default`` to each
+    From this point forward you need to add ``-n stack-alan-default`` to each
     command you want to run.
+
+    This is probably the most important command to you should run - by setting
+    the default namespace to that for your stack it'll be much more difficult
+    for you to make the mistake of adjusting the content of namespaces
+    being used by others.
 
     The following *cheats* assume that you have set the default namespace.
 
@@ -76,6 +81,10 @@ Shell into a Pod container
     ``$ kubectl exec -it pod/stack-0 bash``
 
     Once you're done you can **ctrl-d** to get out of the container.
+
+Watching object state changes
+    You can watch rolling update status of the stack until completion
+    using the ``--watch`` argument
 
 Restarting a Pod (scale down and up)
     You can *bounce* (restart) a container. This won't normally re-deploy a
