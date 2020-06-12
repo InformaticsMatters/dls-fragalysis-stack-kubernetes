@@ -172,6 +172,27 @@ spec:
 {% else %}
           value: 'no'
 {% endif %}
+        # SSH material
+        - name: SSH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: host
+        - name: SSH_USER
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: user
+        - name: SSH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: password
+        - name: SECURITY_CONNECTOR
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: security_connector
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
         # This is used in situations where the origin image's tag may not

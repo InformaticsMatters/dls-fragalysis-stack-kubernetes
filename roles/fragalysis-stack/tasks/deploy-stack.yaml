@@ -90,6 +90,33 @@
 
   when: s_result.resources|length == 0
 
+# App (ssh) secrets...
+
+- name: Check ssh secrets
+  k8s_info:
+    kind: Secret
+    api_version: v1
+    namespace: "{{ stack_namespace }}"
+    name: ssh
+  register: s_result
+
+- name: Set (new) ssh secrets
+  block:
+
+  - name: Set ssh secret facts (new)
+    set_fact:
+      stack_ssh_host_fact: '{{ stack_ssh_host }}'
+      stack_ssh_user_fact: '{{ stack_ssh_user }}'
+      stack_ssh_password_fact: '{{ stack_ssh_password }}'
+      stack_security_connector_fact: '{{ stack_security_connector }}'
+
+  - name: Write ssh secrets
+    k8s:
+      definition: "{{ lookup('template', 'secret-ssh.yaml.j2') }}"
+      wait: yes
+
+  when: s_result.resources|length == 0
+
 # xchem secrets...
 
 - name: Check xchem secrets
