@@ -34,10 +34,20 @@ Essentially, the high-level stages consist of...
     to resolve to the application node).
 
 ### Installing rke
-TBD
+Follow the instructions at [installing rke] to install `rke`, after which
+you should be able to run: -
+
+    $ rke --version
+    rke version 1.0.8
 
 ### Installing kubectl
-TBD
+Follow instructions at [installing kubectl] to install the `kubectl` client,
+after which you should be abel to run: -
+
+    $ kubectl version --client --short
+    Client Version: v1.18.0
+    
+>   Ensure you are using kubectl 1.18 or better.
 
 ### Installing helm
 For reference refer to the [installing Helm] documentation.
@@ -150,6 +160,8 @@ importantly, set the initial administrator password
 
 ---
 
+[installing rke]: https://rancher.com/docs/rke/latest/en/installation/#download-the-rke-binary
+[installing kubectl]: https://kubernetes.io/docs/tasks/tools/install-kubectl/
 [installing helm]: https://helm.sh/docs/intro/install/
 [install rancher]: https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/
 [update]: https://rancher.com/docs/rke/latest/en/managing-clusters/
