@@ -1,10 +1,11 @@
 # Rancher
 Material to configure the RKE-based xchem Rancher deployment.
+
 Here we rely on a Kubernetes cluster based on instances created in the
 `xchem-follow-up` STFC project.
 
 -   Currently the instances are created using the **OpenStack** console
-    (multiple etcd, single control-plane instance and a single worker)
+    (multiple etcd, single control-plane and worker instances)
 -   **RKE** is used to deploy Kubernetes to the compute instances
     using a simple `cluster.yml` configuration file (enclosed) - as
     described on the Rancher site
@@ -94,7 +95,16 @@ Create the `cluster.yml` and then install Kubernetes...
 >   As we've used a public IP for the control-plane the generated
     `kube_config_cluster.yml` should be useful outside the
     STFC cluster.
- 
+
+#### Adding worker nodes
+You can add new worker nodes by editing the `cluster.yml`, ensuring you've run
+the `site-rke` playbook in our `ansible-infratstructure` project and then
+using `rke`: -
+
+    $ rke up --update-only
+
+For details refer to the [update] documentation.
+
 ### Install rancher (using helm)
 As we have direct access to the Internet from the cluster
 we can follow the main [install Rancher] instructions, which is
@@ -142,3 +152,4 @@ importantly, set the initial administrator password
 
 [installing helm]: https://helm.sh/docs/intro/install/
 [install rancher]: https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/
+[update]: https://rancher.com/docs/rke/latest/en/managing-clusters/

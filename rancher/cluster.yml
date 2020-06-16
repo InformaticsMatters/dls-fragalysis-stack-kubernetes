@@ -22,7 +22,17 @@ nodes:
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - controlplane
+- address: 130.246.215.25
+  user: wmu55374
+  ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
+  role:
+  - worker
 - address: 130.246.215.45
+  user: wmu55374
+  ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
+  role:
+  - worker
+- address: 130.246.215.64
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
