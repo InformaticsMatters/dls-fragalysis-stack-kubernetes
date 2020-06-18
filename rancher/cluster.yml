@@ -2,6 +2,9 @@
 cluster_name: rancher-xchem
 
 nodes:
+
+  # etcd
+
 - address: 192.168.253.14
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
@@ -17,11 +20,17 @@ nodes:
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - etcd
+
+  # control plane
+
 - address: 130.246.215.43
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - controlplane
+
+  # workers
+
 - address: 130.246.215.25
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1

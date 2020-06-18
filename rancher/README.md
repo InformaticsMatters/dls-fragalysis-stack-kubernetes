@@ -72,10 +72,10 @@ Instances details: -
 -   **etcd** is `m1.large` (2-core 8Gi RAM)
 -   **control plane** is `c1.large` (2-core 8Gi RAM)
 -   **worker** is `c1.large` (2-core 8Gi RAM)
--   Bas image for all is `ScienbtificLinux-7-NoGui`
+-   Base image for all is `ScienbtificLinux-7-NoGui`
 
 >   The control-plane and worker have publicly-accessible Floating IPs attached
-    and it's these IP that's used in the `cluster.yml` we create for
+    and it's these IP that are used in the `cluster.yml` we create for
     installing **rke**.
 
 With the instances created we run our `site-rke.yaml` playbook
