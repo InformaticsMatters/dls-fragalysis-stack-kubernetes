@@ -28,7 +28,7 @@ is complex but it is simplified through the use of `AWX`_.
     :caption: Deployment Tools
 
     awx
-    continuous-delivery
+    development-cd
 
 Sensitive Material (Ansible Vault)
 ----------------------------------
