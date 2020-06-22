@@ -6,8 +6,8 @@ Fragalysis Stack Orchestration (Kubernetes)
     :maxdepth: 2
     :caption: Contents
 
-    development
-    deployment
-    rancher
+    development-ci
+    development-cd
+    deploying-stacks
     demo-cluster
     administration

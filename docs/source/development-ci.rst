@@ -5,24 +5,27 @@ Development
 .. epigraph::
 
     Fragalysis Stack development procedures for Kubernetes deployment
-    and the role of `Travis`_ in the Fragalysis Stack *CI/CD* process.
+    and the role of `Travis`_ in the Fragalysis Stack *CI* process.
 
 The OpenShift deployment of the Stack used **Jenkins** as the CI/CD build
 framework, relying on the container registry and build capabilities provided
 by OpenShift. Kubernetes has no registry as such and although you can install
-**Jenkins** it's role is diminished as it's more of *White Elephant* than
-and clear asset in Kubernetes.
+**Jenkins** it's role is diminished and it's of much less value than its
+OpenShift counterpart.
 
-Instead, in the Kubernetes world, without a clear industry standard merging as
-a CI/CD framework, we switch to relying on **Travis** in order to test and build
-the Stack images.
-
-**Travis** is an external cloud-based service, free for open-source projects.
+Instead, in the Kubernetes world, without a clear CI/CD framework emerging,
+we have switched to relying on an external build process (**Travis**) to
+build, test and deploy the Fragalysis Stack container images.
 
 **Travis** is an external cloud-based service, free for open-source projects
 that is mature used by many to test and build software. It is programmed
 through the use of ``.travis.yml`` files placed in the root directory of
 GitHub projects.
+
+We have added facilities to *chain* builds (for one Travis GitHub project
+to trigger another) using our `Trigger Travis`_ repository
+and to also deploy container images to the cluster using pre-deployed AWX
+Jobs using our `Trigger AWX`_ repository.
 
 Why not use **Jenkins**?
 
@@ -95,7 +98,7 @@ The diagram illustrates a *user* making a change (**A**) to the
 ``master`` branch of ``fragalysis-backend`` repository. The following steps
 occur, in approximate order: -
 
-1.  **Travis** detects the change and creates a server on which the build
+1.  **Travis** detects the change and creates a VM on which the build
     (and testing) takes place. The result of the build is a **docker push**
     to `Docker Hub`_. The image pushed is ``xchem/fragalysis-backend:latest``
     where the docker *user* is ``xchem``, the project is ``fragalysis-backend``
@@ -105,17 +108,17 @@ occur, in approximate order: -
 2.  At the end of the build of ``fragalysis-backend`` **Travis** is configured
     to *trigger* a build in the remote repository ``fragalysis-stack`` [#f2]_ .
     There's a new *backend* image so the stack, which depends on it, is
-    instructed to build.
+    instructed to build. It uses the `Trigger Travis`_ code to do this.
 
 3.  As the *Loader* also depends on the output of this build **Travis**
     also *triggers** the ``fragalysis-loader`` to build.
 
 4.  The ``fragalysis-loader`` **Travis** session (triggered by the *backend*)
-    builds and as its output is a container image it is pushed to Docker Hub.
-    The image pushed is ``xchem/fragalysis-loader:latest``
+    builds and, as its output is a container image, the image is pushed to
+    Docker Hub. The image pushed is ``xchem/fragalysis-loader:latest``
 
-5.  The ``fragalysis-stack`` **Travis** session (triggered by the *backend*)
-    builds and as its output is a container image it is pushed to Docker Hub.
+5.  The ``fragalysis-stack`` **Travis** session (also triggered by the
+    *backend* changes above) builds and its image is pushed to Docker Hub.
     The image pushed is ``xchem/fragalysis-stack:latest``
 
 More scenarios (here be Dragons)
@@ -514,4 +517,5 @@ the debugging of your deployed applications.
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
 .. _pypi: https://pypi.org/project/fragalysis/
 .. _travis: https://travis-ci.org/dashboard
-.. _trigger travis: https://github.com/InformaticsMatters/trigger-travis.git
+.. _trigger travis: https://github.com/InformaticsMatters/trigger-travis
+.. _trigger awx: https://github.com/InformaticsMatters/trigger-awx

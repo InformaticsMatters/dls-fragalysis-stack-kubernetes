@@ -20,4 +20,4 @@ pushed)::
 ..  toctree::
     :maxdepth: 1
 
-    deployment
+    deploying-stacks

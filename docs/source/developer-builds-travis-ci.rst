@@ -7,4 +7,4 @@ Developer Builds (Using Travis)
 ..  toctree::
     :maxdepth: 1
 
-    deployment
+    deploying-stacks
