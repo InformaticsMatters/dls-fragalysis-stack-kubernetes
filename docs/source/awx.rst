@@ -34,7 +34,7 @@ AWX is useful layer on top of raw Ansible because it provides: -
 AWX is a task engine we use to execute Ansible playbooks that manage
 Kubernetes objects.
 
-..  image:: images/frag-travis.006.png
+..  image:: images/frag-travis/frag-travis.006.png
 
 Objects
 -------
@@ -66,7 +66,7 @@ Deployment of applications often depends on: -
 *   Configuration **data** (typically graph and Fragalysis data) held
     externally (e.g. on AWS S3)
 
-..  image:: images/frag-travis.007.png
+..  image:: images/frag-travis/frag-travis.007.png
 
 
 Because the Production and Development clusters serve two very different

@@ -37,7 +37,7 @@ a typical sequence of *actions* that occur in response to a commit to the
 **master** branch of ``xchem/fragalysis-frontend`` repository can be seen
 illustrated in the following diagram.
 
-..  image:: images/frag-travis.009.png
+..  image:: images/frag-travis/frag-travis.009.png
 
 Deployment actions (from commits)
 ---------------------------------

@@ -1,10 +1,10 @@
-********************************
-Administration - The NFS Servers
-********************************
+***************
+The NFS Servers
+***************
 
 There is an NFS server to provide dynamic provisioning and shared (replication)
 volumes for both the **DEVELOPMENT** and **PRODUCTION** clusters. An separate
-NFS sever also exists to provide a a volume for Fragalysis (Gjango) **Media**
+NFS sever also exists to provide a a volume for Fragalysis (Django) **Media**
 files, used by the Media Loader AWX jobs.
 
 The Dynamic Volume Server
@@ -12,11 +12,18 @@ The Dynamic Volume Server
 
 This is an XYZ instance type with Floating IP ``130.246.213.182`` that has
 two attached volumes that act as roots for the respective cluster's NFS
-provisioner.
+provisioner. All application-based NFS volumes (the Kubernetes
+**Persistent Volume Claims**) are served from one of the devices
+(one device dedicated to the development cluster and one for production
+cluster).
 
-A third attached volume is used to provide static exports for the production
-media and database replicas. An AWX job launches a CronJob that replicates
-the production media (using rsync) and database (using pg_dump) to these
+Two more volumes are used to provide static exports for the production
+media and database replicas.
+
+..  image:: images/frag-travis/frag-travis.014.png
+
+An AWX job launches a CronJob that replicates the production media
+(using rsync) and database (using pg_dump) to the
 static volumes. These replicas form the basis of the re-import into
 the Staging stack and any User stack that requires them.
 
@@ -27,8 +34,10 @@ This is an XYZ instance type with Floating IP ``130.246.213.186`` that has
 one attached volume that acts as static root for new Fragalysis (Django)
 **Media** data.
 
-A user deposits new files onto the NFS export for use by *Loader* Jobs in
-production, staging and user stacks.
+..  image:: images/frag-travis/frag-travis.015.png
+
+A user deposits new files onto the NFS export (the *External Process*)
+for use by *Loader* Jobs in production, staging and user stacks.
 
 Creating the servers
 ====================
