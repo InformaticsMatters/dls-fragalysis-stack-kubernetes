@@ -65,7 +65,7 @@ AWS credentials.
 
 ### Creating compute instances
 We create instances using the STFC OpenStack console. We create 3
-**etcd** nodes and a single, _combined_ control and worker node.
+**etcd** nodes, dual control plane nodes and one or more worker nodes.
 
 Instances details: -
 
@@ -75,7 +75,7 @@ Instances details: -
 -   Base image for all is `ScienbtificLinux-7-NoGui`
 
 >   The control-plane and worker have publicly-accessible Floating IPs attached
-    and it's these IP that are used in the `cluster.yml` we create for
+    and it's these IPs that are used in the `cluster.yml` we create for
     installing **rke**.
 
 With the instances created we run our `site-rke.yaml` playbook
