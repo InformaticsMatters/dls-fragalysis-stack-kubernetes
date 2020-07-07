@@ -10,4 +10,5 @@ Fragalysis Stack Orchestration (Kubernetes)
     development-cd
     deploying-stacks
     demo-cluster
+    dummies-dev-setup
     administration
