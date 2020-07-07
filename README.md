@@ -31,10 +31,10 @@ decrypting it, armed with the repository vault password, using: -
 
 ## Project documentation
 The documentation is written in [Sphinx]. To build the documentation
-(from within an environment that satisfied `build-requirements.txt`),
 which results in the main index page `docs/build/html/index.html`,
 run the following from the project root: -
 
+    pip install -r build-requirements.txt
     sphinx-build -Eab html docs/source docs/build/html
 
 ---
