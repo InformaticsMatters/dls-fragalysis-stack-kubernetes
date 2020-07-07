@@ -25,6 +25,12 @@ is complex but it is simplified through the use of `AWX`_.
 
 ..  toctree::
     :maxdepth: 1
+    :caption: Container Images
+
+    container-images
+
+..  toctree::
+    :maxdepth: 1
     :caption: Deployment Tools
 
     awx
