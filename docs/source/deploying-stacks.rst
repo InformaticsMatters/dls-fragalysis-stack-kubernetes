@@ -27,7 +27,9 @@ is complex but it is simplified through the use of `AWX`_.
     :maxdepth: 1
     :caption: Container Images
 
+    cluster-requirements
     container-images
+    cluster-setup
 
 ..  toctree::
     :maxdepth: 1
