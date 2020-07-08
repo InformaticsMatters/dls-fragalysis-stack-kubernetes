@@ -27,6 +27,11 @@ Control Machine
     our own clusters and, if you do not currently use a Kubernetes dashboard
     or IDE, you might want to use it too.
 
+5.  **Credentials**. You will need credentials that allow admin privilege
+    access to the cluster and, if using AWS S3 as the origin for graph fragment
+    and Fragalysis Stack media data, a user with READ access for your chosen
+    AWS S3 *bucket*.
+
 Cluster
 =======
 
@@ -71,7 +76,7 @@ Cluster
     *   InformaticsMatters/docker-neo4j-ansible
 
 
-5.  **AWS S3**. The cluster must allow access to AWS S3 where fragment data
+5.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
     for the neo4j graph database and loader (media) data for the Stacks is
     expected to reside. The bucket name can be configured during deployment.
 
