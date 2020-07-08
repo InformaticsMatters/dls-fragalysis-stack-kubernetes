@@ -14,13 +14,11 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'Fragalysis Stack (Kubernetes)'
 copyright = '2020, Informatics Matters Ltd'
 author = 'Informatics Matters Ltd'
-
 
 # -- General configuration ---------------------------------------------------
 

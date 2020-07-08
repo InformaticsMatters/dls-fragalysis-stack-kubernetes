@@ -1,6 +1,6 @@
-*********************************
-Basic Infrastructure Installation
-*********************************
+*****************************
+Installing the Infrastructure
+*****************************
 
 The Fragalysis Stack depends on Kubernetes services and objects created by our
 `ansible-infrastructure`_ project. A basic set of parameters that can be used

@@ -1,6 +1,6 @@
-**********************
-Basic Graph Deployment
-**********************
+****************************
+Deploying the Fragment Graph
+****************************
 
 .. note:: Allow **2 hours** to install all of the applications.
 
@@ -10,9 +10,6 @@ are responsible for deploying the various applications.
 Start by logging into the AWX application server as the demo user ``demo``.
 From there you should be able to navigate to the **Templates** screen where
 all the templates are presented to you.
-
-The Fragmentation Graph Database
-********************************
 
 .. note:: Allow 2 hours to complete this task.
 

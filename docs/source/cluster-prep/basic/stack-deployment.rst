@@ -1,6 +1,6 @@
-**********************
-Basic Stack Deployment
-**********************
+*******************
+Deploying the Stack
+*******************
 
 .. note:: Allow **45 minutes** to complete this task.
           5 minutes for the stack and 40 minutes
