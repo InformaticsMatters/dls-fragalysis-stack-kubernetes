@@ -10,7 +10,7 @@ Fragalysis Stack Orchestration (Kubernetes)
     :maxdepth: 2
     :caption: Container Images
 
-    cluster-setup/index
+    cluster-prep/index
     architecture/index
     development/index
     administration/index

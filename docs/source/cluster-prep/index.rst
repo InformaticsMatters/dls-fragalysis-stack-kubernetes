@@ -1,6 +1,6 @@
-*************
-Cluster Setup
-*************
+*******************
+Cluster Preparation
+*******************
 
 These instructions cover deployment of a basic production-grade
 Frgalsysis Stack (without custom authentication).
