@@ -1,8 +1,8 @@
-****************
-Deploying Stacks
-****************
+*********************
+Development Processes
+*********************
 
-.. epigraph::
+..  epigraph::
 
     Fragalysis Stack deployment procedures and the role of AWX (Ansible Tower)
     in the Fragalysis Stack *kubernetes* process.
@@ -25,18 +25,13 @@ is complex but it is simplified through the use of `AWX`_.
 
 ..  toctree::
     :maxdepth: 1
-    :caption: Container Images
-
-    cluster-setup/requirements
-    container-images
-    cluster-setup/index
-
-..  toctree::
-    :maxdepth: 1
     :caption: Deployment Tools
 
-    awx
-    development-cd
+    awx-development
+    awx-production
+    preparing-for-kubernetes
+    cheat-sheets/index
+    dummies-dev-setup
 
 Sensitive Material (Ansible Vault)
 ----------------------------------

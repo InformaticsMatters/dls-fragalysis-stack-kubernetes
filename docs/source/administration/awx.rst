@@ -1,6 +1,6 @@
-***********************************************
-Adding Developers to AWX (Administration Tasks)
-***********************************************
+***********************
+AWX (Adding Developers)
+***********************
 
 Before a developer con deploy their Fragalysis Stack
 they will need a user account on the Development AWX sever

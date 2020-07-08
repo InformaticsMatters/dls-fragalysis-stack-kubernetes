@@ -24,12 +24,12 @@ the Fragalysis Stack through a number of stages: -
 
 ..  toctree::
     :maxdepth: 2
-    :caption: Basic Installation
+    :caption: Basics
 
-    basic/infrastructure-installation
-    basic/awx-configuration
-    basic/graph-deployment
-    basic/stack-deployment
+    requirements
+    container-images
+    awx
+    basic/index
 
 .. _awx: https://github.com/ansible/awx
 .. _keycloak: https://www.keycloak.org

@@ -39,7 +39,9 @@ Cluster
     non-tokenised (non-expiring) user with cluster admin privileges. This
     is the user that the deployment playbooks will use to maintain the cluster.
 
-2.  **One Application Node**. A compute instance with the following
+2.  An AWS IAM user capable of managing the EC2 cluster
+
+3.  **One Application Node**. A compute instance with the following
     minimum specification: -
 
     *   8 cores
@@ -53,7 +55,7 @@ Cluster
 
         *   (none)
 
-3.  **One Graph Node**. A compute instance with the following
+4.  **One Graph Node**. A compute instance with the following
     minimum specification: -
 
     *   8 cores
@@ -67,7 +69,7 @@ Cluster
 
         *   purpose=bigmem:NoSchedule
 
-4.  **GitHub Access**. The cluster must allow access to Ansible playbooks
+5.  **GitHub Access**. The cluster must allow access to Ansible playbooks
     and roles that are located on publicly accessible repositories on GitHub.
     The cluster must not be prevented from accessing these repositories. The
     current list of GitHub repositories is listed below: -
@@ -76,7 +78,7 @@ Cluster
     *   InformaticsMatters/docker-neo4j-ansible
 
 
-5.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
+6.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
     for the neo4j graph database and loader (media) data for the Stacks is
     expected to reside. The bucket name can be configured during deployment.
 
@@ -85,17 +87,17 @@ Cluster
         ensure you publish it to a suitable bucket that can be accessed by
         the cluster.
 
-6.  **Hostnames**. You will need to provide routing to your cluster for at
+7.  **Hostnames**. You will need to provide routing to your cluster for at
     least two hostanmes, one for the fragalysis stack
     (i.e. ``frafalysis.example.com``) and one for the AWX server
     (i.e. ``awx.example.com``).
 
-7.  **Networking (ingress)**. We deploy the `nginx`_ ingress controller
+8.  **Networking (ingress)**. We deploy the `nginx`_ ingress controller
     as a **DaemonSet**, deployed to each compute instance. This acts as an
     internal load-balancer and routing service. It directs HTTPS traffic
     to the corresponding container (**Pod**).
 
-8.  **Networking (load balancing)**. We need to load-balance traffic to
+9.  **Networking (load balancing)**. We need to load-balance traffic to
     the cluster. On AWS, rather than create a Application Load
     Balancer, which would normally result in a an ALB instance for each ingress,
     we create a ``LoadBalancer`` **Service**, which creates a single layer-4
@@ -105,7 +107,7 @@ Cluster
     an ALB or your own load-balancing solution you will be
     responsible for its installation and management.
 
-9.  **Networking (certificates)**. The fragalysis stack is a web-based
+10. **Networking (certificates)**. The fragalysis stack is a web-based
     application that the user normally interacts with using a resolvable
     hostname, i.e. **fragalysis.example.com**.
 

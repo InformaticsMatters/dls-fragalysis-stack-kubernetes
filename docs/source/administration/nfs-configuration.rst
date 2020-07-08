@@ -20,7 +20,7 @@ cluster).
 Two more volumes are used to provide static exports for the production
 media and database replicas.
 
-..  image:: images/frag-travis/frag-travis.014.png
+..  image:: ../images/frag-travis/frag-travis.014.png
 
 An AWX job launches a CronJob that replicates the production media
 (using rsync) and database (using pg_dump) to the
@@ -34,7 +34,7 @@ This is a ``m1.large`` (2 core, 8Gi) instance type with Floating IP
 ``130.246.213.186`` that has one attached volume that acts as static root
 for new Fragalysis (Django) **Media** data.
 
-..  image:: images/frag-travis/frag-travis.015.png
+..  image:: ../images/frag-travis/frag-travis.015.png
 
 A user deposits new files onto the NFS export (the *External Process*)
 for use by *Loader* Jobs in production, staging and user stacks.

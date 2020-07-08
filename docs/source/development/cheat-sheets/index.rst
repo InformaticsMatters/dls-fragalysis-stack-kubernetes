@@ -10,5 +10,5 @@ Cheat Sheets
     :maxdepth: 1
     :caption: Cheat Sheets
 
-    cheat-sheet-kubectl
-    cheat-sheet-lens
+    kubectl
+    lens

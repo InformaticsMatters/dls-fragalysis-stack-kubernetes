@@ -34,15 +34,15 @@ AWX server. For example, on the production cluster the continuous delivery
 described below relies on the following Jobs, runnable by the designated
 Travis Ci/CD user: -
 
-*   ``Production Fragalysis Stack (Version Change)``
-*   ``Staging Fragalysis Stack (Version Change)``
+*   **Production Fragalysis Stack (Version Change)**
+*   **Staging Fragalysis Stack (Version Change)**
 
 Prior to automated deployment the user is expected to have deployed the
 **Staging** and **Production** stacks using the following pre-configured
 jobs: -
 
-*   ``Production Fragalysis Stack``
-*   ``Staging Fragalysis Stack``
+*   **Production Fragalysis Stack**
+*   **Staging Fragalysis Stack**
 
 These jobs are only expected to be run once.
 
@@ -60,7 +60,7 @@ As an example, a typical sequence of *actions* that occur in response to a
 commit to the **master** branch of ``xchem/fragalysis-frontend`` repository can
 be seen illustrated in the following diagram and described below: -
 
-..  image:: images/frag-travis/frag-travis.009.png
+..  image:: ../images/frag-travis/frag-travis.009.png
 
 Deployment actions (from commits)
 ---------------------------------

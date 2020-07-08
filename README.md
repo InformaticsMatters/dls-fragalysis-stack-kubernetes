@@ -13,10 +13,10 @@ server.
 You'll need a Python environment where you need to install the project
 requirements (for Python and Ansible): -
 
-    conda activate dls-fragalysis-stack-kubernetes
-    pip install -r requirements.txt
-    ansible-galaxy install -r requirements.yaml --force
-    ansible-galaxy collection install -r collection-requirements.yaml --force
+    $ conda activate dls-fragalysis-stack-kubernetes
+    $ pip install -r requirements.txt
+    $ ansible-galaxy install -r requirements.yaml --force
+    $ ansible-galaxy collection install -r collection-requirements.yaml --force
 
 ## Configuring the AWX server
 To setup the AWX server for a specific cluster refer to the `README`
@@ -28,15 +28,15 @@ Certain, sensitive, variables are located in the encrypted file
 committed un-encrypted and can be edited from the project root without 
 decrypting it, armed with the repository vault password, using: -
 
-    ansible-vault edit roles/fragalysis-stack/vars/sensitive.vault
+    $ ansible-vault edit roles/fragalysis-stack/vars/sensitive.vault
 
 ## Project documentation
 The documentation is written in [Sphinx]. To build the documentation
 which results in the main index page `docs/build/html/index.html`,
 run the following from the project root: -
 
-    pip install -r build-requirements.txt
-    sphinx-build -Eab html docs/source docs/build/html
+    $ pip install -r build-requirements.txt
+    $ sphinx-build -Eab html docs/source docs/build/html
 
 ---
 

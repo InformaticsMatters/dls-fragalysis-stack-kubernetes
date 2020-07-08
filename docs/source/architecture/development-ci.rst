@@ -92,7 +92,7 @@ Let's see how **Travis** works for the Fragalysis Stack by exploring
 a simple example, where a user-change to a repository's *master* branch
 results in the stack being re-built, illustrated by the following diagram.
 
-..  image:: images/frag-travis/frag-travis.001.png
+..  image:: ../images/frag-travis/frag-travis.001.png
 
 The diagram illustrates a *user* making a change (**A**) to the
 ``master`` branch of ``fragalysis-backend`` repository. The following steps
@@ -343,7 +343,7 @@ Developing Front-end (F/E) Code Example
 Here you're developing front-end code, relying on a published backend image
 and the existing stack implementation.
 
-..  image:: images/frag-travis/frag-travis.002.png
+..  image:: ../images/frag-travis/frag-travis.002.png
 
 1.  The developer *forks* ``xchem/fragslysis-frontend``, into, say
     ``alan/fragslysis-frontend`` (**A**)
@@ -376,7 +376,7 @@ Developing Back-end (B/E) Code Example
 Here you're developing back-end code, relying on existing front-end and stack
 implementation.
 
-..  image:: images/frag-travis/frag-travis.003.png
+..  image:: ../images/frag-travis/frag-travis.003.png
 
 Here, in a less cluttered diagram: -
 
@@ -400,7 +400,7 @@ Developing Stack Code Example
 Here you're developing stack code, relying on a published back-end image
 and front-end implementation.
 
-..  image:: images/frag-travis/frag-travis.004.png
+..  image:: ../images/frag-travis/frag-travis.004.png
 
 1.  The developer *forks* the fragalysis stack repository (say to ``a;an``)
     (**A**)
@@ -419,7 +419,7 @@ Developing Everything Example
 
 Here you're developing front-end, back-end and stack code.
 
-..  image:: images/frag-travis/frag-travis.005.png
+..  image:: ../images/frag-travis/frag-travis.005.png
 
 This is essentially a combination of the three prior scenarios.
 
@@ -447,11 +447,6 @@ the debugging of your deployed applications.
 ..  toctree::
     :maxdepth: 1
 
-    adding-developers
-    developer-builds-cli
-    developer-builds-travis-ci
-    preparing-for-kubernetes
-    cheat-sheets
     stack-loader
 
 .. rubric:: Footnotes

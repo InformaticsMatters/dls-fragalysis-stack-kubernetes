@@ -6,9 +6,11 @@ Fragalysis Stack Orchestration (Kubernetes)
     :maxdepth: 2
     :caption: Contents
 
-    development-ci
-    development-cd
-    deploying-stacks
-    demo-cluster
-    dummies-dev-setup
-    administration
+..  toctree::
+    :maxdepth: 2
+    :caption: Container Images
+
+    cluster-setup/index
+    architecture/index
+    development/index
+    administration/index

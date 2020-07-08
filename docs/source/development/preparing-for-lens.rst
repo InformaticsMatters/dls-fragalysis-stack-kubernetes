@@ -18,18 +18,18 @@ The first time you start lens you will need to provide a cluster configuration.
 
 Click the **Add clusters** icon in the application side-bar...
 
-..  image:: images/lens-screenshot-add-clusters.png
+..  image:: ../images/lens-screenshot-add-clusters.png
 
 Then select **Custom ...** from the **Choose config:** drop-down, and then paste
 the content of the kubernetes configuration file into the **Kubeconfig:**
 panel and then finish by clicking **Add Cluster(s)**...
 
-..  image:: images/lens-screenshot-kubeconfig.png
+..  image:: ../images/lens-screenshot-kubeconfig.png
 
 If successful you should be presented with an overview of the cluster
 workloads (as shown below).
 
-..  image:: images/lens-screenshot-workloads-overview.png
+..  image:: ../images/lens-screenshot-workloads-overview.png
 
 Now that you're connected to the cluster through Lens you can quickly navigate
 to the **Workloads** (which includes Pods, Deployments, StatefulSets and Jobs),

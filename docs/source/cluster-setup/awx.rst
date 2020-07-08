@@ -1,13 +1,10 @@
-***
-AWX
-***
+****************
+AWX Fundamentals
+****************
 
 .. epigraph::
 
     A brief overview of AWX and our use of it.
-
-AWX Fundamentals
-================
 
 AWX is a task engine built on top of Ansible that is able to simplify, manage
 monitor application deployments through the use of Ansible playbooks present
@@ -34,7 +31,7 @@ AWX is useful layer on top of raw Ansible because it provides: -
 AWX is a task engine we use to execute Ansible playbooks that manage
 Kubernetes objects.
 
-..  image:: images/frag-travis/frag-travis.006.png
+..  image:: ../images/frag-travis/frag-travis.006.png
 
 Objects
 -------
@@ -66,7 +63,7 @@ Deployment of applications often depends on: -
 *   Configuration **data** (typically graph and Fragalysis data) held
     externally (e.g. on AWS S3)
 
-..  image:: images/frag-travis/frag-travis.007.png
+..  image:: ../images/frag-travis/frag-travis.007.png
 
 
 Because the Production and Development clusters serve two very different
@@ -75,9 +72,3 @@ exist - one in the Production cluster and one in the Development cluster.
 
 Users may not have access to both and Developers are unlikely to have access
 to the Production AWX server.
-
-..  toctree::
-    :maxdepth: 1
-
-    awx-production
-    awx-development

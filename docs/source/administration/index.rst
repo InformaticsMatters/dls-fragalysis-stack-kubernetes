@@ -9,5 +9,6 @@ Administration
 ..  toctree::
     :maxdepth: 1
 
-    admin-rancher
-    admin-nfs-configuration
+    rancher
+    nfs-configuration
+    awx
