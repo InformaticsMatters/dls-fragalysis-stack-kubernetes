@@ -1,6 +1,6 @@
-**************************
-Container Images (AWS/EKS)
-**************************
+**********************
+Container Images (AWS)
+**********************
 
 For a production deployment of the XChem Fragalysis Stack the following list
 of container images are normally deployed to the AWS EKS Kubernetes

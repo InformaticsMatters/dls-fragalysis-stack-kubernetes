@@ -1,6 +1,6 @@
-******************************
-Cluster Requirements (AWS/EKS)
-******************************
+**************************
+Cluster Requirements (AWS)
+**************************
 
 The following _minimum_ cluster requirements will need to be satisfied before
 the Fragalysis Stack can be deployed and used.
