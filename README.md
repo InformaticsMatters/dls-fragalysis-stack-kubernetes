@@ -44,8 +44,8 @@ where you can find pre-compiled copies online.
 ---
 
 [awx]: https://github.com/ansible/awx
-[fragalysis stack]: https://github.com/xchem/fragalysis-stack.git
-[openshift deployment]: https://github.com/InformaticsMatters/dls-fragalysis-stack-openshift.git
-[read the docs]: https://im-dls-fragalysis-stack-kubernetes.readthedocs.io/en/latest/index.html
+[fragalysis stack]: https://github.com/xchem/fragalysis-stack
+[openshift deployment]: https://github.com/InformaticsMatters/dls-fragalysis-stack-openshift
+[read the docs]: https://im-dls-fragalysis-stack-kubernetes.readthedocs.io/en/stable/
 [sphinx]: https://pypi.org/project/Sphinx/
 [notes]: https://raw.githubusercontent.com/InformaticsMatters/okd-orchestrator/master/README-SPHINX.md
