@@ -51,9 +51,9 @@ Core (Fragalysis Stack)
 +---------------------------------------+---------------+
 | postgres                              | 12.2          |
 +---------------------------------------+---------------+
-| xchem/fragalysis-stack                | 1.0.4         |
+| xchem/fragalysis-stack                | 1.0.7 [#f2]_  |
 +---------------------------------------+---------------+
-| xchem/fragalysis-s3-loader            | 1.0.4         |
+| xchem/fragalysis-s3-loader            | 1.0.7 [#f2]_  |
 +---------------------------------------+---------------+
 
 Backup and Recovery (optional)
@@ -80,3 +80,5 @@ Keycloak (optional)
 
 .. [#f1] This list does not cover container images that would normally be
          considered part of Kubernetes.
+
+.. [#f2] This image version may change prior to deployment.

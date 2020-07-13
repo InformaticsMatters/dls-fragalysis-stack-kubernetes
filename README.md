@@ -38,10 +38,14 @@ run the following from the project root: -
     $ pip install -r build-requirements.txt
     $ sphinx-build -Eab html docs/source docs/build/html
 
+The project documentation is also published to [Read The Docs],
+where you can find pre-compiled copies online.
+ 
 ---
 
 [awx]: https://github.com/ansible/awx
 [fragalysis stack]: https://github.com/xchem/fragalysis-stack.git
 [openshift deployment]: https://github.com/InformaticsMatters/dls-fragalysis-stack-openshift.git
+[read the docs]: https://im-dls-fragalysis-stack-kubernetes.readthedocs.io/en/latest/index.html
 [sphinx]: https://pypi.org/project/Sphinx/
 [notes]: https://raw.githubusercontent.com/InformaticsMatters/okd-orchestrator/master/README-SPHINX.md

@@ -2,8 +2,8 @@
 Cluster Requirements (AWS)
 **************************
 
-The following _minimum_ cluster requirements will need to be satisfied before
-the Fragalysis Stack can be deployed and used.
+The following _minimum_ (preliminary) cluster requirements will need to be
+satisfied before the Fragalysis Stack can be deployed and used.
 
 Control Machine
 ===============
@@ -39,9 +39,19 @@ Cluster
     non-tokenised (non-expiring) user with cluster admin privileges. This
     is the user that the deployment playbooks will use to maintain the cluster.
 
-2.  An AWS IAM user capable of managing the EC2 cluster
+2.  **An AWS IAM user** capable of reading from an AWS S3 bucket, used
+    to provision frag ent graph and Frgalysis media data.
 
-3.  **One Application Node**. A compute instance with the following
+3.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
+    for the neo4j graph database and loader (media) data for the Stacks is
+    expected to reside. The bucket name can be configured during deployment.
+
+    *   We can provide open-access to the existing Fragalysis Stack graph
+        data but if you want to use your own fragment data you will need to
+        ensure you publish it to a suitable bucket that can be accessed by
+        the cluster.
+
+4.  **One Application Node**. A compute instance with the following
     minimum specification: -
 
     *   8 cores
@@ -55,7 +65,7 @@ Cluster
 
         *   (none)
 
-4.  **One Graph Node**. A compute instance with the following
+5.  **One Graph Node**. A compute instance with the following
     minimum specification: -
 
     *   8 cores
@@ -69,7 +79,7 @@ Cluster
 
         *   purpose=bigmem:NoSchedule
 
-5.  **GitHub Access**. The cluster must allow access to Ansible playbooks
+6.  **GitHub Access**. The cluster must allow access to Ansible playbooks
     and roles that are located on publicly accessible repositories on GitHub.
     The cluster must not be prevented from accessing these repositories. The
     current list of GitHub repositories is listed below: -
@@ -77,15 +87,6 @@ Cluster
     *   InformaticsMatters/dls-fragalysis-stack-kubernetes
     *   InformaticsMatters/docker-neo4j-ansible
 
-
-6.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
-    for the neo4j graph database and loader (media) data for the Stacks is
-    expected to reside. The bucket name can be configured during deployment.
-
-    *   We can provide open-access to the existing Fragalysis Stack graph
-        data but if you want to use your own fragment data you will need to
-        ensure you publish it to a suitable bucket that can be accessed by
-        the cluster.
 
 7.  **Hostnames**. You will need to provide routing to your cluster for at
     least two hostanmes, one for the fragalysis stack
