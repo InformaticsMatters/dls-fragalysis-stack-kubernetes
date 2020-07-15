@@ -40,11 +40,17 @@ Cluster
     is the user that the deployment playbooks will use to maintain the cluster.
 
 2.  **An AWS IAM user** capable of reading from an AWS S3 bucket, used
-    to provision frag ent graph and Frgalysis media data.
+    to provision fragment graph and Frgalysis media data.
 
 3.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
     for the neo4j graph database and loader (media) data for the Stacks is
     expected to reside. The bucket name can be configured during deployment.
+
+    *   In EKS the **Graph Node** (see below) is likely to need
+        the `arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess` policy,
+        typically assigned to the node using the ``iam ->  attachPolicyARNs``
+        block in the cluster definition file. You can see this in the
+        `cluster example`_ in our ``nsible-infrastructure`_ repository.
 
     *   We can provide open-access to the existing Fragalysis Stack graph
         data but if you want to use your own fragment data you will need to
@@ -124,7 +130,9 @@ Cluster
     the stack you're deploying you will need to provide your own certificate
     solution.
 
+.. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
+.. _cert-manager: https://cert-manager.io/docs/
+.. _cluster example: https://raw.githubusercontent.com/InformaticsMatters/ansible-infrastructure/master/provisioning/eksctl/cluster.yaml
 .. _lens: https://k8slens.dev
 .. _nginx: http://cnn.com/
-.. _cert-manager: https://cert-manager.io/docs/
 .. _nlb: https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html
