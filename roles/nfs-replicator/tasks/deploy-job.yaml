@@ -12,8 +12,6 @@
   k8s_info:
     kind: Job
     namespace: "{{ stack_namespace_fact }}"
-    label_selectors:
-    - name=nfs-replicator
   register: jobs_result
 
 - name: Display replicator Jobs
