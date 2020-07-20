@@ -10,9 +10,13 @@
 
 - name: Get completed replicator Jobs
   k8s_info:
-    kind: Job
+    kind: Pod
     namespace: "{{ stack_namespace_fact }}"
-  register: jobs_result
+    label_selectors:
+    - name=nfs-replicator
+    field_selectors:
+    - status.phase=Succeeded
+  register: pods_result
 
 - name: Display replicator Jobs
   debug:
