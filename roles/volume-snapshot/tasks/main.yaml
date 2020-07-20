@@ -7,9 +7,16 @@
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
 
-- name: Display all variables
+- name: Load OpenStack config
+  inlcude_vars: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+
+- name:
+  set_fact:
+    config_filename: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+
+- name: Display config
   debug:
-    var: ansible_env
+    msg: "Content of os_config_file {{ lookup('file', config_filename) }}"
 
 - name: Create volume snapshots
   os_volume_snapshot:
