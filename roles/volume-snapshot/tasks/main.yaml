@@ -1,0 +1,18 @@
+---
+
+# The user is expected to have attached a suitable OpenStack
+# credential to the AWX Job so that the conventional
+# authentication environment variables are defined.
+
+# Iterate through the list of 'snapshot_volumes'
+# and issue a snapshot request to OpenStack.
+
+- name: Create volume snapshots
+  os_volume_snapshot:
+    force: yes
+    volume: "{{ item.name }}"
+    display_name: "{{ item.snapshot }}"
+    display_description: "{{ ansible_date_time.iso8601 }}"
+    availability_zone: "{{ snapshot_az }}"
+    timeout: 600
+  loop: "{{ snapshot_volumes }}"
