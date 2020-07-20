@@ -38,7 +38,7 @@
 
 - name: Authenticate
   os_auth:
-    cloud: 'devstack'
+    cloud: "{{ clouds.devstack }}"
 
 - name: Display token
   debug:
