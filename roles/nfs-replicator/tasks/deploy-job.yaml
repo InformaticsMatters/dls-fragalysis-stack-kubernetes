@@ -14,8 +14,6 @@
     namespace: "{{ stack_namespace_fact }}"
     label_selectors:
     - name=nfs-replicator
-    field_selectors:
-    - status.phase=Completed
   register: jobs_result
 
 - name: Display replicator Jobs
