@@ -18,8 +18,16 @@
 #       username: <username>
 #       verify: true
 
+- name: Get config filename
+  set_fact:
+    config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+
+- name: Assert config filename is defined
+  assert:
+    that: config_file|string|length > 0
+
 - name: Load variables from OpenStack config file
-  include_vars: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+  include_vars: "{{ config_file }}"
 
 - name: Diaplsy authentication
   debug:
