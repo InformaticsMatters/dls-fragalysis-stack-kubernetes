@@ -33,7 +33,7 @@
     namespace: "{{ stack_namespace_fact }}"
     name: "{{ item.metadata.name }}"
     state: absent
-  loop: pods_result.resources
+  loop: "{{ pods_result.resources }}"
   when: pods_result.resources|length > 0
 
 # All clean - start a new Job
