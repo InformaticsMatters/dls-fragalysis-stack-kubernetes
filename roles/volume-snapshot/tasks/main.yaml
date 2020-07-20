@@ -10,11 +10,15 @@
 - name: Display variables
   debug:
     msg: >
-      auth_url={{ lookup('env', 'OS_AUTH_URL') }}
-      username={{ lookup('env', 'OS_USERNAME') }}
-      password={{ lookup('env', 'OS_PASSWORD') }}
-      project_name={{ lookup('env', 'OS_PROJECT_NAME') }}
-      domain_name={{ lookup('env', 'OS_PROJECT_DOMAIN_NAME') }}
+      auth_url={{ ansible_env.OS_AUTH_URL }}
+      username={{ ansible_env.OS_USERNAME }}
+      password={{ ansible_env.OS_PASSWORD }}
+      project_name={{ ansible_env.OS_PROJECT_NAME }}
+      domain_name={{ ansible_env.OS_PROJECT_DOMAIN_NAME }}
+
+- name: Display all variables
+  debug:
+    var: ansible_env
 
 - name: Create volume snapshots
   os_volume_snapshot:
