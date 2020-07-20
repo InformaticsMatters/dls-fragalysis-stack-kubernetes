@@ -2,11 +2,25 @@
 
 # Launch the replicator (as a Job)
 
-- name: Remove any existing replicator Job
+- name: Remove replicator Job
   k8s:
     state: absent
     definition: "{{ lookup('template', 'job.yaml.j2') }}"
     wait: yes
+
+- name: Get completed replicator Jobs
+  k8s_info:
+    kind: Job
+    namespace: "{{ stack_namespace_fact }}"
+    label_selectors:
+    - name=nfs-replicator
+    field_selectors:
+    - status.phase=Completed
+  register: jobs_result
+
+- name: Display replicator Jobs
+  debug:
+    var: jobs_result.resources
 
 - name: Launching new replicator Job
   k8s:
