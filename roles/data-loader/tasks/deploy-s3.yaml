@@ -11,6 +11,34 @@
     definition: "{{ lookup('template', 'job-{{ loader_type }}.yaml.j2') }}"
     wait: yes
 
+# Delete the Pods left behind that are Completed ('Succeeded').
+# Kubernetes *DOES NOT* remove these Job-based Pods automatically
+# (see https://kubernetes.io/docs/concepts/workloads/controllers/job/).
+# Instead completed Jobs need to be removed manually by the user.
+# The logic that follows list all Jobs (Pods)
+# that have Succeeded and then deletes them.
+
+- name: Get Succeeded Loader Pods
+  k8s_info:
+    kind: Pod
+    namespace: "{{ stack_namespace }}"
+    label_selectors:
+    - name=s3-loader
+    field_selectors:
+    - status.phase=Succeeded
+  register: pods_result
+
+- name: Delete Succeeded Loader Pods
+  k8s:
+    kind: Pod
+    namespace: "{{ stack_namespace }}"
+    name: "{{ item.metadata.name }}"
+    state: absent
+  loop: "{{ pods_result.resources }}"
+  when: pods_result.resources|length > 0
+
+# All clean - start a new Job
+
 - name: Launching new loader Job
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
