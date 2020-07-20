@@ -7,15 +7,6 @@
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
 
-- name: Display variables
-  debug:
-    msg: >
-      auth_url={{ ansible_env.OS_AUTH_URL }}
-      username={{ ansible_env.OS_USERNAME }}
-      password={{ ansible_env.OS_PASSWORD }}
-      project_name={{ ansible_env.OS_PROJECT_NAME }}
-      domain_name={{ ansible_env.OS_PROJECT_DOMAIN_NAME }}
-
 - name: Display all variables
   debug:
     var: ansible_env
