@@ -44,5 +44,11 @@
     display_description: "{{ ansible_date_time.iso8601 }}"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
-    cloud: devstack
+    auth:
+      auth_url: "{{ clouds.devstack.auth.auth_url }}"
+      username: "{{ clouds.devstack.auth.username }}"
+      password: "{{ clouds.devstack.auth.password }}"
+      project_name: "{{ clouds.devstack.auth.project_name }}"
+      os_user_domain_name: "{{ clouds.devstack.auth.domain_name }}"
+      os_project_domain_name: "{{ clouds.devstack.auth.domain_name }}"
   loop: "{{ snapshot_volumes }}"
