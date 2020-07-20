@@ -36,6 +36,18 @@
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
 
+- name: Authenticate
+  os_auth:
+    cloud: 'devstack'
+
+- name: Display token
+  debug:
+    var: auth_token
+
+- name: Display service catalogue
+  debug:
+    var: service_catalog
+
 - name: Create volume snapshots
   os_volume_snapshot:
     force: yes
@@ -49,6 +61,4 @@
       username: "{{ clouds.devstack.auth.username }}"
       password: "{{ clouds.devstack.auth.password }}"
       project_name: "{{ clouds.devstack.auth.project_name }}"
-      os_user_domain_name: "{{ clouds.devstack.auth.domain_name }}"
-      os_project_domain_name: "{{ clouds.devstack.auth.domain_name }}"
   loop: "{{ snapshot_volumes }}"
