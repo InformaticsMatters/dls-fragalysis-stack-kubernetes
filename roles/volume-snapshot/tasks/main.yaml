@@ -44,5 +44,5 @@
     display_description: "{{ ansible_date_time.iso8601 }}"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
-    cloud: "{{ clouds.devstack.auth }}"
+    cloud: devstack
   loop: "{{ snapshot_volumes }}"
