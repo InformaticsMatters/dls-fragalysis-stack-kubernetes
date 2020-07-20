@@ -46,6 +46,7 @@
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
     validate_certs: no
+    region_name: RegionOne
     auth_type: password
 
 - name: Display token
