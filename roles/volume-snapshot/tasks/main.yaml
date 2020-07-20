@@ -7,8 +7,8 @@
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
 
-- name: Load OpenStack config
-  inlcude_vars: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+#- name: Load OpenStack config
+#  include_vars: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
 
 - name:
   set_fact:
