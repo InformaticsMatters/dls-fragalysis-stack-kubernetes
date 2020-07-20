@@ -8,6 +8,7 @@ yaml-files:
 ignore: |
   roles/fragalysis-stack/templates/statefulset-stack.yaml.j2
   roles/fragalysis-stack/templates/ingress-stack.yaml.j2
+  roles/fragalysis-stack/templates/cronjob-postgres-backup.yaml.j2
   roles/data-loader/templates/job.yaml.j2
   roles/nfs-replicator/templates/job.yaml.j2
   roles/nfs-replicator/templates/cronjob.yaml.j2

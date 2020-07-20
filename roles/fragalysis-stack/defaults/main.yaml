@@ -82,6 +82,14 @@ database_bu_vol_storageclass: ' '
 database_bu_vol_size_g: 4
 database_bu_hourly_schedule: '51 * * * *'
 database_bu_hourly_history: 24
+# Set the following to rsync the backups to a central server.
+# If set you must define: -
+#   stack_backup_rsync_host
+#   stack_backup_rsync_path
+#   stack_backup_rsync_user
+#   stack_backup_rsync_pass
+# (found in vars/sensitive.vault)
+database_bu_use_rsync: no
 
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,

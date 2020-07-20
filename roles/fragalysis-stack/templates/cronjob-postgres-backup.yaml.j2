@@ -57,6 +57,28 @@ spec:
                 secretKeyRef:
                   name: database
                   key: root_password
+{% if database_bu_use_rsync %}
+            - name: RSYNC_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: backup-rsync
+                  key: host
+            - name: RSYNC_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: backup-rsync
+                  key: path
+            - name: RSYNC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: backup-rsync
+                  key: user
+            - name: RSYNC_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: backup-rsync
+                  key: pass
+{% endif %}
             volumeMounts:
             - name: backup-data
               mountPath: /backup
