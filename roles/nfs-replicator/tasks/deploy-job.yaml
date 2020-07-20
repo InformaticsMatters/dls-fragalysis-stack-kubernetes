@@ -8,7 +8,7 @@
     definition: "{{ lookup('template', 'job.yaml.j2') }}"
     wait: yes
 
-- name: Get completed replicator Jobs
+- name: Get completed replicator Pods
   k8s_info:
     kind: Pod
     namespace: "{{ stack_namespace_fact }}"
@@ -18,9 +18,9 @@
     - status.phase=Succeeded
   register: pods_result
 
-- name: Display replicator Jobs
+- name: Display replicator Pods
   debug:
-    var: jobs_result.resources
+    var: pods_result.resources
 
 - name: Launching new replicator Job
   k8s:
