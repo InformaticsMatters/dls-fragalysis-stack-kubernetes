@@ -64,15 +64,15 @@
 # where '20170727T220900' is the ISO8601 basic (without ':') characters
 # but with full data and time (to the minute).
 
+- name: Display cloud_auth
+  debug:
+    var: cloud_auth
+
 - name: Create volume snapshots
   os_volume_snapshot:
     force: yes
     volume: "{{ item }}"
     display_name: "{{ item }}--{{ ansible_date_time.iso8601_basic_short }}"
-    display_description: >-
-      Automated Volume Snapshot
-      {{ ansible_date_time.date }}
-      {{ ansible_date_time.time }}
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
     auth: "{{ cloud_auth }}"
