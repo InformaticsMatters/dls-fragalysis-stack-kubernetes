@@ -1,15 +1,10 @@
 ---
 
-# The list of volumes to snapshot
-# and the names to use for their snapshots.
+# The list of volumes to snapshot.
 snapshot_volumes:
-#- name: kubernetes-nfs-dev-dynamic
-#  snapshot: kubernetes-nfs-dev-dynamic-SNAPSHOT
-#- name: kubernetes-nfs-prod-dynamic
-#  snapshot: kubernetes-nfs-prod-dynamic-SNAPSHOT
-#- name: kubernetes-nfs-frag-stack-media
-#  snapshot: kubernetes-nfs-frag-stack-media-SNAPSHOT
-- name: kubernetes-nfs-prod-media-replica
-  snapshot: kubernetes-nfs-prod-media-replica-SNAPSHOT
+#- kubernetes-nfs-dev-dynamic
+#- kubernetes-nfs-prod-dynamic
+#- kubernetes-nfs-frag-stack-media
+- kubernetes-nfs-prod-media-replica
 
 snapshot_az: ceph

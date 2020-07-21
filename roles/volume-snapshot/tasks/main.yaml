@@ -16,9 +16,18 @@
 #       auth_url: <auth-url>
 #       domain_name: <domain>
 #       password: <password>
+#       project_domain_name: <project-domain-name>
 #       project_name: <project-name>
 #       username: <username>
-#       verify: true
+#
+# What is missing (AWX 11.2.0) is the 'project_domain_id'
+# and unless we set `project_domain_id` we'll get the error: -
+#
+#     "The request you have made requires authentication. (HTTP 401)"
+#
+# So we *MUST* use 'project_domain_name' to carry in the vital ID.
+# In the following we inject the missing 'project_domain_id' by copying the
+# value in the 'project_domain_name' field.
 
 - name: Get config filename
   set_fact:
@@ -31,16 +40,7 @@
 - name: Load variables from OpenStack config file
   include_vars: "{{ config_file }}"
 
-# The built-in openstack credentials set `project_domain_name`
-# but unless we set `project_domain_id` we'll get the error: -
-#
-#     "The request you have made requires authentication. (HTTP 401)"
-#
-# The assumption we make here is that the user has put the domain ID
-# into the domain name field and we just copy the cloud authentication into
-# a new variable while setting the new (required) value.
-
-- name: Assert cloud project_domain_name field
+- name: Assert cloud project_domain_name field exists
   assert:
     that:
     - clouds.devstack.auth.project_domain_name is defined
@@ -57,19 +57,15 @@
   - { key: 'project_domain_id', value: "{{ clouds.devstack.auth.project_domain_name }}" }
   when: clouds_auth.project_domain_id is not defined
 
-- name: Diaplsy cloud authentication
-  debug:
-    var: cloud_auth
-
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
 
 - name: Create volume snapshots
   os_volume_snapshot:
     force: yes
-    volume: "{{ item.name }}"
-    display_name: "{{ item.snapshot }}"
-    display_description: "{{ ansible_date_time.iso8601 }}"
+    volume: "{{ item }}"
+    display_name: "{{ item }}@{{ ansible_date_time.iso8601 }}"
+    display_description: "Automated Volume Snapshot"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
     auth: "{{ cloud_auth }}"
