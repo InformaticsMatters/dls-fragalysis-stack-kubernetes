@@ -2,9 +2,8 @@
 
 # The list of volumes to snapshot.
 snapshot_volumes:
-#- kubernetes-nfs-dev-dynamic
-#- kubernetes-nfs-prod-dynamic
-#- kubernetes-nfs-frag-stack-media
-- kubernetes-nfs-prod-media-replica
+- kubernetes-nfs-dev-dynamic
+- kubernetes-nfs-prod-dynamic
+- kubernetes-nfs-frag-stack-media
 
 snapshot_az: ceph
