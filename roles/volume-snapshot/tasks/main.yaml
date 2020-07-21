@@ -69,7 +69,6 @@
     force: yes
     volume: "{{ item }}"
     name: "{{ item }}--{{ ansible_date_time.iso8601_basic_short }}"
-    description: An AWX Automated Snapshot
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
     auth: "{{ cloud_auth }}"
