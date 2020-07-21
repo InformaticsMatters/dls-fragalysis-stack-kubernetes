@@ -31,9 +31,35 @@
 - name: Load variables from OpenStack config file
   include_vars: "{{ config_file }}"
 
+# The built-in openstack credentials set `project_domain_name`
+# but unless we set `project_domain_id` we'll get the error: -
+#
+#     "The request you have made requires authentication. (HTTP 401)"
+#
+# The assumption we make here is that the user has put the domain ID
+# into the domain name field and we just copy the cloud authentication into
+# a new variable while setting the new (required) value.
+
+- name: Assert cloud project_domain_name field
+  assert:
+    that:
+    - clouds.devstack.auth.project_domain_name is defined
+    - clouds.devstack.auth.project_domain_name|length > 0
+
+- name: Copy cloud authentication
+  set_fact:
+    cloud_auth: "{{ clouds.devstack.auth }}"
+
+- name: Set cloud project_domain_id field
+  set_fact:
+    cloud_auth: "{{ cloud_auth | combine({item.key: item.value}) }}"
+  with_items:
+  - { key: 'project_domain_id', value: "{{ clouds.devstack.auth.project_domain_name }}" }
+  when: clouds_auth.project_domain_id is not defined
+
 - name: Diaplsy cloud authentication
   debug:
-    var: clouds.devstack.auth
+    var: clouds_auth
 
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
@@ -46,5 +72,5 @@
     display_description: "{{ ansible_date_time.iso8601 }}"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
-    auth: "{{ clouds.devstack.auth }}"
+    auth: "{{ clouds_auth }}"
   loop: "{{ snapshot_volumes }}"
