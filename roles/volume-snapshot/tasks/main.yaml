@@ -64,7 +64,7 @@
   os_volume_snapshot:
     force: yes
     volume: "{{ item }}"
-    display_name: "{{ item }}@{{ ansible_date_time.iso8601 }}"
+    display_name: "{{ item }}--{{ ansible_date_time.iso8601 }}"
     display_description: "Automated Volume Snapshot"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
