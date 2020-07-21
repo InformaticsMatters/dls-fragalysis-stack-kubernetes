@@ -59,7 +59,7 @@
 
 - name: Diaplsy cloud authentication
   debug:
-    var: clouds_auth
+    var: cloud_auth
 
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
@@ -72,5 +72,5 @@
     display_description: "{{ ansible_date_time.iso8601 }}"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
-    auth: "{{ clouds_auth }}"
+    auth: "{{ cloud_auth }}"
   loop: "{{ snapshot_volumes }}"
