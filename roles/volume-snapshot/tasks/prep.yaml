@@ -1,0 +1,16 @@
+---
+
+# Expose ansible version
+- debug:
+    var: ansible_version.full
+
+# Collect and display freeze result
+
+- name: Freeze
+  command: pip freeze
+  changed_when: false
+  register: freeze_result
+
+- name: Display freezer
+  debug:
+    var: freeze_result.stdout_lines

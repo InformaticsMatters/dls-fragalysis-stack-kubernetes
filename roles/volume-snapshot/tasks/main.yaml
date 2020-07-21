@@ -1,5 +1,7 @@
 ---
 
+- include_tasks: prep.yaml
+
 # The user is expected to have attached a suitable OpenStack
 # credential to the AWX Job so that the conventional
 # authentication environment variables are defined.
@@ -29,33 +31,12 @@
 - name: Load variables from OpenStack config file
   include_vars: "{{ config_file }}"
 
-- name: Diaplsy authentication
+- name: Diaplsy cloud authentication
   debug:
     var: clouds.devstack.auth
 
 # Iterate through the list of 'snapshot_volumes'
 # and issue a snapshot request to OpenStack.
-
-- name: Authenticate
-  os_auth:
-    auth:
-      auth_url: "{{ clouds.devstack.auth.auth_url }}"
-      username: "{{ clouds.devstack.auth.username }}"
-      password: "{{ clouds.devstack.auth.password }}"
-      project_name: "{{ clouds.devstack.auth.project_name }}"
-    availability_zone: "{{ snapshot_az }}"
-    timeout: 600
-    validate_certs: no
-    region_name: RegionOne
-    auth_type: password
-
-- name: Display token
-  debug:
-    var: auth_token
-
-- name: Display service catalogue
-  debug:
-    var: service_catalog
 
 - name: Create volume snapshots
   os_volume_snapshot:
@@ -65,9 +46,5 @@
     display_description: "{{ ansible_date_time.iso8601 }}"
     availability_zone: "{{ snapshot_az }}"
     timeout: 600
-    auth:
-      auth_url: "{{ clouds.devstack.auth.auth_url }}"
-      username: "{{ clouds.devstack.auth.username }}"
-      password: "{{ clouds.devstack.auth.password }}"
-      project_name: "{{ clouds.devstack.auth.project_name }}"
+    auth: "{{ clouds.devstack.auth }}"
   loop: "{{ snapshot_volumes }}"

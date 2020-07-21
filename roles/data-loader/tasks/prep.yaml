@@ -89,6 +89,17 @@
     - jmespath==0.9.4
     extra_args: --user
 
+# Collect and display freeze result
+
+- name: Freeze
+  command: pip freeze
+  changed_when: false
+  register: freeze_result
+
+- name: Display freezer
+  debug:
+    var: freeze_result.stdout_lines
+
 # Kubernetes credentials ------------------------------------------------------
 
 # We don't use the Kubernetes credentials directly,
