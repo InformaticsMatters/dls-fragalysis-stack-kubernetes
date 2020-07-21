@@ -7,3 +7,7 @@ snapshot_volumes:
 - kubernetes-nfs-frag-stack-media
 
 snapshot_az: ceph
+
+# Age at which snapshot volumes are deleted.
+# '0' wil result in all volume snapshots being deleted.
+snapshot_retirement_age_days: 6

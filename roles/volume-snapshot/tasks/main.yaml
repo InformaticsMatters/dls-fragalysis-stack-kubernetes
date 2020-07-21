@@ -46,3 +46,10 @@
     timeout: 600
     auth: "{{ clouds.devstack.auth }}"
   loop: "{{ snapshot_volumes }}"
+
+# Now delete old volumes...
+# The following relies on the existance of
+
+- include_tasks: delete-old-snapshots.yaml
+  vars:
+    cloud_auth: "{{ clouds.devstack.auth }}"

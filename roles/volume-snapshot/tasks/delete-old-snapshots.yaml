@@ -1,0 +1,113 @@
+---
+
+# Delete all project snapshots that are too old.
+
+# The user is expected to define the variable 'retirement_age_days'
+# where all volumes that have reached that age are deleted.
+# If 0 all snapshots are deleted.
+#
+# The user is also required to define OpenStack variables.
+
+- name: Assert control variables
+  assert:
+    that:
+    - snapshot_retirement_age_days is defined
+    - snapshot_retirement_age_days|int >= 0
+    - cloud_auth is defined
+
+# Expectation here is that you have the following OpenStack information
+# present in {{ cloud_auth }}: -
+#
+# - auth_url (i.e. "https://example.com:5000/v3")
+# - username
+# - password
+# - project_name
+# - project_domain_name (i.e. "Default")
+# - user_domain_name
+
+# We rely in the OpenStack client - the Ansible "os_" module
+# (Ansible 2.9) does not do what we need, so we need the client.
+# It' Python so make sure it's available...
+
+- name: Install prerequisite Python modules
+  pip:
+    name:
+    - python-openstackclient==5.3.1
+    extra_args: --user
+
+- name: Set snapshot command
+  set_fact:
+    snapshot_cmd: openstack volume snapshot
+
+# To avoid cluttering the command-line we
+# define all the credential material as a map of variables
+# that we then apply as the 'environment' for each command invocation.
+
+- name: Define OpenStack environment
+  set_fact:
+    os_env:
+      OS_AUTH_URL: "{{ cloud_auth.auth_url }}"
+      OS_USERNAME: "{{ cloud_auth.username }}"
+      OS_PASSWORD: "{{ cloud_auth.password }}"
+      OS_PROJECT_NAME: "{{ cloud_auth.project_name }}"
+      OS_PROJECT_DOMAIN_NAME: "{{ cloud_auth.project_domain_name }}"
+      OS_USER_DOMAIN_NAME: "{{ cloud_auth.user_domain_name }}"
+
+# Get all the snapshot names in the project.
+# The result is a json structure that we parse
+# in order to get just the names...
+
+- name: Get snapshots
+  command: "{{ snapshot_cmd }} list --format json"
+  environment: "{{ os_env }}"
+  changed_when: false
+  register: snap_result
+
+- name: Collect snapshot volume names
+  set_fact:
+    snap_volume_names: "{{ snap_result.stdout|from_json|json_query(query)|flatten }}"
+  vars:
+    query: "[*].Name"
+
+- name: Display existing snapshot volumes
+  debug:
+    var: snap_volume_names
+
+# For each snapshot, get its 'info'.
+# The combined results are then parsed in order to
+# locate each volume's 'created_at' date.
+# We compare that to 'now' in order to build a list of
+# volume ages (in days)...
+
+- name: Get snapshot volume info
+  command: "{{ snapshot_cmd }} show {{ item }} --format json"
+  environment: "{{ os_env }}"
+  changed_when: false
+  register: snap_volume_info
+  loop: "{{ snap_volume_names }}"
+
+- name: Create snapshot age list (days)
+  set_fact:
+    snap_volume_ages: >-
+      {{
+        snap_volume_ages|default([]) +
+        [ ((ansible_date_time.iso8601|to_datetime(fmt_1)) -
+           (item.stdout|from_json|json_query(query)|to_datetime(fmt_2))).days ]
+      }}
+  vars:
+    query: "created_at"
+    fmt_1: "%Y-%m-%dT%H:%M:%SZ"
+    fmt_2: "%Y-%m-%dT%H:%M:%S.%f"
+  loop: "{{ snap_volume_info.results }}"
+
+# Using the combined volume names and ages lists
+# iterate through the ages and delete volumes have reached their age limit...
+
+- name: Delete old snapshots ({{ snapshot_retirement_age_days }} days)
+  command: "{{ snapshot_cmd }} delete {{ item.1 }}"
+  environment: "{{ os_env }}"
+  changed_when: true
+  when: item.0 >= snapshot_retirement_age_days|int
+  with_together:
+  - "{{ snap_volume_ages|default([]) }}"
+  - "{{ snap_volume_names|default([]) }}"
