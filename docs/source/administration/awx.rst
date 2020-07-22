@@ -1,13 +1,14 @@
-***********************
+#######################
 AWX (Adding Developers)
-***********************
+#######################
 
 Before a developer con deploy their Fragalysis Stack
 they will need a user account on the Development AWX sever
 and Jobs duplicated and assigned to them.
 
+************
 Adding Users
-============
+************
 
 Using an administrative account on the Development AWX server navigate to
 **Users** in the side-panel and click the **+** (Add) icon in the
@@ -21,15 +22,16 @@ Now you need to assign permissions and duplicate Job templates.
 The user will only see templates that you assign to them, as described
 below.
 
+*************************************
 Permissions and Duplicating Templates
-=====================================
+*************************************
 
 Now that you've created a user navigate to the **Templates** panel using the
 side-bar. Here we need to provide access to common Jobs and duplicate Jobs we
 expect the developer to edit for the User you've just added.
 
 Common Templates
-----------------
+================
 
 Here we give users access to each template that begins with the word
 **Common**. For each **Common** template: -
@@ -45,7 +47,7 @@ Here we give users access to each template that begins with the word
 *   Click **Save**
 
 Developer-specific Templates
-----------------------------
+============================
 
 Here we need to Duplicate each template that begins **Developer**. For each
 **Developer** template: -
@@ -63,8 +65,9 @@ Here we need to Duplicate each template that begins **Developer**. For each
     the developer Jobs.
 *   Click **Save**
 
+**********************************************
 Provide the Development Kubernetes Config file
-==============================================
+**********************************************
 
 Developers will need a kubernetes configuration file in order to
 interact with the cluster. Ideally each developer will need a config file
@@ -74,8 +77,9 @@ common configuration.
 *   Create a user on Rancher (and export the kubeconfig)
 *   Or circulate the generic ``config-xchem-development-developer`` configuration
 
+****************
 Here Be Dragons!
-================
+****************
 
 DO NOT
     ...circulate a cluster ``*-admin`` configuration or

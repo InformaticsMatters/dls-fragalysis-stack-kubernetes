@@ -1,6 +1,6 @@
-************************************
+####################################
 Preparing for Kubernetes Development
-************************************
+####################################
 
 In order to develop applications you are likely to need to debug **Pods**
 (Containers), poke-around inside them and occasionally restart them. You can

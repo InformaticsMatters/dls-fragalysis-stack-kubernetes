@@ -1,6 +1,6 @@
-****************
+################
 AWX Fundamentals
-****************
+################
 
 .. epigraph::
 
@@ -34,7 +34,7 @@ Kubernetes objects.
 ..  image:: ../images/frag-travis/frag-travis.006.png
 
 Objects
--------
+=======
 
 To run a playbook in AWX you typically need to create the following minimum
 set of objects: -
@@ -49,8 +49,9 @@ set of objects: -
     together with the opportunity to over-ride default variables in the
     corresponding play
 
+****************
 AWX in Operation
-================
+****************
 
 The AWX server is deployed with our Kubernetes Infrastructure, along with
 a Keycloak instance and PostgrSQL database. It provides a web interface

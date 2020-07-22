@@ -1,12 +1,13 @@
-**************************
+##########################
 Cluster Requirements (AWS)
-**************************
+##########################
 
 The following _minimum_ (preliminary) cluster requirements will need to be
 satisfied before the Fragalysis Stack can be deployed and used.
 
+***************
 Control Machine
-===============
+***************
 
 1.  **Applications**. the control machine will need: -
 
@@ -32,8 +33,9 @@ Control Machine
     and Fragalysis Stack media data, a user with READ access for your chosen
     AWS S3 *bucket*.
 
+*******
 Cluster
-=======
+*******
 
 1.  **Kubernetes Admin User**. The kubernetes cluster must provide a
     non-tokenised (non-expiring) user with cluster admin privileges. This

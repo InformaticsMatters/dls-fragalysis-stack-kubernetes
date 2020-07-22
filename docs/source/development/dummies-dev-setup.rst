@@ -1,6 +1,6 @@
-***************************************************
+###################################################
 Deploying up your Stack ("Development for Dummies")
-***************************************************
+###################################################
 
 ..  image:: ../images/fragalysis-development-for-dummies.png
 
@@ -12,11 +12,12 @@ It will show how to:
 *   Set Travis up to automatically push to your stack when changes are made to
     the master branch on your forks of the fragalysis repositories
 
+***************
 Getting started
-===============
+***************
 
 Forking from GitHub
--------------------
+===================
 
 The fist step is to ensure that you have forked the master branch of each
 component of the fragalysis stack:
@@ -31,7 +32,7 @@ stack include changes to how CI/CD works, so it is important that all forks are
 brought up-to-date with the master branch of the XChem repositories
 
 Setting up with AWX
--------------------
+===================
 
 The stack image for your development environment can be accessed at
 https://awx-xchem.informaticsmatters.org/#/login [#f1]_.
@@ -70,15 +71,16 @@ When the jobs are finished, navigate to the URL spat out by the job in
 step **1** above. You should now have a copy of the stack that is created from the
 ``xchem/master`` branches.
 
+***************************
 Setting up Travis for CI/CD
-===========================
+***************************
 
 In this deployment, we use Travis to do CI/CD, rather than Travis for CI,
 and Jenkins for CD. It's much easier to customise
 how your stack is built by using Travis.
 
 Prerequisites
---------------
+=============
 
 *   You have a `travis`_ account
 *   You have added your forks to your Travis account
@@ -86,7 +88,7 @@ Prerequisites
 *   You have a `dockerhub`_ account
 
 Using the right Travis version
-------------------------------
+==============================
 
 The CI/CD implementation will only work running from the newest version of
 Travis, which is now found at https://travis-ci.com/. However, to set this up

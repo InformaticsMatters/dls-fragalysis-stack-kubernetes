@@ -1,6 +1,6 @@
-**************************
+##########################
 Setting up a Basic Cluster
-**************************
+##########################
 
 A *basic* cluster contains only the essential infrastructure components
 to support the Fragalysis Stack and includes the deployment of a single,

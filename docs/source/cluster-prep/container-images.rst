@@ -1,6 +1,6 @@
-**********************
+######################
 Container Images (AWS)
-**********************
+######################
 
 For a production deployment of the XChem Fragalysis Stack the following list
 of container images are normally deployed to the AWS EKS Kubernetes
@@ -16,8 +16,9 @@ services (Infrastructure and Fragalysis Stack) and optional areas that cover
     revision updates as the Stack's development is a continuous and
     on-going process. Most other images are unlikely to change often.
 
+*********************
 Core (Infrastructure)
-=====================
+*********************
 
 +-------------------------------------------------------------------+---------------+
 | Container Image                                                   | Tag           |
@@ -37,8 +38,9 @@ Core (Infrastructure)
 | quay.io/kubernetes-ingress-controller/nginx-ingress-controller    | 0.33.0        |
 +-------------------------------------------------------------------+---------------+
 
+***********************
 Core (Fragalysis Stack)
-=======================
+***********************
 
 +---------------------------------------+---------------+
 | Container Image                       | Tag           |
@@ -56,8 +58,9 @@ Core (Fragalysis Stack)
 | xchem/fragalysis-s3-loader            | 1.0.7 [#f2]_  |
 +---------------------------------------+---------------+
 
+******************************
 Backup and Recovery (optional)
-==============================
+******************************
 
 +---------------------------------------+---------------+
 | Container Image                       | Tag           |
@@ -67,8 +70,9 @@ Backup and Recovery (optional)
 | informaticsmatters/sql-recovery       | 2020.4        |
 +---------------------------------------+---------------+
 
+*******************
 Keycloak (optional)
-===================
+*******************
 
 +---------------------------------------+---------------+
 | Container Image                       | Tag           |

@@ -1,6 +1,6 @@
-**************************
+##########################
 The AWX Development Server
-**************************
+##########################
 
 You will find the Production AWX server at
 ``https://awx-xchem.informaticsmatters.org``.

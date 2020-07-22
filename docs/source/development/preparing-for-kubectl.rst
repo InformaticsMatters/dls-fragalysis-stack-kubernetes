@@ -1,19 +1,21 @@
-*********************
+#####################
 Preparing for kubectl
-*********************
+#####################
 
 You will need to install a compatible version of kubectl and then
 create your configuration file.
 
+******************
 Installing kubectl
-==================
+******************
 
 Follow the `Kubernetes instructions`_. If in doubt always install the very latest
 version. It must be at least as good ats the one used by the cluster
 (which is probably v1.17.5).
 
+**************************
 Setup your KUBECONFIG file
-==========================
+**************************
 
 Kubernetes configurations (small YAML files) are usually located in
 your ``$HOME/.kube`` directory. Take the configuration you've been given

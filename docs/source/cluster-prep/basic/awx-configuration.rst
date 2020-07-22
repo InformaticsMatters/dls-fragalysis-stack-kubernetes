@@ -1,6 +1,6 @@
-***************
+###############
 Configuring AWX
-***************
+###############
 
 .. note:: Allow 5 minutes to complete this task,
           to configure and check the AWX application server

@@ -1,6 +1,6 @@
-**********************
+######################
 Continuous Development
-**********************
+######################
 
 .. epigraph::
 
@@ -44,8 +44,9 @@ Why not use **Jenkins**?
     and incurs management and maintenance costs. **Travis** needs no
     management.
 
+*****************************
 Fragalysis Stack Repositories
-=============================
+*****************************
 
 The stack is distributed as two container images, a *Loader* and
 a *Stack*. There are five GitHub repositories involved in the build of these
@@ -85,8 +86,9 @@ fragalysis-stack
     `Docker Hub`_. Like the *Loader* it uses the image produced by the
     ``fragalysis-backend`` as it's ``FROM`` image.
 
+**********************
 Build example (master)
-======================
+**********************
 
 Let's see how **Travis** works for the Fragalysis Stack by exploring
 a simple example, where a user-change to a repository's *master* branch
@@ -121,8 +123,9 @@ occur, in approximate order: -
     *backend* changes above) builds and its image is pushed to Docker Hub.
     The image pushed is ``xchem/fragalysis-stack:latest``
 
+********************************
 More scenarios (here be Dragons)
-================================
+********************************
 
 That's a simplistic illustration of a *build chain* from one ``master``
 branch rippling through the dependent builds on the ``master`` branch.
@@ -131,7 +134,7 @@ But software development's more complicated than just changes to the
 ``master`` branch and, in these cases, **Travis** will need some help.
 
 How does Travis know which repos to trigger?
---------------------------------------------
+============================================
 
 This is the responsibility of the repository owner. Our `Trigger Travis`_
 utility is used to simplify the calls the the **Travis** API but the
@@ -151,7 +154,7 @@ repositories, the author has to know which repositories depend on their code.
     (discussed earlier).
 
 How does a repo know what container tag to use?
------------------------------------------------
+===============================================
 
 By convention, in a CI/CD sense, automated builds on ``master`` produce
 container images tagged ``latest``. The **Travis** build can be easily
@@ -160,7 +163,7 @@ Branch ``1-defect`` might therefore produce images that are pushed to docker
 using the tag ``1-defect``
 
 How do I instruct the downstream to use may image?
---------------------------------------------------
+==================================================
 
 In our example we've assumed the branch being manipulated is ``master``
 and in this *very simple* workflow we want all the dependent ``master``
@@ -208,7 +211,7 @@ But what if you forget to set the variable?
     others might expect from ``latest``.
 
 What if I want to trigger a non-master downstream branch?
----------------------------------------------------------
+=========================================================
 
 ..  epigraph::
 
@@ -235,7 +238,7 @@ and unless you are very, very disciplined in your project organisation and
 development you should be treading extremely carefully.
 
 I have a fork of the frontend, how do I...
-------------------------------------------
+==========================================
 
 Here we'd like changes in a branch of a fork of one repository
 to trigger the build of a branch in the fork of another repository...
@@ -267,8 +270,9 @@ Fragalysis Stack and Kubernetes.
 
 We need an altogether simpler approach.
 
+**************************
 Development Recommendation
-==========================
+**************************
 
 For the main production images for STAGING (latest) and PRODUCTION (tagged
 we...
@@ -322,8 +326,9 @@ After all, if you're expect to have 20 or 30 developers all on different forks
 and branches, all developing different aspects of the code, an automatic build
 system would be enormously complex, fragile and costly to maintain.
 
+********************
 Development Examples
-====================
+********************
 
 To further illustrate the knock-on effect of the above recommendation
 for individual developers, i.e. that developers are responsible for their own
@@ -338,7 +343,7 @@ container images using repository forks and branches, a few examples follow.
 ..  _fe-example:
 
 Developing Front-end (F/E) Code Example
----------------------------------------
+=======================================
 
 Here you're developing front-end code, relying on a published backend image
 and the existing stack implementation.
@@ -371,7 +376,7 @@ as the source of the front-end code [#f4]_.
 ..  _be-example:
 
 Developing Back-end (B/E) Code Example
---------------------------------------
+======================================
 
 Here you're developing back-end code, relying on existing front-end and stack
 implementation.
@@ -395,7 +400,7 @@ Here, in a less cluttered diagram: -
 ..  _stack-example:
 
 Developing Stack Code Example
------------------------------
+=============================
 
 Here you're developing stack code, relying on a published back-end image
 and front-end implementation.
@@ -415,7 +420,7 @@ and front-end implementation.
 ..  _everything-example:
 
 Developing Everything Example
------------------------------
+=============================
 
 Here you're developing front-end, back-end and stack code.
 
@@ -438,8 +443,9 @@ This is essentially a combination of the three prior scenarios.
     repositories are made in order to propagate the changes back to the XChem
     repos.
 
+*********************************
 Development Prep and Cheat-Sheets
-=================================
+*********************************
 
 The following documents provide helpful start-up guides for development,
 the debugging of your deployed applications.

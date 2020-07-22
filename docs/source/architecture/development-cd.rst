@@ -1,14 +1,15 @@
-*********************
+#####################
 Continuous Deployment
-*********************
+#####################
 
 .. epigraph::
 
     The Fragalysis Stack automated deployment mechanism
     and the role of `Travis`_ and `AWX`_.
 
+******
 Travis
-======
+******
 
 The various Fragalysis repositories are registered with `Travis`_, which monitors
 each repository, spinning up VMs in response to changes in order to run build
@@ -26,8 +27,9 @@ Note: -
     automated sequence. Developers working on their own branches or forks are
     required to build their own images.
 
+***
 AWX
-===
+***
 
 Deployment relies on pre-configured Jobs on the corresponding cluster's
 AWX server. For example, on the production cluster the continuous delivery
@@ -46,8 +48,9 @@ jobs: -
 
 These jobs are only expected to be run once.
 
+****************
 Fragalysis Stack
-================
+****************
 
 Automated deployment of the Fragalysis Stack is achieved through the `Travis`_
 CI/CD framework ans AWX. As changes are committed to the **master** branch
@@ -63,7 +66,7 @@ be seen illustrated in the following diagram and described below: -
 ..  image:: ../images/frag-travis/frag-travis.009.png
 
 Deployment actions (from commits)
----------------------------------
+=================================
 
 Although Travis launches a build for every change (regardless of branch)
 the automated actions shown above and described here only take place when
@@ -120,15 +123,16 @@ AWX server): -
 *   ``Production Fragalysis Stack (Version Change)``
 
 Performance
------------
+===========
 
 The time between a commit to the Frontend repository and the start of the
 roll-out of the changes in the cluster is around **8 or 9 minutes**. Each
 Stack Pod takes around 3 minutes before it's providing a service endpoint.
 A two-Pod StateFulSet will take around **15 minutes** to fully deploy.
 
+*****************
 Fragalysis Loader
-=================
+*****************
 
 The Loader, like the stack above, is built in the same automated fashion.
 It is triggered by changes either to the **master** branch of
@@ -136,15 +140,17 @@ the ``xchem/fragalysis-loader`` or via a Travis API trigger from a
 ``fragalysis-backend`` Travis build process, which takes place whenever the
 Backend master code changes.
 
+**************************
 The Travis-Trigger Utility
-==========================
+**************************
 
 The Travis build **trigger** logic used by the repositories is provided
 by a small Python module, cloned into the build process from our
 `Trigger Travis`_ GitHub project.
 
+***********************
 The AWX-Trigger Utility
-=======================
+***********************
 
 The Travis build **trigger** logic used by the repositories is provided
 by a small script that drives the Tower CLI, cloned into the build process

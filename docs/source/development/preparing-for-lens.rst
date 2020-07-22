@@ -1,6 +1,6 @@
-******************
+##################
 Preparing for lens
-******************
+##################
 
 You will need to install `lens`_, a neat community-driven IDE for Kubernetes,
 and then provide your kubernetes configuration file.

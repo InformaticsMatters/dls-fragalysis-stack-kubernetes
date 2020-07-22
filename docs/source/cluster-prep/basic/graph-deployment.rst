@@ -1,6 +1,6 @@
-****************************
+############################
 Deploying the Fragment Graph
-****************************
+############################
 
 .. note:: Allow **2 hours** to install all of the applications.
 

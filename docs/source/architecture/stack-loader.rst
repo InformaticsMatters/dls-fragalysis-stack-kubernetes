@@ -1,12 +1,13 @@
-***************************
+###########################
 The Fragalysis Stack Loader
-***************************
+###########################
 
 The *loader* is used to provision new Fragalysis Stack data (both Django media
 and the related database entries).
 
+************
 How it works
-============
+************
 
 Data to be loaded is first placed on the Media NFS server, where an NFS
 directory acts as the root of all of the data (``/nfs/kubernetes-fs-media``).
@@ -27,8 +28,9 @@ calling ``loader.py`` module in the loader Pod.
     As well as an NFS loader a loaders also exists that will copy data from
     AWS S3, although this will require suitable credentials.
 
+***********************************
 The NFS media volume (the 'origin')
-===================================
+***********************************
 
 You will need to put new data files in a subdirectory of
 ``/nfs/kubernetes-fs-media`` on the NFS server that has been commissioned in
@@ -42,8 +44,9 @@ the STFC xchem-follow-up project.
 
 Data and the directory it's in must be available to all.
 
+******************
 Running the loader
-==================
+******************
 
 You will find a **Media Loader** Template Job on your cluster's AWX server.
 On the production cluster you will find one for the Production stack

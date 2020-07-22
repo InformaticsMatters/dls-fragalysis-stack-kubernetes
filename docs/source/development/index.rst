@@ -1,6 +1,6 @@
-*********************
+#####################
 Development Processes
-*********************
+#####################
 
 ..  epigraph::
 
@@ -47,8 +47,9 @@ executed.
 
 Developers don't need the decryption keys so they cannot see them.
 
+********************************************
 Deploying a user stack (Development Cluster)
-============================================
+********************************************
 
 The AWX server should have been setup with **Job Templates** to deploy and
 un-deploy stack instances. There are also common templates to synchronise
@@ -78,7 +79,7 @@ With variables set you just **SAVE** them (if you've changed them)
 and then click **LAUNCH** to run the deployment playbook.
 
 Ingress and namespace
----------------------
+=====================
 
 Your stack is deployed to a Kubernetes `namespace`_ that's unique to you.
 The playbook will display this value at the end of the deployment along with

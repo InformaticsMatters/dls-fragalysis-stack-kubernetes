@@ -1,6 +1,6 @@
-******************
+##################
 The Rancher Server
-******************
+##################
 
 The **DEVELOPMENT** and **PRODUCTION** clusters have been created with
 and are managed by `Rancher`_, deployed to the STFC/OpenStack cluster
