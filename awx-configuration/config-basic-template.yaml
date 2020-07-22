@@ -85,7 +85,7 @@ tower:
 
   # Fragmentation Graph
 
-  - name: Graph
+  - name: Fragmentation Graph
     project: docker-neo4j-ansible
     playbook: site.yaml
     ask_extra_vars: yes
@@ -111,7 +111,7 @@ tower:
     labels:
     - Fragalysis
 
-  - name: Graph [DESTROY]
+  - name: Fragmentation Graph [DESTROY]
     project: docker-neo4j-ansible
     playbook: site.yaml
     ask_extra_vars: yes
