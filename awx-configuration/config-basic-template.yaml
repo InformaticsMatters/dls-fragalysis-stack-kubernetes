@@ -1,0 +1,208 @@
+---
+
+# An example AWX configuration data file.
+#
+# A template file to be edited.
+# You *MUST* replace all `SetMe` values with values suitable for your cluster.
+#
+# This template is suitable for an AWS deployment.
+#
+# Copy to `config-basic.yaml`
+
+tower:
+
+  host: SetMe (i.e. "https://aws.example.com")
+  admin_username: admin
+  admin_password: SetMe
+
+  # The AWX/Tower organisation
+
+  organisation: SetMe (i.e. "Informatics Matters")
+
+  # Teams in the Organisation
+  # The organisation
+
+  teams:
+  - Fragalysis
+
+  # Labels (used for Jobs)
+
+  labels:
+  - Fragalysis
+
+  # Users
+
+  users:
+  - first_name: Dave
+    last_name: Demo
+    username: demo
+    password: SetMe
+    email: ddemo@example.com
+    superuser: yes
+    teams:
+    - Fragalysis
+
+  # Credentials
+  # Built-in credentials will be automatically created for he following
+  # (so you don't need a credential for the AWS IAM User in the cluster
+  # or the cluster's kubernetes control connection): -
+  #
+  # 'aws (SELF)'
+  # 'k8s (SELF)'
+
+  credentials:
+  - name: graph (Fragalysis)
+    kind: graph
+    hostname: graph.graph.svc
+    password: test
+    teams:
+    - Fragalysis
+
+  # Projects (Git repositories)
+
+  projects:
+  - name: dls-fragalysis-stack-kubernetes
+    description: Fragalysis Stack Kubernetes Code
+    scm_type: git
+    scm_url: github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
+    scm_branch: tags/2020.33
+    teams:
+    - Fragalysis
+
+  - name: docker-neo4j-ansible
+    description: Informatics Matters neo4j graph and graph loader deployment
+    scm_type: git
+    scm_url: github.com/InformaticsMatters/docker-neo4j-ansible
+    scm_branch: tags/2.3.2
+    teams:
+    - Fragalysis
+
+  # Jobs (variables, credentials and plays for a project)
+  # All the Job-Templates normally in pairs - one to deploy
+  # and one to 'DESTROY'. So at least two, maybe more.
+
+  job_templates:
+
+  # Fragmentation Graph
+
+  - name: Graph
+    project: docker-neo4j-ansible
+    playbook: site.yaml
+    ask_extra_vars: yes
+    extra_vars: |-
+      ---
+      graph_bucket: SetMe (i.e. "im-fragnet")
+      graph_bucket_path: combination/3
+      graph_core_limit: 8
+      graph_core_request: 4
+      graph_heap_g: 8
+      graph_mem_request_g: 128
+      graph_namespace: graph
+      graph_pagecache_size_g: 96
+      graph_pvc_storage_class: gp2
+      graph_volume_size_g: 700
+      graph_wipe: false
+    credentials:
+    - aws (SELF)
+    - k8s (SELF)
+    - graph (Fragalysis)
+    teams:
+    - Fragalysis
+    labels:
+    - Fragalysis
+
+  - name: Graph [DESTROY]
+    project: docker-neo4j-ansible
+    playbook: site.yaml
+    ask_extra_vars: yes
+    extra_vars: |-
+      ---
+      graph_state: absent
+    credentials:
+    - k8s (SELF)
+    teams:
+    - Fragalysis
+    labels:
+    - Fragalysis
+
+  # Fragalysis Stack
+
+  - name: Fragalysis Stack
+    project: dls-fragalysis-stack-kubernetes
+    playbook: site-fragalysis-stack.yaml
+    ask_extra_vars: yes
+    extra_vars: |-
+      ---
+      database_vol_storageclass: gp2
+      stack_hostname: SetMe (i.e. "https://fragalysis.example.com")
+      stack_media_vol_storageclass: efs
+      stack_image: xchem/fragalysis-stack
+      stack_image_tag: 1.0.7
+      stack_is_for_developer: no
+      stack_namespace: fragalysis-prod
+    credentials:
+    - vault (dls-fragalysis-stack-kubernetes)
+    - k8s (SELF)
+    - graph (Fragalysis)
+    teams:
+    - Fragalysis
+    labels:
+    - Fragalysis
+
+  - name: Fragalysis Stack (Version Change)
+    project: dls-fragalysis-stack-kubernetes
+    playbook: site-fragalysis-stack_version-change.yaml
+    ask_extra_vars: yes
+    extra_vars: |-
+      ---
+      stack_image: xchem/fragalysis-stack
+      stack_image_tag: 1.0.7
+      stack_is_for_developer: no
+      stack_namespace: fragalysis-prod
+    credentials:
+    - k8s (SELF)
+    - graph (Fragalysis)
+    teams:
+    - Fragalysis
+    labels:
+    - Fragalysis
+
+  - name: Fragalysis Stack [DESTROY]
+    project: dls-fragalysis-stack-kubernetes
+    playbook: site-fragalysis-stack.yaml
+    ask_extra_vars: yes
+    extra_vars: |-
+      ---
+      stack_state: absent
+      stack_is_for_developer: no
+      stack_namespace: fragalysis-prod
+    credentials:
+    - k8s (SELF)
+    teams:
+    - Fragalysis
+    labels:
+    - Fragalysis
+
+  # Fragalysis Loader
+
+  - name: Fragalysis Stack Data Loader
+    project: dls-fragalysis-stack-kubernetes
+    playbook: site-data-loader.yaml
+    ask_extra_vars: yes
+    extra_vars: |-
+      ---
+      stack_is_for_developer: no
+      stack_namespace: fragalysis-prod
+      loader_image_registry: docker.io
+      loader_image: xchem/fragalysis-s3-loader
+      loader_image_tag: 1.0.7
+      loader_bucket_name: SetMe
+      loader_data_origin: SetMe
+      loader_aws_access_key_id: SetMe
+      loader_aws_secret_access_key: SetMe
+    credentials:
+    - k8s (SELF)
+    teams:
+    - Fragalysis
+    labels:
+    - Fragalysis

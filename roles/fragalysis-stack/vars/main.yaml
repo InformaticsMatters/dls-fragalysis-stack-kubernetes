@@ -62,6 +62,6 @@ wait_timeout: 600
 # Wait for volume binding?
 # Probably unless multi-zone deployments
 # where the PVC will not bind until the 'consumer' pod appears.
-wait_for_bind: yes
+wait_for_bind: no
 # Volume binding timeout (seconds)
 bind_timeout: 120

@@ -14,6 +14,9 @@ Each vault contains a `tower` map variable that describes
 the desired initial state of the corresponding AWX server, relying on
 Ansible, the tower-cli and Ansible Galaxy roles and collections.
 
+A special unencrypted file exists to act as a basis for a *basic* installation
+(`config-basic-template.yaml`).
+
 ## Preparation
 You **MUST** provide AWS credentials (typically allowing AWS S3
 bucket access to plays that operate with S3) and Kubernetes credentials.

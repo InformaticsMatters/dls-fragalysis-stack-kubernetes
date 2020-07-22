@@ -117,6 +117,7 @@ spec:
           value: '{{ database_host_fact }}'
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact }}'
+{% if stack_ispyb_host_fact is defined %}
         # Extracted from ispyb secrets...
         #
         - name: ISPYB_USER
@@ -139,6 +140,8 @@ spec:
             secretKeyRef:
               name: ispyb
               key: port
+{% endif %}
+{% if stack_xchem_host_fact is defined %}
         # Extracted from xchem secrets...
         #
         - name: XCHEM_NAME
@@ -166,12 +169,14 @@ spec:
             secretKeyRef:
               name: xchem
               key: port
+{% endif %}
         - name: BUILD_XCDB
 {% if stack_build_xcdb %}
           value: 'yes'
 {% else %}
           value: 'no'
 {% endif %}
+{% if stack_ssh_host_fact is defined %}
         # SSH material
         - name: SSH_HOST
           valueFrom:
@@ -193,6 +198,7 @@ spec:
             secretKeyRef:
               name: ssh
               key: security_connector
+{% endif %}
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
         # This is used in situations where the origin image's tag may not
