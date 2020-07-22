@@ -1,6 +1,6 @@
-#############################
-Installing the Infrastructure
-#############################
+#####################################
+Installing the Infrastructure (Basic)
+#####################################
 
 The Fragalysis Stack depends on Kubernetes services and objects created by our
 `ansible-infrastructure`_ project. A basic set of parameters that can be used
@@ -51,8 +51,7 @@ located in your ``kubeconfig`` file::
 
 Passing this into the playbook with ``-e ax_kubernetes_context=im-demo``.
 
-Now install the infrastructure (using the modified  any changes made to the vault file
-and saved)::
+Now install the infrastructure::
 
     $ ansible-playbook \
             -e "@site-parameters.yaml" \
@@ -65,7 +64,7 @@ to complete.
 Once it's installed you should be able to navigate to the AWX application
 server using the address you gave it.
 
-With this done we can move to configuring AWX.
+With this done we can move to :doc:`awx-configuration`.
 
 .. _ansible vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure

@@ -1,19 +1,21 @@
-###############
-Configuring AWX
-###############
+#######################
+Configuring AWX (Basic)
+#######################
 
 .. note:: Allow 5 minutes to complete this task,
-          to configure and check the AWX application server
+          which involves configuring and checking the AWX application server
 
-Configuration of the AWX server is achieved with the playbooks and roles
-in the Informatics Matters `DLS Kubernetes`_ GitHub repository.
+Configuration of the AWX server is achieved with a parameter file
+in the Informatics Matters `DLS Kubernetes`_ GitHub repository and the
+Ansible Galaxy `AWX Composer`_ Role .
 
-Clone the project and checkout the stable revision used for the demo::
+Clone the project into the working directory you created while following the
+:doc:`infrastructure-installation` guide::
 
-    $ cd ~/Code/im-demo
+    $ cd <working directory>
     $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
     $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.10
+    $ git checkout tags/2020.34
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r role-requirements.yaml
 
@@ -23,27 +25,42 @@ The demo configuration will create the following objects: -
 *   Credentials
 *   A team
 *   A demo user
-*   Inventories and Hosts
 *   Projects
 *   Job Templates
 
-You can view the configuration using ansible vault::
+Start by copying the ``config-basic-template.yaml`` file to ``config-basic.yaml``
+(which is protected from being committed) and then review it and provide
+values for all fo the ``SetMe`` instances in the file.
 
-    $ ansible-vault edit roles/awx-configuration/vars/config-demo.vault
+The file defines a ``tower`` variable, used by our ``AWX Composer`_
+Ansible Galaxy role.
 
-Armed with the AWX ``admin`` user password used during the infrastructure
-installation step above, you can now configure the AWX applications server
-using its playbook, passing the password in via the command-line::
+.. warning::
+    Before configuring the AWX server you will need AWS (typically for S3 access)
+    and Kubernetes credentials. Providing these results in the composer
+    creating the ``aws (SELF)`` and ``k8s (SELF)`` built-in credentials that are
+    essential for deploying the Fraglaysis Stack.
 
-    $ ansible-playbook -e tower_password=<PASSWORD> \
-            site-awx-configuration.yaml \
-            --ask-vault-pass
+You will have to provide suitable environment variables for the *built-in*
+credentials::
 
+    $ export AWS_ACCESS_KEY_ID=00000000
+    $ export AWS_SECRET_ACCESS_KEY=00000000
 
-If you login to the AWX server now using the ``demo`` user you should be able
-to navigate to the Templates page and see all the available jobs, as
-shown in this screenshot: -
+    $ export K8S_AUTH_HOST=https://1.2.3.4:6443
+    $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
+    $ export K8S_AUTH_VERIFY_SSL=no
 
-.. image:: ../../images/demo-job-templates.png
+You can now configure the AWX applications server
+using the infrastructure playbook and the ``config-basic.yaml`` file.
+From your the root of the clone of the `dls kubernetes`_ repository run::
+
+    $ ansible localhost \
+        -m include_role -a name=informaticsmatters.awx_composer \
+        -e @awx-configuration/config-basic.yaml
+
+Once complete you should be able to login to the AWX server and
+navigate to the Templates page and see all the available jobs.
 
 .. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
+.. _awx composer: https://github.com/InformaticsMatters/ansible-role-awx-composer
