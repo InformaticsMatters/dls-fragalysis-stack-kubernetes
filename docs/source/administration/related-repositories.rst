@@ -52,5 +52,5 @@ GitHub account.
 .. rubric:: Footnotes
 
 .. [#f1] This repository creates a Nextflow/Slurm/Munge/Pulsar cluster
-         rthat can be used but it was not employed to create the existing
+         that can be used but it was not employed to create the existing
          Galaxy/Condor cluster, which created independently of our tools.
