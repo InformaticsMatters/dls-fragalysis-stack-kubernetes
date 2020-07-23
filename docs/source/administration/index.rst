@@ -12,3 +12,4 @@ Administration
     rancher
     nfs-configuration
     awx
+    related-repositories
