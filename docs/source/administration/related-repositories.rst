@@ -25,6 +25,17 @@ GitHub account.
 *   trigger-awx
 *   trigger-travis
 
+The following repositories are employed to generate neo4j-compliant
+fragmentation data: -
+
+*   fragmentor
+
+Cluster formation (using STFC OpenStack) resources are managed by the
+following repositories: -
+
+*   ansible-bastion
+*   ansible-galaxy-cloud [#f1]_
+
 ******************
 XChem Repositories
 ******************
@@ -37,3 +48,9 @@ GitHub account.
 *   fragalysis-frontend
 *   fragalysis-loader
 *   fragalysis-stack
+
+.. rubric:: Footnotes
+
+.. [#f1] This repository creates a Nextflow/Slurm/Munge/Pulsar cluster
+         rthat can be used but it was not employed to create the existing
+         Galaxy/Condor cluster, which created independently of our tools.
