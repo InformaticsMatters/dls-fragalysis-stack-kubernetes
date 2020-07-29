@@ -9,6 +9,7 @@ Administration
 ..  toctree::
     :maxdepth: 1
 
+    cloud-stfc
     rancher
     nfs-configuration
     awx

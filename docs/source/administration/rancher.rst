@@ -44,6 +44,13 @@ The backup of etcd for the RKE and Application clusters is automated using
 features built-in to RKE and Rancher, with snapshots written to an Informatics
 Matters AWS S3 bucket (detailed in the following sections).
 
+.. epigraph::
+
+    The credentials used to create AWS S3 backups are those of the user
+    ``fragalysis-loader`` on the Informatics Matters AWS account. The
+    secret access key is stored in the Informatics Matters `KeePassXC`_
+    application (under ``AWS -> AWS S3 (Fragalysis) User``).
+
 Application clusters
 ====================
 
@@ -117,6 +124,7 @@ Some `example RKE scenarios`_ are illustrated [#f2]_.
 .. _deployment repository: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
 .. _etcd: https://etcd.io
 .. _example rke scenarios: https://rancher.com/docs/rke/latest/en/etcd-snapshots/example-scenarios/
+.. _keepassxc: https://keepassxc.org
 .. _rancher: https://rancher.com/products/rancher/
 .. _restoring a cluster from backup: https://rancher.com/docs/rancher/v2.x/en/cluster-admin/restoring-etcd/
 .. _restoring backups—kubernetes: https://rancher.com/docs/rancher/v2.x/en/backups/restorations/ha-restoration/
