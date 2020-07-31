@@ -9,5 +9,5 @@ snapshot_volumes:
 snapshot_az: ceph
 
 # Age at which snapshot volumes are deleted.
-# '0' wil result in all volume snapshots being deleted.
+# '0' will result in no volume snapshots being deleted.
 snapshot_retirement_age_days: 6

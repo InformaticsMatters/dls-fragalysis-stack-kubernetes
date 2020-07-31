@@ -53,3 +53,4 @@
 - include_tasks: delete-old-snapshots.yaml
   vars:
     cloud_auth: "{{ clouds.devstack.auth }}"
+  when: snapshot_retirement_age_days|int > 0

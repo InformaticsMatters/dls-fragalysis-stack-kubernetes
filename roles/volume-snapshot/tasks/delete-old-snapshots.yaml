@@ -25,13 +25,20 @@
 # - project_domain_name (i.e. "Default")
 # - user_domain_name
 
-# We rely in the OpenStack client - the Ansible "os_" module
+# We rely on the OpenStack client - the Ansible "os_" module
 # (Ansible 2.9) does not do what we need, so we need the client.
-# It' Python so make sure it's available...
+# It's Python so make sure it's available...
+#
+# We also include 'stevedore', the same one installed in the system
+# to avoid the error:
+#
+#   Will not install to the user site because it will lack sys.path precedence
+#   to stevedore in /var/lib/awx/venv/ansible/lib/python3.6/site-packages
 
 - name: Install prerequisite Python modules
   pip:
     name:
+    - stevedore==1.31.0
     - python-openstackclient==5.3.1
     extra_args: --user
 
