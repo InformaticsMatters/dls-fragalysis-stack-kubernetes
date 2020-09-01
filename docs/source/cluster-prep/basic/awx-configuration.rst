@@ -32,14 +32,20 @@ Start by copying the ``config-basic-template.yaml`` file to ``config-basic.yaml`
 (which is protected from being committed) and then review it and provide
 values for all fo the ``SetMe`` instances in the file.
 
-The file defines a ``tower`` variable, used by our ``AWX Composer`_
+The file defines a ``tower`` variable, used by our `AWX Composer`_
 Ansible Galaxy role.
 
 .. warning::
-    Before configuring the AWX server you will need AWS (typically for S3 access)
-    and Kubernetes credentials. Providing these results in the composer
-    creating the ``aws (SELF)`` and ``k8s (SELF)`` built-in credentials that are
-    essential for deploying the Fraglaysis Stack.
+    Before configuring the AWX server you will need an AWS user's
+    access credentials (typically for S3 access) and credentials for the
+    Kubernetes cluster. Providing values for these will result in the
+    **Composer** creating ``aws (SELF)`` and ``k8s (SELF)`` credentials in the
+    AWX server that playbooks rely on in order to deploy the Fraglaysis Stack.
+    The AWS user account permissions that are required will ultimately depend
+    on the container images that you intend to deploy. For example, if you
+    expect to use AWS S3 as a source for Fragalysis Graph and Media the
+    container we run to do this will require the AWS account to have the
+    ``AmazonS3ReadOnlyAccess`` permission.
 
 You will have to provide suitable environment variables for the *built-in*
 credentials::
@@ -51,9 +57,9 @@ credentials::
     $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
     $ export K8S_AUTH_VERIFY_SSL=no
 
-You can now configure the AWX applications server
+You can now configure the AWX application server
 using the infrastructure playbook and the ``config-basic.yaml`` file.
-From your the root of the clone of the `dls kubernetes`_ repository run::
+From the root of your clone of the `dls kubernetes`_ repository run::
 
     $ ansible localhost \
         -m include_role -a name=informaticsmatters.awx_composer \

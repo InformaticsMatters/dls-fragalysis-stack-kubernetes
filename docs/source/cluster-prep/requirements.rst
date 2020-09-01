@@ -2,7 +2,7 @@
 Cluster Requirements (AWS)
 ##########################
 
-The following _minimum_ (preliminary) cluster requirements will need to be
+The following *minimum* (preliminary) cluster requirements will need to be
 satisfied before the Fragalysis Stack can be deployed and used.
 
 ***************
