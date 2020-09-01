@@ -42,7 +42,8 @@ Cluster
     is the user that the deployment playbooks will use to maintain the cluster.
 
 2.  **An AWS IAM user** capable of reading from an AWS S3 bucket, used
-    to provision fragment graph and Frgalysis media data.
+    to provision fragment graph and Frgalysis media data
+    (i.e. a user with at least ``AmazonS3ReadOnlyAccess`` permissions).
 
 3.  **AWS S3**. The cluster must allow READ access to AWS S3 where fragment data
     for the neo4j graph database and loader (media) data for the Stacks is
