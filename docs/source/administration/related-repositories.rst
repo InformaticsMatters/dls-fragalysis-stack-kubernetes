@@ -49,6 +49,15 @@ GitHub account.
 *   fragalysis-loader
 *   fragalysis-stack
 
+**********************
+3rd Party Repositories
+**********************
+
+Repositories hosted on `GitHub <https://github/>`_ that we
+rely on but have little or no control over: -
+
+*   kubernetes/ingress-nginx
+
 .. rubric:: Footnotes
 
 .. [#f1] This repository creates a Nextflow/Slurm/Munge/Pulsar cluster
