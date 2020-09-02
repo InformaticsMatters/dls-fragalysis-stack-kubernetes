@@ -6,9 +6,19 @@ Fragalysis Stack (Kubernetes)
 
 ..  toctree::
     :maxdepth: 2
-    :caption: Container Images
+    :caption: Preparation
 
     cluster-prep/index
+
+..  toctree::
+    :maxdepth: 2
+    :caption: Architecture and development process
+
     architecture/index
     development/index
+
+..  toctree::
+    :maxdepth: 2
+    :caption: Administration
+
     administration/index

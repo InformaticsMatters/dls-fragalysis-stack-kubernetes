@@ -24,45 +24,22 @@ for the demo and build the HTML-based documentation::
 
     $ git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
     $ cd ansible-infrastructure
-    $ git checkout tags/2020.22
+    $ git checkout tags/2020.28
     $ pip install -r build-requirements.txt
     $ sphinx-build -b html doc doc/build
 
-Once built, the root documentation will be found at ``doc/build/index.html``.
+..  note::
+    Try to use the latest tag that's available. At the time of writing it was
+    ``tags/2020.28``.
 
-From here you should follow the infrastructure project's **Getting Started**
-guide and then its **Creating the Infrastructure** guide. Importantly, in
-the **Creating** sub-section, instead of using the ``vault`` files start with
-the ``parameters.template`` file, which does not require a vault key,
-and copy it as ``parameters.yaml`` (a file protected from being committed).
+With documentation built, the root of it will be found at
+``doc/build/index.html``.
 
-You need to provide values suitable for your cluster for a number of
-parameters, i.e. all those with a ``SetMe`` value. Review the file and change
-other values as you see fit.
+Follow the infrastructure project's **Getting Started**
+guide and then its **Creating the Infrastructure** guide before returning here.
 
-To install AWX you will need the context name of the cluster,
-located in your ``kubeconfig`` file::
-
-    contexts:
-    - name: "im-demo"
-      context:
-        user: "im-demo"
-        cluster: "im-demo"
-
-Passing this into the playbook with ``-e ax_kubernetes_context=im-demo``.
-
-Now install the infrastructure::
-
-    $ ansible-playbook \
-            -e "@site-parameters.yaml" \
-            -e ax_kubernetes_context=im-demo \
-            site.yaml
-
-Allow approximately **6 minutes** for the infrastructure provisioning
-to complete.
-
-Once it's installed you should be able to navigate to the AWX application
-server using the address you gave it.
+Once the infrastructure is installed you should be able to navigate to the
+AWX application server using the hostname you gave it.
 
 With this done we can move to :doc:`awx-configuration`.
 

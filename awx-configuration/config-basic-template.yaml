@@ -65,7 +65,7 @@ tower:
     description: Fragalysis Stack Kubernetes Code
     scm_type: git
     scm_url: github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
-    scm_branch: tags/2020.33
+    scm_branch: tags/2020.38
     teams:
     - Fragalysis
 

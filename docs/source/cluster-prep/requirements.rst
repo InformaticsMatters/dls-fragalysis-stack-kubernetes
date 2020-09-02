@@ -50,10 +50,10 @@ Cluster
     expected to reside. The bucket name can be configured during deployment.
 
     *   In EKS the **Graph Node** (see below) is likely to need
-        the `arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess` policy,
+        the ``arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess`` policy,
         typically assigned to the node using the ``iam ->  attachPolicyARNs``
         block in the cluster definition file. You can see this in the
-        `cluster example`_ in our ``nsible-infrastructure`_ repository.
+        `cluster example`_ in our `ansible-infrastructure`_ repository.
 
     *   We can provide open-access to the existing Fragalysis Stack graph
         data but if you want to use your own fragment data you will need to

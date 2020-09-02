@@ -15,9 +15,13 @@ Clone the project into the working directory you created while following the
     $ cd <working directory>
     $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
     $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.34
+    $ git checkout tags/2020.38
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r role-requirements.yaml
+
+..  note::
+    Try to use the latest tag that's available. At the time of writing it was
+    ``tags/2020.38``.
 
 The demo configuration will create the following objects: -
 
@@ -66,7 +70,12 @@ From the root of your clone of the `dls kubernetes`_ repository run::
         -e @awx-configuration/config-basic.yaml
 
 Once complete you should be able to login to the AWX server and
-navigate to the Templates page and see all the available jobs.
+navigate to the Templates page and see all the available Job Templates,
+illustrated in the following example screenshot.
+
+The Job Templates you see will depend on the configuration you've applied.
+
+..  image:: ../../images/awx-production-templates.png
 
 .. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
 .. _awx composer: https://github.com/InformaticsMatters/ansible-role-awx-composer

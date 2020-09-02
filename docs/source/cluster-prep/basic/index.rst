@@ -7,7 +7,8 @@ to support the Fragalysis Stack and includes the deployment of a single,
 production-grade (versioned), Stack.
 
 From this point we assume you have a viable cluster, what follows are
-the steps required to deploy a stack to that cluster: -
+the steps required to deploy a single Fragalysis Stack and
+associated Graph database to that cluster: -
 
 ..  toctree::
     :maxdepth: 1

@@ -5,9 +5,10 @@ Cluster Preparation
 These instructions cover deployment of a basic production-grade
 Fragalysis Stack (without custom authentication).
 
-This requires the installation of the underlying infrastructure components: -
+This requires the installation of the underlying infrastructure components,
+which is handled by playbooks in our `ansible-infrastructure`_ repository: -
 
-*   An ingress controller (nginx in our case)
+*   An ingress controller (NGINX in our case)
 *   Pod Security Policies
 *   Certificate management
 *   A PostgreSQL database
@@ -15,25 +16,31 @@ This requires the installation of the underlying infrastructure components: -
     RedHat's Ansible `Tower`_)
 *   An optional `Keycloak`_ server.
 
-One the infrastructure is satisfied, deployment of the Graph-based fragment
-database and Fragalysis Stack is achieved through the use of Jobs that are
-configured on the AWX server.
+Once the infrastructure is installed, deployment of the Graph-based fragment
+database and Fragalysis Stack is achieved through the use of *Jobs* that are
+configured on the infrastructure AWX server.
 
 What follows is a simplified guide to setting up a basic [#f1]_ deployment of
 the Fragalysis Stack through a number of stages: -
 
 ..  toctree::
     :maxdepth: 2
-    :caption: Basics
+    :caption: Installation
 
     requirements
     container-images
-    awx
     basic/index
+
+..  toctree::
+    :maxdepth: 2
+    :caption: AWX Fundamentals
+
+    awx
 
 .. _awx: https://github.com/ansible/awx
 .. _keycloak: https://www.keycloak.org
 .. _tower: https://www.ansible.com/products/tower
+.. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 
 .. rubric:: Footnotes
 
