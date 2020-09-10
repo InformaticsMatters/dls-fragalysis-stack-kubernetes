@@ -15,7 +15,7 @@ ansible_python_interpreter: "/usr/bin/env python"
 #   - Provide the name of the secret in the following variable
 #     (which will be used for all images)
 #
-# You must use all public images or you use all private images.
+# You must use all public images or you must use all private images.
 # You cannot put some images into a private repo and rely on
 # public images for the rest - it's "all or none".
 all_image_preset_pullsecret_name: ''
