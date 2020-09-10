@@ -34,6 +34,11 @@ spec:
                 values:
                 - {{ loader_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: nfs-loader
         image: '{{ loader_nfs_image_registry }}/{{ loader_nfs_image }}:{{ loader_nfs_image_tag }}'

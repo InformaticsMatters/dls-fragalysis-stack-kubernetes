@@ -1,0 +1,21 @@
+---
+
+ansible_connection: local
+ansible_python_interpreter: "/usr/bin/env python"
+
+# Providing your own Kubernetes image pull secrets.
+#
+# If you have moved the public (docker.io and quay.io) images to
+# your own private binary repository like JFrog Artifactory
+# you probably need to provide a pull secret for all the images.
+# One pull secret must valid for all images.
+#
+#   - Create the application namespaces in advance of the playbooks
+#   - Create the pull secret in each namespace
+#   - Provide the name of the secret in the following variable
+#     (which will be used for all images)
+#
+# You must use all public images or you use all private images.
+# You cannot put some images into a private repo and rely on
+# public images for the rest - it's "all or none".
+all_image_preset_pullsecret_name: ''

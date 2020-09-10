@@ -33,6 +33,11 @@ spec:
                 values:
                 - {{ loader_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: s3-loader
         image: '{{ loader_s3_image_registry }}/{{ loader_s3_image }}:{{ loader_s3_image_tag }}'

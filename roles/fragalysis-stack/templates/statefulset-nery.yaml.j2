@@ -32,6 +32,11 @@ spec:
                 values:
                 - {{ stack_node_purpose }}
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: nery
         image: 'informaticsmatters/fragalysis-nery:latest'

@@ -39,6 +39,11 @@ spec:
       securityContext:
         fsGroup: 26
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: database
         image: '{{ database_image_registry }}/{{ database_image }}:{{ database_image_tag }}'
