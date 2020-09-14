@@ -39,7 +39,7 @@ spec:
 
       # Init Containers
       initContainers:
-      - image: library/busybox:1.28.0
+      - image: {{ busybox_image_registry }}/library/busybox:1.28.0
         name: wait-for-graph
         command:
         - 'sh'
