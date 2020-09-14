@@ -42,7 +42,7 @@ database_cpu_request: 10m
 database_mem_request: 400Mi
 
 database_image_registry: docker.io
-database_image: postgres
+database_image: library/postgres
 database_image_tag: '12.2'
 database_port: 5432
 
