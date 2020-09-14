@@ -9,6 +9,9 @@ stack_image_tag: latest
 stack_replicas: 2
 # Deploy the nery service?
 stack_deploy_nery: no
+# Include the 'sensitive.yaml' file?
+# This includes sensitive preset variables employed at Diamond.
+stack_include_sensitive: yes
 
 # A boolean, set if the stack deployment is for a developer
 # i.e. not a PRODUCTION deployment.
