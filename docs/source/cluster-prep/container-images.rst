@@ -80,7 +80,7 @@ Fragalysis Stack
 ****************
 
 These images are required for a named (tagged) production Fragalysis Stack,
-it's own database and S3 data loader. The stack also requires a
+its own database and S3 data loader. The stack also requires a
 fragmentation database, provided by a specialised neo4j image.
 
 +-----------------------------------------------+---------------+
@@ -88,7 +88,7 @@ fragmentation database, provided by a specialised neo4j image.
 +===============================================+===============+
 | docker.io/library/busybox                     | 1.28.0        |
 +-----------------------------------------------+---------------+
-| docker.io/libarry/postgres                    | 12.2          |
+| docker.io/library/postgres                    | 12.2          |
 +-----------------------------------------------+---------------+
 | docker.io/xchem/fragalysis-stack              | 1.0.7 [#f2]_  |
 +-----------------------------------------------+---------------+
