@@ -11,6 +11,7 @@
 - name: Include sensitive variables
   include_vars:
     file: sensitive.vault
+  when: loader_include_sensitive|bool
 
 # The namespace (project),
 # the media volume claim

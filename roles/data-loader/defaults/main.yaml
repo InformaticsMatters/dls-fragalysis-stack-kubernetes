@@ -26,6 +26,10 @@ loader_data_origin: SetMe
 # There should be a corresponding 'deploy-{{ loader_type }}.yaml' in tasks.
 loader_type: nfs
 
+# Include the 'sensitive.yaml' file?
+# This includes sensitive preset variables employed at Diamond.
+loader_include_sensitive: yes
+
 # Variables for the NFS Loader ------------------------------------------------
 
 loader_nfs_server: 130.246.213.186
@@ -44,3 +48,12 @@ loader_nfs_image_tag: latest
 loader_s3_image_registry: docker.io
 loader_s3_image: xchem/fragalysis-s3-loader
 loader_s3_image_tag: latest
+
+#------------------------------------------------------------------------------
+
+# Picked up from the environment
+# (typically injected by AWX/Tower)...
+
+aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+aws_default_region: eu-central-1
