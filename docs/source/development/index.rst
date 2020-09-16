@@ -53,7 +53,7 @@ Deploying a user stack (Development Cluster)
 
 The AWX server should have been setup with **Job Templates** to deploy and
 un-deploy stack instances. There are also common templates to synchronise
-the stack's built-in PostgreSQL database and Djngo media files (if required)
+the stack's built-in PostgreSQL database and Django media files (if required)
 to those used by the Production server.
 
 Developers will have been given access to the sever and a set of templates
@@ -66,9 +66,10 @@ should be visible to them when the login.
     you will first need to have built your container image and pushed it
     to somewhere like Docker Hub.
 
-To deploy your stack you should click on the **Developer Fragalysis Stack**
-**Job Template**, where you'll have an opportunity to fine-tune the deployment
-for you specific image. That essentially means ensuring the following variables
+To deploy your stack you should click on Fragalysis Stack **Job Template** that
+will have been created for you, i.e. **USER (<YOU>) Developer Fragalysis Stack**
+This template will give you an opportunity to fine-tune the deployment
+for your specific image. That essentially means ensuring the following variables
 are set for your needs [#f2]_: -
 
 1.  ``stack_image`` - the container registry project and image name for
@@ -89,9 +90,9 @@ Loading target data
 ===================
 
 You can load target data into your stack using another AWX **Job Template**.
-You should find a **Developer Data Loader** **Job Template**, which relies on
-a loader container image that can synchronise data from the internal NFS
-server that hosts the target data.
+You should find a **User (<YOU>) Developer Data Loader** **Job Template**,
+which relies on a loader container image that can synchronise data from the
+internal NFS server that hosts the target data.
 
 When you run the loader job you simply need to ensure that the
 following Job Template variables are appropriately set::
@@ -99,7 +100,7 @@ following Job Template variables are appropriately set::
     loader_data_origin
     stack_name (normally just left at 'default')
 
-Replicating target data (prom Production)
+Replicating target data (from Production)
 =========================================
 
 Instead of loading your own target data you can simply replicate data from the
@@ -119,15 +120,15 @@ Redeploying a Stack (a version or code change)
 
 If you've already deployed your stack and have now produced a new Docker
 image (even a new ``latest`` image) you can quickly redeploy the
-image by running the **Developer Fragalysis Stack (Version Change)** Job
-Template.
+image by running the **User (<YOU>) Developer Fragalysis Stack (Version Change)**
+Job Template.
 
 This relies on the stack having been deployed (i.e. with a database and
 persistent volumes) and simply causes the Pod to restart while also re-pulling
 the image from Docker Hub.
 
-You can just run the original **Developer Fragalysis Stack** JOb template
-but that takes a little longer to run.
+You can just run the original **User (<YOU>) Developer Fragalysis Stack**
+Job template but that takes a little longer to run.
 
 .. rubric:: Footnotes
 
