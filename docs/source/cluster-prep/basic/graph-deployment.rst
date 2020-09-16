@@ -63,10 +63,10 @@ The output here has been truncated because there is a lot of it.
 
 Importantly, to be confident the deployment has worked, you must see: -
 
-*   A section starting `(1/4) Node import`
-*   A section starting `(2/4) Relationship import`
-*   A section starting `(3/4) Relationship linking`
-*   A section starting `(4/4) Post processing`
+*   A section starting ``(1/4) Node import``
+*   A section starting ``(2/4) Relationship import``
+*   A section starting ``(3/4) Relationship linking``
+*   A section starting ``(4/4) Post processing``
 
 And, finally, you're waiting to see the word ``Finished.`` issued by the
 ``cypher-runner.sh`` script::
