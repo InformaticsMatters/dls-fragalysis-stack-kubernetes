@@ -23,6 +23,16 @@ Deployments (plays) require a number of sensitive values
 to specific *Teams* of *Users*. Management of this aspect of Ansible
 is complex but it is simplified through the use of `AWX`_.
 
+Essentially the development workflow (explained below) is: -
+
+1.  **Build** a Fragalysis Stack (and Loader) image
+2.  **Run** your "User (<YOU>) ..." AWX Job
+3.  **Replicate** the postgres data into your stack (once)
+4.  **Replicate** the Django media data into your stack (once)
+5.  **Visit** your stack
+
+Then repeat steps **1**, **2** and **5** each time you build the stack.
+
 ..  toctree::
     :maxdepth: 1
     :caption: Deployment Tools
