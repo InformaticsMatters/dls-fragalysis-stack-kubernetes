@@ -42,6 +42,8 @@ loader_nfs_image_tag: latest
 # Variables for the S3 loader -------------------------------------------------
 # (more kept in vars/sensitive.yaml)
 
+loader_s3_bucket_name: dls-fragalysis
+
 # The loader image you want to deploy,
 # consisting of a (public) container registry,
 # image and image tag...
