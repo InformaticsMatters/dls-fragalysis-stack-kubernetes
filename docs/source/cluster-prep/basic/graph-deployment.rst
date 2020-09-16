@@ -60,11 +60,35 @@ The graph import typically involved 4 stages that are easily followed from the
 logs.
 
 The output here has been truncated because there is a lot of it.
-You're waiting to see the word ``Finished.`` issued by the
+
+Importantly, to be confident the deployment has worked, you must see: -
+
+*   A section starting `(1/4) Node import`
+*   A section starting `(2/4) Relationship import`
+*   A section starting `(3/4) Relationship linking`
+*   A section starting `(4/4) Post processing`
+
+And, finally, you're waiting to see the word ``Finished.`` issued by the
 ``cypher-runner.sh`` script::
 
     $ kubectl logs pod/graph-0 -n graph -f
     [..]
+    (1/4) Node import 2020-09-16 03:18:22.955+0000
+    Estimated number of nodes: 40.16 M
+    Estimated disk space usage: 8.64 GB
+    Estimated required memory usage: 1.49 GB
+    .......... .......... .......... .......... ..........   5% ∆4s 813ms
+    .......... .......... .......... .......... ..........  10% ∆3s 609ms
+    .......... .......... .......... .......... ..........  15% ∆3s 405ms
+    .......... .......... .......... .......... ..........  20% ∆3s 406ms
+    [...]
+    (4/4) Post processing 2020-09-16 04:13:13.062+0000
+    Estimated required memory usage: 1020.01 MB
+    .--.-..... .......... .......... .......... ..........   5% ∆7s 601ms
+    .......... .......... .......... .......... ..........  10% ∆11s 413ms
+    .......... .......... .......... .......... ..........  15% ∆12s 209ms
+    .......... .......-.. .......... .......... ..........  20% ∆3s 906ms
+    [...]
     2020-03-19 14:25:08.527+0000 INFO  ======== Neo4j 3.5.5 ========
     2020-03-19 14:25:08.532+0000 INFO  Starting...
     2020-03-19 14:25:14.865+0000 INFO  Bolt enabled on 0.0.0.0:7687.
