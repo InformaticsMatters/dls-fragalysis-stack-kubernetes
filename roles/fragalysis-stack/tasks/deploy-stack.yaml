@@ -188,7 +188,7 @@
 
 - name: Display stack URL
   debug:
-    msg: Your stack URL is 'https://{{ stack_url }}'
+    msg: Your stack URL is '{{ stack_url }}'
 
 - name: Display graph service
   debug:
@@ -215,4 +215,4 @@
 
 - name: Display stack URL (again)
   debug:
-    msg: Your stack URL is 'https://{{ stack_url }}'
+    msg: Your stack URL is '{{ stack_url }}'
