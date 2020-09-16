@@ -18,6 +18,7 @@ stack_sa_psp: im-core-unrestricted
 # The stack certificate issuer
 # For use with the Kubernetes cert-manager
 # deployed by the Informatics Matters infrastructure playbook.
+# If blank ('') there will be no certificate.
 stack_cert_issuer: staging
 
 stack_cpu_limit: 8000m
