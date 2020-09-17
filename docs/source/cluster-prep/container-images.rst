@@ -92,7 +92,7 @@ fragmentation database, provided by a specialised neo4j image.
 +---------------------------------------------------+-----------+
 | docker.io/xchem/fragalysis-stack                  | 1.0.7     |
 +---------------------------------------------------+-----------+
-| docker.io/informaticsmatters/fragalysis-s3-loader | 1.0.7-1   |
+| docker.io/informaticsmatters/fragalysis-s3-loader | 1.0.7-2   |
 +---------------------------------------------------+-----------+
 | docker.io/informaticsmatters/neo4j                | 3.5.20-1  |
 +---------------------------------------------------+-----------+
