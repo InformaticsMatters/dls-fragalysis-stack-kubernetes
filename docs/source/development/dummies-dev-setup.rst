@@ -1,6 +1,6 @@
-###################################################
-Deploying up your Stack ("Development for Dummies")
-###################################################
+################################################
+Deploying your Stack ("Development for Dummies")
+################################################
 
 ..  image:: ../images/fragalysis-development-for-dummies.png
 
