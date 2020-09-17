@@ -6,3 +6,4 @@ ansible-tower-cli == 3.3.9
 jmespath == 0.10.0
 kubernetes == 10.0.1
 openshift == 0.10.1
+awscli == 1.18.140
