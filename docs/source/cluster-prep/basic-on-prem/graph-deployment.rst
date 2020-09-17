@@ -23,7 +23,7 @@ environment clone it and (ideally) switch to the most recent tag::
 
     $ git clone https://github.com/InformaticsMatters/docker-neo4j-ansible
     $ cd docker-neo4j-ansible
-    $ git checkout tags/2.4.3
+    $ git checkout tags/2.4.4
 
 *****************
 Create parameters
@@ -59,7 +59,7 @@ Run the playbook
 With a set of parameters created, deploy the Graph using the ``site.yaml``
 playbook::
 
-    $ ansible-playbook -r @parameter.yaml site.yaml
+    $ ansible-playbook -e @parameter.yaml site.yaml
     [...]
 
 As the graph initialisation can take some time the job does not

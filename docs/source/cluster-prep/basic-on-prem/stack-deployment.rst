@@ -53,10 +53,28 @@ are as follows::
     ---
     all_image_preset_pullsecret_name: ''
 
+    stack_hostname: example.com
+    stack_sa_psp: im-core-unrestricted
+    stack_image_registry: docker.io
+    stack_image_tag: latest
+    stack_replicas: 2
+    stack_include_sensitive: no
+    stack_namespace: fragalysis-production
+    stack_is_for_developer: no
+    stack_media_vol_storageclass: efs
+
+    busybox_image_registry: docker.io
+
+    database_vol_storageclass: gp2
+
+    graph_hostname: graph.graph.svc
+    graph_password: (the password you used for the graph deployment)
+
 Also, create a set of variables to control the stack **loader**::
 
     ---
     all_image_preset_pullsecret_name: ''
+
     loader_type: s3
     loader_bucket_name: im-fragalysis
     loader_data_origin: ALL_TARGETS
@@ -64,8 +82,9 @@ Also, create a set of variables to control the stack **loader**::
     loader_s3_image: informaticsmatters/fragalysis-s3-loader
     loader_s3_image_tag: 1.0.7-1
     loader_include_sensitive: no
+
     stack_is_for_developer: no
-    stack_namespace: production-stack
+    stack_namespace: fragalysis-production
 
 **********************
 Run the stack playbook
@@ -74,7 +93,7 @@ Run the stack playbook
 With a set of parameters created, deploy the Stack using the
 ``site-fragalysis-stack.yaml`` playbook::
 
-    $ ansible-playbook -r @parameter-stack.yaml site-fragalysis-stack.yaml
+    $ ansible-playbook -e @parameter-stack.yaml site-fragalysis-stack.yaml
     [...]
 
 The stack consists (mainly) of a namespace, a Fragalysis Stack **StatefulSet**,
@@ -95,7 +114,7 @@ the *Data Loader*.
 Run the loader (assuming you;ve setup or have access to a suitable AWS S3
 bucket and data) playbook::
 
-    $ ansible-playbook -r @parameter-loader.yaml site-data-loader.yaml
+    $ ansible-playbook -e @parameter-loader.yaml site-data-loader.yaml
     [...]
 
 This playbook will wait for the loader to complete. If you're loading
