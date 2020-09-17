@@ -29,7 +29,7 @@ clone it and (ideally) switch to the most recent tag::
 
     $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
     $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.50
+    $ git checkout tags/2020.51
 
 **********************
 Create parameter files
