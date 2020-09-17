@@ -1,6 +1,6 @@
-####################
-Graph and Stack data
-####################
+#############################
+Graph and Stack data (AWS S3)
+#############################
 
 The Fragment Graph database needs to be loaded with fragment data before
 it can be used and the Fragalysis Stack needs to be loaded with target/media
@@ -14,6 +14,47 @@ data as needs dictate.
 
 .. note:: You need to have access to this data before you can deploy the
           graph or the stack.
+
+In order to access AWS S3 data you will need to provide the graph and
+stack loader with AWS credentials that have suitable permissions. For AWS
+your policy will need `s3:Get*` and `s3:List*` permissions for the
+buckets and paths you intend to use.
+
+As an example, users of our buckets are given the following policy::
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:Get*"
+                ],
+                "Resource": "arn:aws:s3:::im-fragnet/combination/3/*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:Get*"
+                ],
+                "Resource": "arn:aws:s3:::im-fragalysis/*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:List*"
+                ],
+                "Resource": "arn:aws:s3:::im-fragnet"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:List*"
+                ],
+                "Resource": "arn:aws:s3:::im-fragalysis"
+            }
+        ]
+    }
 
 **********
 Graph data
