@@ -47,6 +47,7 @@ the Fragalysis Stack through a number of stages: -
 
     cluster-requirements
     container-images
+    data
 
 ..  toctree::
     :maxdepth: 2
