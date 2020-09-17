@@ -80,7 +80,7 @@ Also, create a set of variables to control the stack **loader**::
     loader_s3_bucket_name: im-fragalysis
     loader_s3_image_registry: docker.io
     loader_s3_image: informaticsmatters/fragalysis-s3-loader
-    loader_s3_image_tag: 1.0.7-1
+    loader_s3_image_tag: 1.0.7-2
     loader_include_sensitive: no
 
     stack_is_for_developer: no
