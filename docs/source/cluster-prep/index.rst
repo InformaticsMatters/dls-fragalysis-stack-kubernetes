@@ -43,7 +43,7 @@ the Fragalysis Stack through a number of stages: -
 
 ..  toctree::
     :maxdepth: 2
-    :caption: Requirements and images
+    :caption: Requirements, images and data
 
     cluster-requirements
     container-images
@@ -74,7 +74,7 @@ the Fragalysis Stack through a number of stages: -
 
 .. rubric:: Footnotes
 
-.. [#f1] An cluster with an AWX server and a Fragalysis Stack without
+.. [#f1] A cluster with an AWX server and a Fragalysis Stack without
          custom credentials or backup and recovery strategies. A cluster
          with the ability to use the stack with publicly available graph
          fragment data.
