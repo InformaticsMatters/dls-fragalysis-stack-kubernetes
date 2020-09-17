@@ -5,34 +5,6 @@ Cluster Requirements (AWS)
 The following *minimum* (preliminary) cluster requirements will need to be
 satisfied before the Fragalysis Stack can be deployed and used.
 
-***************
-Control Machine
-***************
-
-1.  **Applications**. the control machine will need: -
-
-    *   Python 3.8
-    *   Git
-
-2.  **GitHub**. In order to deploy the infrastructure the control
-    machine will need access to GitHub where Ansible playbooks and roles are
-    located, specifically: -
-
-    * InformaticsMatters/ansible-infrastructure
-
-3.  **Ansible Galaxy**. In order to configure the infrastructure
-    AWX server the control machine will need access to
-    `Ansible Galaxy <https://galaxy.ansible.com>`_
-
-4.  **LENS**. `Lens`_ is respectable Kubernetes IDE. We use it to monitor
-    our own clusters and, if you do not currently use a Kubernetes dashboard
-    or IDE, you might want to use it too.
-
-5.  **Credentials**. You will need credentials that allow admin privilege
-    access to the cluster and, if using AWS S3 as the origin for graph fragment
-    and Fragalysis Stack media data, a user with READ access for your chosen
-    AWS S3 *bucket*.
-
 *******
 Cluster
 *******
@@ -133,9 +105,20 @@ Cluster
     the stack you're deploying you will need to provide your own certificate
     solution.
 
+11. **A RWO storage class**. This is typically GP2 and is often built-in,
+    especially if you're using EKS.
+
+***************
+Control Machine
+***************
+
+You will also need a suitable **Control Machine**, from which you will
+be running at least some `Ansible`_ playbooks. The control machine's
+requirements are covered in the :doc:`control-machine` document.
+
+.. _ansible: https://pypi.org/project/ansible/
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 .. _cert-manager: https://cert-manager.io/docs/
 .. _cluster example: https://raw.githubusercontent.com/InformaticsMatters/ansible-infrastructure/master/provisioning/eksctl/cluster.yaml
-.. _lens: https://k8slens.dev
 .. _nginx: http://cnn.com/
 .. _nlb: https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html

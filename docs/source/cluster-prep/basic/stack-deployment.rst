@@ -27,7 +27,7 @@ template (see below).
 .. image:: ../../images/demo-job-templates-fragalysis-stack-data-loader.png
 
 This job will also wait for the loader to complete. As we're
-running a typical **ALL TARGETS** load this will take around 40 minutes.
+running a typical **ALL_TARGETS** load this will take around 40 minutes.
 The job will time-out after an hour.
 
 Once complete you should be able to navigate to the application by navigating

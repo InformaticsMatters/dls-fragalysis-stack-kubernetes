@@ -4,33 +4,70 @@ Deploying the Fragment Graph
 
 .. note:: Allow **2 hours** to install all of the applications.
 
-With the AWX server configured we can now run the **Job Templates** that
-are responsible for deploying the various applications.
+The playbooks that we'd normally run from AWX can be executed form the
+command line. That's what we'll be doing here.
 
-Start by logging into the AWX application server as the demo user ``demo``.
-From there you should be able to navigate to the **Templates** screen where
-all the templates are presented to you.
+The steps we'll follow here are: -
 
-.. note:: Allow 2 hours to complete this task.
+*   Clone the Graph playbook repository
+*   Create a parameter file to satisfy your cluster
+*   Run the playbook
 
-Deploy the Fragmentation graph by *launching* the **Fragmentation Graph**
-template.
+********************
+Clone the graph repo
+********************
 
-.. image:: ../../images/demo-job-templates-fragmentation-graph.png
+The repository contains playbooks and roles for the deployment of
+a `neo4j`_ graph database and associated fragmentation data. From your virtual
+environment clone it and (ideally) switch to the most recent tag::
+
+    $ git clone https://github.com/InformaticsMatters/docker-neo4j-ansible
+    $ cd docker-neo4j-ansible
+    $ git checkout tags/2.4.3
+
+*****************
+Create parameters
+*****************
+
+The Graph deployment is flexible and is controlled by a number of
+Ansible variables. To control your deployment you are likely to have to
+define your own set of variable values in a *parameter* file - not all of
+those that are set in the repo may be of use to you.
+
+A ``parameters-template.yaml`` file contains a small set of *significant* ones.
+
+Copy the example in the repository, inspect it and set/change any values you
+need to::
+
+    $ cp parameter-template.yaml parameter.yaml
+    [edit parameter.yaml]
+
+``parameter.yaml`` is protected from being committed by the project's
+``.gitignore`` file.
 
 .. epigraph::
 
-    The jobs have been configured to first present a confirmation dialogue box
-    so that you can adjust some key job variables before they run. for example,
-    the **Fragmentation Graph** job allows you to provide a path to the
-    graph data you want to deploy (using the ``graph_bucket_path`` variable).
+    The ``parameter-template.yaml`` contains only an example set of role
+    variables - you should familiarise yourself with the role and
+    inspect the other parameters (in the role's ``defaults/main.yaml``
+    and ``vars/main.yaml``), just in case you also need to adjust them.
 
-Acknowledge the dialogue (clicking **Next**) and then the **Launch** button.
+****************
+Run the playbook
+****************
+
+With a set of parameters created, deploy the Graph using the ``site.yaml``
+playbook::
+
+    $ ansible-playbook -r @parameter.yaml site.yaml
+    [...]
 
 As the graph initialisation can take some time the job does not
 (at the time of writing) wait for the graph to initialise. We therefore use the
-``kubectl`` command-line to check on the status of the graph before moving on.
-Check that the graph namespace exists::
+``kubectl`` command-line (in a separate terminal/shell) to check on the status
+of the graph before moving on.
+
+First, check that the graph namespace exists::
 
     $ kubectl get namespace/graph
     NAME    STATUS   AGE
@@ -104,3 +141,5 @@ And, finally, you're waiting to see the word ``Finished.`` issued by the
 
 Once you see that you can ``ctrl-c`` from the *follow* command and continue
 with the remaining applications.
+
+.. _neo4j: https://neo4j.com

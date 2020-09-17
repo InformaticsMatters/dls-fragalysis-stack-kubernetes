@@ -83,21 +83,21 @@ These images are required for a named (tagged) production Fragalysis Stack,
 its own database and S3 data loader. The stack also requires a
 fragmentation database, provided by a specialised neo4j image.
 
-+-----------------------------------------------+----------------+
-| Container Image                               | Tag            |
-+===============================================+================+
-| docker.io/library/busybox                     | 1.28.0         |
-+-----------------------------------------------+----------------+
-| docker.io/library/postgres                    | 12.2           |
-+-----------------------------------------------+----------------+
-| docker.io/xchem/fragalysis-stack              | 1.0.7 [#f2]_   |
-+-----------------------------------------------+----------------+
-| docker.io/xchem/fragalysis-s3-loader          | 1.0.7-1 [#f2]_ |
-+-----------------------------------------------+----------------+
-| docker.io/informaticsmatters/neo4j            | 3.5.20-1       |
-+-----------------------------------------------+----------------+
-| docker.io/informaticsmatters/neo4j-s3-loader  | 3.5.20-1       |
-+-----------------------------------------------+----------------+
++---------------------------------------------------+-----------+
+| Container Image                                   | Tag       |
++===================================================+===========+
+| docker.io/library/busybox                         | 1.28.0    |
++---------------------------------------------------+-----------+
+| docker.io/library/postgres                        | 12.2      |
++---------------------------------------------------+-----------+
+| docker.io/xchem/fragalysis-stack                  | 1.0.7     |
++---------------------------------------------------+-----------+
+| docker.io/informaticsmatters/fragalysis-s3-loader | 1.0.7-1   |
++---------------------------------------------------+-----------+
+| docker.io/informaticsmatters/neo4j                | 3.5.20-1  |
++---------------------------------------------------+-----------+
+| docker.io/informaticsmatters/neo4j-s3-loader      | 3.5.20-1  |
++---------------------------------------------------+-----------+
 
 ******************************
 Backup and Recovery (optional)
@@ -115,5 +115,3 @@ Backup and Recovery (optional)
 
 .. [#f1] This list does not cover container images that would normally be
          considered part of Kubernetes.
-
-.. [#f2] This image version may change prior to deployment.
