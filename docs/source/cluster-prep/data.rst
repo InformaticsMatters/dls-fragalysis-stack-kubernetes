@@ -41,7 +41,7 @@ stored on a bucket *path*. the files are peculiar to the Fragalysis
 application. Their their format is not covered here.
 
 Stack data is stored in directories, normally of the format
-``<YYYY>-<MM>-<DD>T<HH>` but other directories, like ``ALL_TARGETS``
+``<YYYY>-<MM>-<DD>T<HH>`` but other directories, like ``ALL_TARGETS``
 may also exist. If you have target data in the data directory ``2020-01-01T04``
 this is your *path*.
 
