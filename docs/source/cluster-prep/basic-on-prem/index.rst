@@ -14,11 +14,19 @@ A *basic* cluster contains only the essential infrastructure components
 to support the Fragalysis Stack and includes the deployment of a single,
 production-grade (versioned), Stack.
 
+The following schematic illustrates what we'll be installing. the important
+aspect of an *on-premises* installation is that you are responsible for the
+infrastructure, which consists of security policies, storage provisioners,
+certificate management and an ingress controller: -
+
+.. image:: ../../images/frag-travis/frag-travis.017.png
+
 From this point we assume you have a viable cluster and suitable
 infrastructure. That means that you have the following: -
 
 *   An NGINX ingress controller and associated Network Load balancer
 *   A RWX storage class (AWS EFS in our case)
+*   a RWO storage class (AWS GP2 in our case)
 *   Pod Security Policies
 *   Certificate management
 

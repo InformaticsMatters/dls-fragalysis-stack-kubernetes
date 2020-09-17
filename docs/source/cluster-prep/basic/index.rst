@@ -16,6 +16,12 @@ A *basic* cluster contains only the essential infrastructure components
 to support the Fragalysis Stack and includes the deployment of a single,
 production-grade (versioned), Stack.
 
+The following schematic illustrates what we'll be installing, which includes
+a number of infrastructure components as well as the Graph and Fragalysis
+Stack: -
+
+.. image:: ../../images/frag-travis/frag-travis.007.png
+
 From this point we assume you have a viable cluster, what follows are
 the steps required to deploy a single Fragalysis Stack and
 associated Graph database to that cluster: -
