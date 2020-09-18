@@ -78,14 +78,14 @@ Stack data
 **********
 
 Stack data consists of *Target* definitions, typically
-stored on a bucket *path*. the files are peculiar to the Fragalysis
+stored on a bucket *data origin*. the files are peculiar to the Fragalysis
 application. Their their format is not covered here.
 
-Stack data is stored in directories, normally of the format
-``<YYYY>-<MM>-<DD>T<HH>`` but other directories, like ``ALL_TARGETS``
-may also exist. If you have target data in the data directory ``2020-01-01T04``
-this is your *path*.
+Stack data is stored in bucket directories, normally named using the format
+``<YYYY>-<MM>-<DD>T<HH>`` but other directories may also exist.
+If you have target data in the data directory ``2020-09-15T16``
+this is your *data origin*.
 
 Target data must exist in the follwing bucket and path: -
 
-*   ``s3://<BUCKET>/jango-data/<PATH>``
+*   ``s3://<DATA_BUCKET>/jango-data/<DATA_ORIGIN>``
