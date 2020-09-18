@@ -76,7 +76,7 @@ Also, create a set of variables to control the stack **loader**::
     all_image_preset_pullsecret_name: ''
 
     loader_type: s3
-    loader_data_origin: ALL_TARGETS
+    loader_data_origin: 2020-09-15T16
     loader_s3_bucket_name: im-fragalysis
     loader_s3_image_registry: docker.io
     loader_s3_image: informaticsmatters/fragalysis-s3-loader
