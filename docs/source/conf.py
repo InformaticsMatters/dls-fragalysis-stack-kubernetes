@@ -17,7 +17,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Fragalysis Stack (Kubernetes)'
-copyright = '2020, Informatics Matters Ltd'
+copyright = '2020, Informatics Matters Ltd'  # pylint: disable=redefined-builtin
 author = 'Informatics Matters Ltd'
 
 # -- General configuration ---------------------------------------------------
