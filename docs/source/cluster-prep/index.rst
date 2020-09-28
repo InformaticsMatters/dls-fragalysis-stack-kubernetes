@@ -63,6 +63,12 @@ the Fragalysis Stack through a number of stages: -
 
 ..  toctree::
     :maxdepth: 2
+    :caption: Screenshots
+
+    screenshots-marh
+
+..  toctree::
+    :maxdepth: 2
     :caption: AWX Fundamentals
 
     awx
