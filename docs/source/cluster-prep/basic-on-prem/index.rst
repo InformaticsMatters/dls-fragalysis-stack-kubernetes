@@ -39,3 +39,4 @@ Fragalysis Stack and associated Graph database to that cluster: -
     ../control-machine
     graph-deployment
     stack-deployment
+    example-variables
