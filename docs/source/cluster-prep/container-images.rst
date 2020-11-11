@@ -106,9 +106,9 @@ Backup and Recovery (optional)
 +-------------------------------------------+---------------+
 | Container Image                           | Tag           |
 +===========================================+===============+
-| docker.io/informaticsmatters/sql-backup   | 2020.4        |
+| docker.io/informaticsmatters/sql-backup   | stable        |
 +-------------------------------------------+---------------+
-| docker.io/informaticsmatters/sql-recovery | 2020.4        |
+| docker.io/informaticsmatters/sql-recovery | stable        |
 +-------------------------------------------+---------------+
 
 .. rubric:: Footnotes
