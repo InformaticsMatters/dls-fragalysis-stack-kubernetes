@@ -19,6 +19,12 @@ Fragalysis Stack (Kubernetes)
 
 ..  toctree::
     :maxdepth: 2
+    :caption: Kubernetes fragmentation process
+
+    fragmentation/index
+
+..  toctree::
+    :maxdepth: 2
     :caption: Administration
 
     administration/index
