@@ -122,6 +122,10 @@ spec:
           value: '{{ database_host_fact }}'
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact }}'
+{% if stack_backend_sentry_dsn %}
+        - name: FRAGALYSIS_BACKEND_SENTRY_DNS
+          value: '{{ stack_backend_sentry_dsn }}'
+{% endif %}
 {% if stack_ispyb_host_fact is defined %}
         # Extracted from ispyb secrets...
         #

@@ -13,6 +13,11 @@ stack_deploy_nery: no
 # This includes sensitive preset variables employed at Diamond.
 stack_include_sensitive: yes
 
+# The Sentry SDK DSN - passed in via the environment variable
+# 'FRAGALYSIS_BACKEND_SENTRY_DNS'
+# If blank sentry is not initialised.
+stack_backend_sentry_dsn: ''
+
 # We also use BusyBox as an init-container
 # so we need to allow redirection of its registry.
 busybox_image_registry: docker.io
