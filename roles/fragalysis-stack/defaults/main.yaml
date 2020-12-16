@@ -59,6 +59,12 @@ stack_hostname: ''
 # The name can only consist of lower-case letters.
 stack_name: default
 
+# If integrating with a Discourse server
+# you will need an API key and (optionally) an alternative host.
+# If the host is left unset an internal default may be chosen.
+stack_discourse_api_key: ''
+stack_discourse_host: ''
+
 # Build the XChem Database?
 # If 'yes' then you will need to ensure that you provide suitable values for
 # the following variables, used to create the xchem secrets, otherwise the

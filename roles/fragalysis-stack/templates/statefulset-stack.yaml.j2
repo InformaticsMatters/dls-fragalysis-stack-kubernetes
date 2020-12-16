@@ -122,6 +122,14 @@ spec:
           value: '{{ database_host_fact }}'
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact }}'
+{% if stack_discourse_host %}
+        - name: DISCOURSE_HOST
+          value: '{{ stack_discourse_host }}'
+{% endif %}
+{% if stack_discourse_api_key %}
+        - name: DISCOURSE_API_KEY
+          value: '{{ stack_discourse_api_key }}'
+{% endif %}
 {% if stack_backend_sentry_dsn %}
         - name: FRAGALYSIS_BACKEND_SENTRY_DNS
           value: '{{ stack_backend_sentry_dsn }}'
