@@ -6,6 +6,7 @@ yaml-files:
 - '.yamllint'
 
 ignore: |
+  .github/
   roles/fragalysis-stack/templates/statefulset-stack.yaml.j2
   roles/fragalysis-stack/templates/ingress-stack.yaml.j2
   roles/fragalysis-stack/templates/cronjob-postgres-backup.yaml.j2
