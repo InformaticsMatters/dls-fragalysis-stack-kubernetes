@@ -1,6 +1,6 @@
 # Flexible playbooks for Fragalysis-Stack (Kubernetes)
 
-![yamllint and doc build](https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes/workflows/yamllint%20and%20doc%20build/badge.svg)
+![yamllint and doc build](https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes/workflows/lint%20and%20doc%20build/badge.svg)
 
 [![Documentation Status](https://readthedocs.org/projects/im-dls-fragalysis-stack-kubernetes/badge/?version=latest)](https://im-dls-fragalysis-stack-kubernetes.readthedocs.io/en/latest/?badge=latest)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/informaticsmatters/dls-fragalysis-stack-kubernetes)

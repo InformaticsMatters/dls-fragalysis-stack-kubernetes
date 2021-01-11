@@ -1,5 +1,5 @@
 ---
-name: yamllint and doc build
+name: lint and doc build
 
 on:
 - push
