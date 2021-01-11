@@ -23,8 +23,8 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f build-requirements.txt ]; then pip install -r build-requirements.txt; fi
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        if [ -f requirements.yaml ]; ansible-galaxy install -r requirements.yaml; fi
-        if [ -f collection-requirements.yaml ]; - ansible-galaxy collection install -r collection-requirements.yaml; fi
+        if [ -f requirements.yaml ]; then ansible-galaxy install -r requirements.yaml; fi
+        if [ -f collection-requirements.yaml ]; then ansible-galaxy collection install -r collection-requirements.yaml; fi
     - name: Lint with yamllint
       run: |
         yamllint .
