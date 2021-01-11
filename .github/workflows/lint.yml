@@ -29,7 +29,7 @@ jobs:
     - name: Lint with yamllint
       run: |
         yamllint .
-        find . -type f -name '*.yaml.j2' -exec yamllint {} \;
+        find . -type f -name '*.yaml.j2' -exec yamllint {} +
     - name: Build docs
       run: |
         sphinx-build -Eab html docs/source docs/build/html
