@@ -7,7 +7,14 @@ yaml-files:
 
 ignore: |
   .github/
+  roles/database-replicator/templates/cronjob-database-recovery.yaml.j2
+  roles/database-replicator/templates/job-database-backup.yaml.j2
+  roles/database-replicator/templates/job-database-recovery.yaml.j2
+  roles/database-replicator/templates/cronjob-database-backup.yaml.j2
+  roles/fragalysis-stack/templates/statefulset-database.yaml.j2
+  roles/fragalysis-stack/templates/statefulset-nery.yaml.j2
   roles/fragalysis-stack/templates/statefulset-stack.yaml.j2
+  roles/fragalysis-stack/templates/namespace.yaml.j2
   roles/fragalysis-stack/templates/ingress-stack.yaml.j2
   roles/fragalysis-stack/templates/cronjob-postgres-backup.yaml.j2
   roles/data-loader/templates/job-nfs.yaml.j2
