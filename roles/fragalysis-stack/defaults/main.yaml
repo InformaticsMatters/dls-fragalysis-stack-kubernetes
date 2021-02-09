@@ -83,6 +83,13 @@ stack_build_xcdb: no
 # will be used. You should strive to use a named storage class, e.g. 'efs'.
 stack_media_vol_storageclass: ' '
 
+# Keycloak oidc variables
+# If the secret is defined, the other variables are expected
+# Environment variables in the stack pod are only set up if the secret is defined.
+stack_oidc_rp_client_secret: ''
+stack_oidc_rp_client_id: fragalysis-local
+stack_oidc_keycloak_realm: https://keycloak.xchem-dev.diamond.ac.uk/auth/realms/fragalysis
+
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
