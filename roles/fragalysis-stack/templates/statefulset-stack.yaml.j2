@@ -141,6 +141,8 @@ spec:
           value: '{{ stack_oidc_rp_client_id }}'
         - name: OIDC_KEYCLOAK_REALM
           value: '{{ stack_oidc_keycloak_realm }}'
+        - name: OIDC_OP_LOGOUT_URL_METHOD
+          value: '{{ stack_oidc_op_logout_url_method }}'
 {% endif %}
 {% if stack_ispyb_host_fact is defined %}
         # Extracted from ispyb secrets...
