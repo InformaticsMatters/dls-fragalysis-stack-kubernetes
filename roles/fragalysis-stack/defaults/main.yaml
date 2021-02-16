@@ -94,6 +94,14 @@ stack_oidc_keycloak_realm: https://keycloak.xchem-dev.diamond.ac.uk/auth/realms/
 # If desired, this should be set to "fragalysis.views.keycloak_logout"
 stack_oidc_op_logout_url_method: ''
 
+# Email backend variables
+# These variables define the email host that is used by Fragalysis to send completion/notification emails.
+# The defaults below are the current Fragalysis defaults on production.
+# Note that stack_email_host_user and stack_email_host_password are not defaulted.
+stack_email_host: smtp.gmail.com
+stack_email_use_tls: True
+stack_email_port: 587
+
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
