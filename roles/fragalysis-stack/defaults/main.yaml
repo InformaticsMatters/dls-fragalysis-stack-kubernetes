@@ -96,11 +96,19 @@ stack_oidc_op_logout_url_method: ''
 
 # Email backend variables
 # These variables define the email host that is used by Fragalysis to send completion/notification emails.
-# The defaults below are the current Fragalysis defaults on production.
+# The defaults below are the current Fragalysis defaults on production for gmail.
 # Note that stack_email_host_user and stack_email_host_password are not defaulted.
 stack_email_host: smtp.gmail.com
 stack_email_use_tls: True
 stack_email_port: 587
+
+# Email user variables.
+# Note that if stack_email_password is set, then the stack_email_user will be authenticated,
+# otherwise no authentication takes place, but stack_email_user can be used as the from address.
+# The default is set as the second situation, but is currently overridden on production with the
+# gmail username and password.
+stack_email_user: fragalysis@donotreply.com
+stack_email_password: None
 
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.

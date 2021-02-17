@@ -152,11 +152,11 @@ spec:
         - name: EMAIL_PORT
           value: '{{ stack_email_port }}'
 {% endif %}
-{% if stack_email_host_user %}
-        - name: EMAIL_HOST_USER
-          value: '{{ stack_email_host_user }}'
-        - name: EMAIL_HOST_PASSWORD
-          value: '{{ stack_email_host_password }}'
+{% if stack_email_user %}
+        - name: EMAIL_USER
+          value: '{{ stack_email_user }}'
+        - name: EMAIL_PASSWORD
+          value: '{{ stack_email_password }}'
 {% endif %}
 {% if stack_ispyb_host_fact is defined %}
         # Extracted from ispyb secrets...
