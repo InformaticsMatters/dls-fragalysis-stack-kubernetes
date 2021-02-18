@@ -151,8 +151,6 @@ spec:
           value: '{{ stack_email_use_tls }}'
         - name: EMAIL_PORT
           value: '{{ stack_email_port }}'
-{% endif %}
-{% if stack_email_user %}
         - name: EMAIL_USER
           value: '{{ stack_email_user }}'
         - name: EMAIL_PASSWORD
