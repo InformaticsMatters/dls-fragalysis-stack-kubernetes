@@ -144,7 +144,7 @@ spec:
         - name: OIDC_OP_LOGOUT_URL_METHOD
           value: '{{ stack_oidc_op_logout_url_method }}'
 {% endif %}
-{% if stack_email_host %}
+{% if stack_email_user %}
         - name: EMAIL_HOST
           value: '{{ stack_email_host }}'
         - name: EMAIL_USE_TLS

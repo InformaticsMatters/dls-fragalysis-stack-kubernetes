@@ -95,15 +95,15 @@ stack_oidc_keycloak_realm: https://keycloak.xchem-dev.diamond.ac.uk/auth/realms/
 stack_oidc_op_logout_url_method: ''
 
 # Email backend variables
-# If stack_email_host is set, then a full email configuration should be defined as follows:
-# e.g. For a gamil configuration
-# stack_email_host:
+# If stack_email_user is set, then a full email configuration should be defined as follows:
+# e.g. For a gmail configuration
+# stack_email_host: smtp.gmail.com
 # stack_email_use_tls: True
 # stack_email_port: 587
 # stack_email_user: fragalysis@gmail.com
 # stack_email_password: <password>
 #
-# Or for an sftc configutaion
+# Or for an sftc smtp configutaion
 # stack_email_host: exchsmtp.stfc.ac.uk
 # stack_email_use_tls: False
 # stack_email_port: 25
@@ -112,7 +112,7 @@ stack_oidc_op_logout_url_method: ''
 #
 # Note that in Django if stack_email_password is set, then the stack_email_user will be authenticated,
 # otherwise no authentication takes place, but stack_email_user can be used as the from address.
-stack_email_host: ''
+stack_email_user: ''
 
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
