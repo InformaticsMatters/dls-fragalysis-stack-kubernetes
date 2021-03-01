@@ -125,6 +125,10 @@ stack has initialised: -
 2.  **Common Media Replicator (One-Time)** to replicate the Production
     stack's media files
 
+You shouldn't need to adjust the template variables (unless you've changed
+your stack name from ``default``) as the playbooks calculate your stack's
+namespace using your Tower login.
+
 Redeploying a Stack (a version or code change)
 ==============================================
 
