@@ -1,4 +1,4 @@
 ---
 
 replicator_node_purpose: application
-replicator_image_tag: 'latest'
+replicator_image_tag: 'stable'
