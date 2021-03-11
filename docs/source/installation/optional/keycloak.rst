@@ -2,7 +2,7 @@
 Keycloak
 ########
 
-Keycloak is an open source software product to allow single sign-on with
+`Keycloak`_ is an open source software product to allow single sign-on with
 Identity and Access Management aimed at modern applications and services.
 The Fragalysis Stack can be configured to authenticate and authorise access
 through Keycloak.
@@ -37,32 +37,37 @@ and password you used in the installation steps above, and configure
 the running server.
 
 Fragalysis uses the library mozilla-django-oidc to authenticate with Keycloak.
-See: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html
+(See: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html)
 
-You will need to set up a different client in Keycloak for *every* environment you have for your site - local,
-development, staging, production. This is so that the callback urls can be conrrectly configured.
+You will need to set up a different client in Keycloak for *every* environment
+you have for your site - local, development, staging, production. This is so
+that the callback urls can be correctly configured.
 
-A minimal client configuration for site: fragalysis.some-company.com in keycloak realm: some-realm would need
-to contain:
+A minimal client configuration for the site: **fragalysis.some-company.com**,
+in the Keycloak realm: **some-realm**, would need to contain:
 
 On the *Settings* tab:
 
-* Client_id: *(Required)*
-* Client Protocol: *open-connect*
-* Valid Redirect URLs:
-    - https://fragalysis.some-company.com/oidc/callback/
-    - http://fragalysis.some-company.com/oidc/callback/
-    - http://fragalysis.some-company.com/viewer/react/landing
-* ID Token Signature Algorith: *RS256*.
+*   Client_id: *(Required)*
+*   Client Protocol: *open-connect*
+*   Valid Redirect URLs
 
-From the *Credentials* tab, the generated client-secret must be also noted to be included in the Fragalysis
-configuration in the Fragalysis environment parameters. Parameters for Keycloak are contained in
-**roles/fragalysis-stack/templates/statefulset-stack.yaml** and are labelled with names starting: **stack_oidc_**.
-Default settings are contained in **roles/fragalysis-stack/defaults/main.yaml**.
+    * https://fragalysis.some-company.com/oidc/callback/
+    * http://fragalysis.some-company.com/oidc/callback/
+    * http://fragalysis.some-company.com/viewer/react/landing
 
-Note that the realm parameter should contained the fully formed address of the keycloak server.
-For example:
+*   ID Token Signature Algorithm: *RS256*.
 
-```
-stack_oidc_keycloak_realm: https://keycloak.some-company.com/auth/realms/fragalysis
-```
+From the *Credentials* tab, the generated client-secret must be also noted
+for inclusion in the Fragalysis environment parameters.
+
+Parameter definitions for Keycloak are defined in
+``roles/fragalysis-stack/defaults/main.yaml``. Look for variables that start
+``stack_oidc_``.
+
+Note that the realm parameter should contain the fully formed address of the
+Keycloak server. For example::
+
+    stack_oidc_keycloak_realm: https://keycloak.some-company.com/auth/realms/fragalysis
+
+.. _keycloak: https://www.keycloak.org
