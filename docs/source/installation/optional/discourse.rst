@@ -75,6 +75,22 @@ With Discourse installed you now need to login, using the admin user
 and password you used in the installation steps above, and configure
 the running server.
 
-**TBD**
+To enable Fragalysis to talk to Discourse, the following minimal steps are required:
+
+1. Set up a user called *fragalysis* and give them moderator privileges. Note that by default only admins can create
+categories in Discourse, but the fragalysis user must be able to do this. In Discourse, therefore, the admin security
+setting: *Allow moderators to create new categories* (or *Allow moderators to manage categories and groups* depending
+on version) must be enabled.
+
+2. Create an API key (under Admin..API) called, say, *FragalysisAPI* and enable for all users (Note that Fragalysis
+posts will be made under the users' own user name - only categories are set up as the fragalysis user). Make a note
+of the key.
+
+3. The Discourse HOST and API key must be defined in the environment parameters. These are labelled starting:
+*stack_discourse_* and are found in: (``roles/fragalysis-tack/templates/statefulset-stack.yaml.j2``),
+with defaults and explanatory notes in: (``roles/fragalysis-tack/defaults/main.yaml``).
+It is recommended to check these files in case something has changed at a detailed level.
+
+**Further Details of Configuration To be added**
 
 .. _kubeconfig: https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/
