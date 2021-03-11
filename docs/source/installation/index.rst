@@ -51,6 +51,12 @@ the Fragalysis Stack through a number of stages: -
 
 ..  toctree::
     :maxdepth: 2
+    :caption: Installation (optional applications)
+
+    optional/index
+
+..  toctree::
+    :maxdepth: 2
     :caption: Installation (built-in infrastructure)
 
     basic/index

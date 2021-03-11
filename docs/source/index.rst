@@ -8,7 +8,7 @@ Fragalysis Stack (Kubernetes)
     :maxdepth: 2
     :caption: Preparation
 
-    cluster-prep/index
+    installation/index
 
 ..  toctree::
     :maxdepth: 2
