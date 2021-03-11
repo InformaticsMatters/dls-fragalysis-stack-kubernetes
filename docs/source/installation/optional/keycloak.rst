@@ -35,3 +35,34 @@ Post-installation configuration
 With Keycloak installed you now need to login, using the admin user
 and password you used in the installation steps above, and configure
 the running server.
+
+Fragalysis uses the library mozilla-django-oidc to authenticate with Keycloak.
+See: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html
+
+You will need to set up a different client in Keycloak for *every* environment you have for your site - local,
+development, staging, production. This is so that the callback urls can be conrrectly configured.
+
+A minimal client configuration for site: fragalysis.some-company.com in keycloak realm: some-realm would need
+to contain:
+
+On the *Settings* tab:
+
+* Client_id: *(Required)*
+* Client Protocol: *open-connect*
+* Valid Redirect URLs:
+    - https://fragalysis.some-company.com/oidc/callback/
+    - http://fragalysis.some-company.com/oidc/callback/
+    - http://fragalysis.some-company.com/viewer/react/landing
+* ID Token Signature Algorith: *RS256*.
+
+From the *Credentials* tab, the generated client-secret must be also noted to be included in the Fragalysis
+configuration in the Fragalysis environment parameters. Parameters for Keycloak are contained in
+**roles/fragalysis-stack/templates/statefulset-stack.yaml** and are labelled with names starting: **stack_oidc_**.
+Default settings are contained in **roles/fragalysis-stack/defaults/main.yaml**.
+
+Note that the realm parameter should contained the fully formed address of the keycloak server.
+For example:
+
+```
+stack_oidc_keycloak_realm: https://keycloak.some-company.com/auth/realms/fragalysis
+```
