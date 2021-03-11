@@ -1,5 +1,5 @@
 pyqt5 == 5.12.3
 pyqtwebengine == 5.12.1
-Sphinx == 3.1.2
-sphinx-rtd-theme == 0.5.0
+Sphinx == 3.5.2
+sphinx-rtd-theme == 0.5.1
 yamllint == 1.23.0
