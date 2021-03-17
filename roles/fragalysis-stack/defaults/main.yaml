@@ -65,6 +65,16 @@ stack_name: default
 stack_discourse_api_key: ''
 stack_discourse_host: ''
 
+# This parameter is NOT INTENDED FOR PRODUCTION.
+# In development, multiple Fragalysis instances call a single Discourse instance unexpected duplicates can appear.
+# For example the MPRO target may already exist in Discourse but not in the Fragalyisis database because it has
+# already been inserted by another Fragalysis.
+# This parameter helps to avoid this issue (it can't completely eliminate it), by appending an identifying mark from
+# the calling Fragalysis to the end of category and topic titles. E.g. If you set this to -duncan-local then
+# all your posts to category MPRO will be rerouted to MPRO-duncan-local in Discourse to avoid confusing them with
+# all the other MPRO categories out there.
+stack_discourse_dev_post_suffix: ''
+
 # Build the XChem Database?
 # If 'yes' then you will need to ensure that you provide suitable values for
 # the following variables, used to create the xchem secrets, otherwise the
