@@ -93,6 +93,10 @@ stack_build_xcdb: no
 # will be used. You should strive to use a named storage class, e.g. 'efs'.
 stack_media_vol_storageclass: ' '
 
+# When true, this starts the stack in debug mode.
+# It should be False on production.
+stack_debug_fragalysis: False
+
 # Keycloak oidc variables
 # If the secret is defined, the other variables are expected
 # Environment variables in the stack pod are only set up if the secret is defined.
