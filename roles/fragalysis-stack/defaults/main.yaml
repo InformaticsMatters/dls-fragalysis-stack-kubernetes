@@ -95,7 +95,7 @@ stack_media_vol_storageclass: ' '
 
 # When true, this starts the stack in debug mode.
 # It should be False on production.
-stack_debug_fragalysis: False
+stack_debug_fragalysis: no
 
 # Keycloak oidc variables
 # If the secret is defined, the other variables are expected
