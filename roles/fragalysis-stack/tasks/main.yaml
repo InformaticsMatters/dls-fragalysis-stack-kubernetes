@@ -33,6 +33,7 @@
     group/k8s:
       host: "{{ k8s_auth_host }}"
       api_key: "{{ k8s_auth_api_key }}"
+      validate_certs: "{{ k8s_auth_verify_ssl|default('no', true) }}"
 
 # If it looks like we're deploying to OpenShift
 # we now need to logout...
