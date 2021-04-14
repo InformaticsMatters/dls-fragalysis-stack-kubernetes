@@ -34,11 +34,16 @@ Essentially, the high-level stages consist of...
     to resolve to the application node).
 
 ### Installing rke
-Follow the instructions at [installing rke] to install `rke`, after which
-you should be able to run: -
+Follow the instructions at [installing rke] to install `rke`
+
+    $ wget https://github.com/rancher/rke/releases/download/v1.2.7/rke_linux-amd64
+    $ mv rke_linux-amd64 rke
+    $ chmod a+x rke
+
+After which you should be able to run: -
 
     $ rke --version
-    rke version 1.0.8
+    rke version 1.2.7
 
 ### Installing kubectl
 Follow instructions at [installing kubectl] to install the `kubectl` client,

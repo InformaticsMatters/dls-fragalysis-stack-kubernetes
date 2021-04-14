@@ -31,17 +31,17 @@ nodes:
 
   # workers
 
-- address: 130.246.215.25
+- address: 192.168.253.25
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - worker
-- address: 130.246.215.45
+- address: 192.168.253.64
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - worker
-- address: 130.246.215.64
+- address: 192.168.253.36
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
