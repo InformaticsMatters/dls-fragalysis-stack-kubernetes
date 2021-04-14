@@ -19,7 +19,7 @@ Essentially, the high-level stages consist of...
 1.   Install kubectl
 1.   Install helm
 1.   Prepare for AWS S3 etcd backups
-1.   Creating compute instances and a creating matched `cluster.yml`
+1.   Creating compute instances and a matched `cluster.yml`
 1.   Install Kubernetes (using rke)
 1.   Install rancher (using helm)
 
@@ -45,12 +45,26 @@ After which you should be able to run: -
     $ rke --version
     rke version 1.2.7
 
+#### Restoring the cluster RKE state file
+If you need to restore the RKE cluster state file you can run the following: -
+
+    $ rke util get-state-file
+
+This should re-generate the files...
+
+    cluster.rkestate
+    kube_config_cluster.yml
+
 ### Installing kubectl
-Follow instructions at [installing kubectl] to install the `kubectl` client,
-after which you should be abel to run: -
+Follow instructions at [installing kubectl] to install the `kubectl` client: -
+
+    $ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    $ chmod a+x kubectl
+
+...after which you should be able to run: -
 
     $ kubectl version --client --short
-    Client Version: v1.18.0
+    Client Version: v1.21.0
     
 >   Ensure you are using kubectl 1.18 or better.
 
@@ -62,6 +76,8 @@ version of Helm and install it locally: -
     $ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
     $ chmod 700 get_helm.sh
     $ ./get_helm.sh
+
+    $ helm version
 
 ### Prepare for AWS S3 etcd backups
 We backup the RKE cluster to AWS S3 via settings in the `cluster.yml`.
@@ -145,7 +161,7 @@ Simplified (for our specific needs) into the following instructions: -
           --namespace cert-manager \
           --version v0.12.0
       
- Check (and wait for for) the certificate manger....
+ Check (and wait for) the certificate manger....
 
     $ kubectl get pods --namespace cert-manager
 
