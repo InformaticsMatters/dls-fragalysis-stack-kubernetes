@@ -9,8 +9,8 @@ It will show how to:
 
 *   Set up the first instance of the developer stack
 *   Clone the database and media from the production stack into your developer stack
-*   Set Travis up to automatically push to your stack when changes are made to
-    the master branch on your forks of the fragalysis repositories
+*   Set GitHub `Actions`_ up to automatically push to your stack when
+    changes are made to the master branch, using forks of the fragalysis repositories
 
 ***************
 Getting started
@@ -71,165 +71,122 @@ When the jobs are finished, navigate to the URL spat out by the job in
 step **1** above. You should now have a copy of the stack that is created from the
 ``xchem/master`` branches.
 
-***************************
-Setting up Travis for CI/CD
-***************************
+***********************************
+Setting up GitHub Actions for CI/CD
+***********************************
 
-In this deployment, we use Travis to do CI/CD, rather than Travis for CI,
-and Jenkins for CD. It's much easier to customise
-how your stack is built by using Travis.
-
-Prerequisites
-=============
-
-*   You have a `travis`_ account
-*   You have added your forks to your Travis account
-*   You have a Travis api-token
-*   You have a `dockerhub`_ account
-
-Using the right Travis version
-==============================
-
-The CI/CD implementation will only work running from the newest version of
-Travis, which is now found at https://travis-ci.com/. However, to set this up
-correctly, you will need to start from https://travis-ci.org/.
-
-1.  Log in to https://travis-ci.org/ with your github account
-2.  On the left-hand side of the first page that loads, under your user account,
-    there will be a **request beta access** button - click it.
-3.  This will take you to https://travis-ci.com/
-4.  If you are using an organisation account (e.g. xchem) then you will need
-    to request access and grant it from github
-
-Once you have granted access to Travis, your repositories should appear
-in the dashboard of Travis
-
-Getting a Travis API token
---------------------------
-The following should give you an API access token::
-
-    $ gem install travis && travis login --com && travis token --com
-
-Keep it safe - we need it to allow us to trigger builds for automated deployment.
+In this deployment, we use GitHub `Actions`_ to run our CI/CD process.
 
 Intro to how the CI/CD works
 ----------------------------
 
-This is a cubersome but worthwhile step. First of all, you should decide which
-codebases you want to work on, and therefore incorporated changes from into
-your own stack.
+This is a cumbersome but worthwhile step. First of all, you should decide which
+repositories you want to work on and fork them.
 
-Once you have decided, you can set up your Travis jobs to automatically
-trigger builds when you push to certain branches, and automatically deploy
-your stack or component images to your own dockerhub account. The AWX job that
-we set up earlier looks for the dockerhub stack image that you build and push
-with Travis, by taking a single variable, which is the endpoint for your stack
-image. e.g. ``rachael/fragalysis-stack``. The stack job template assumes it
-is always looking for the stack image tagged as ``:latest`` at that endpoint.
+Once forked, you can configure GitHub Actions in your account to automatically
+trigger builds when you push changes, and automatically deploy
+your stack images from your own dockerhub account. The AWX job that
+we set up earlier looks for the dockerhub stack image that you build and push,
+based on variables that define the image ownership (namespace).
+By default the AWX template job will assume the image _namespace_ is ``xchem``
+and the image tag ``latest``, so the default image reference for the
+Fragalysis Stack is ``xchem/fragalysis-stack:latest``.
 
-The quickest way to see what the different build variables are, and what they do,
-is to look at the ``.travis.yml`` file in each repository. The comments at
-the top of those files describe the variables in detail.
+You control each repository's CI/CD process using **Secrets** that you create
+in your fork of the corresponding repository. The ``xchem`` repositories have
+a set that builds the Stack correctly for them.
+
+The quickest way to see what build variables are available, and what they do,
+is to look at the repository's ``.github/workflows/build-main.yaml`` file.
+The comments at the top of the file describes its variables in detail.
 
 Here, I'll list all the variables that can be added for each deployment.
 The backend, frontend and loader configurations are optional, depending on what
-code-base you want to work on. However, you should configure your stack
+repository you want to work on. However, you should configure your stack
 variables if you want to automatically push to your live deployment when you
 push changes to a branch (I'd suggest setting this up just for ``master``)
 
-Adding variables to Travis
---------------------------
+Adding (Secrets) to a GitHub repository
+---------------------------------------
 
-1.  Log in to Travis
-2.  Navigate to the Travis job on the left-hand side
-    (it will appear there after you add them)
-3.  Click on the burger menu
-4.  Click on the Settings option
-5.  Add the relevant options under **Environment variables** -
-    make sure to not show any sensitive info in the build logs
+1.  Log in to GitGub
+2.  Navigate to the repository fork you've made
+3.  Click on Settings
+4.  Click on Secrets in the left-hand panel
+5.  Add the relevant secrets (described below) as a **New repository secret**
 
-Travis environment variable descriptions
-========================================
+Fragalysis GitHub secrets
+=========================
 
-Backend variables (Optional)
-----------------------------
+Backend variables (secrets)
+---------------------------
 
 Variables related to images (Dockerhub):
 
-*   ``PUBLISH_IMAGES`` - set this to yes to push any built image to docker
-*   ``DOCKER_USERNAME`` - Dockerhub username to allow you to push
-*   ``DOCKER_PASSWORD`` - Dockerhub password to allow you to push
+*   ``DOCKERHUB_USERNAME`` - Dockerhub username to allow you to push
+*   ``DOCKERHUB_TOKEN`` - Dockerhub user access token to allow you to push
 *   ``BE_NAMESPACE`` - the Dockerhub namespace you want to push to
     (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-backend``)
 
-Variables related to GitHub fragalysis-stack repo:
+If you set ``TRIGGER_DOWNSTREAM`` (to ``yes``) a successful build of the
+backend will trigger a build of the corresponding stack,
+using the following optional variables: -
 
-*   ``STACK_NAMESPACE`` - GitHub user for stack
-*   ``STACK_BRANCH`` - Github user branch for stack
+*   ``FE_NAMESPACE`` - the namespace of the frontend you'll want in your Stack image
+    (e.g. ``reskyner`` if you're expecting to use ``reskyner/fragalysis-frontend``)
+*   ``FE_BRANCH`` - the frontend repository branch you'll want in your Stack image
+    (e.g. ``main`` if you're expecting to use ``main``)
+*   ``STACK_NAMESPACE`` - the namespace of the stack you expect to be built
+    (e.g. ``reskyner`` if you're expecting to use ``reskyner/fragalysis-stack``)
+*   ``STACK_BRANCH`` - the stack branch you want to build
+    (e.g. ``main`` if you're expecting to use ``main``)
 
-Variables related to auto-triggerring stack build:
+You will need to define the following, a user and GitHub `personal access token`_
+that can trigger the Stack build: -
 
-*   ``TRAVIS_ACCESS_TOKEN`` - your Travis access token
-*   ``TRIGGER_DOWNSTREAM`` - set to ``yes`` to trigger a stack build when
-    back-end build is successful
+Variables related to GitHub fragalysis-stack repo: -
 
-Optional (have defaults):
+*   ``STACK_USER`` - GitHub user for stack
+*   ``STACK_USER_TOKEN`` - GitHub user token
+
+Optional (have defaults): -
 
 *   ``BE_IMAGE_TAG`` (default = latest) (dockerhub if not latest)
-*   ``LOADER_NAMESPACE`` - xchem (unless working on loader)
-*   ``LOADER_BRANCH`` - master (unless working on loader)
 
-Frontend variables (Optional)
------------------------------
+Frontend variables (secrets)
+----------------------------
 
 Variables related to automated build (Travis):
 
-*   ``TRIGGER_DOWNSTREAM`` - yes to trigger build of stack & loader
-*   ``TRAVIS_ACCESS_TOKEN`` - needed for the trigger
+*   ``TRIGGER_DOWNSTREAM`` - ``yes`` to trigger build of the stack
+
+Variables related to GitHub fragalysis-stack repo:
+
+*   ``STACK_USER`` - GitHub user for stack
+*   ``STACK_USER_TOKEN`` - GitHub user token
 
 Variables related to images (Dockerhub):
 
-*   ``BE_NAMESPACE`` - docker namespace (default xchem)
+*   ``BE_NAMESPACE`` - docker namespace for the backend (default xchem)
+*   ``BE_IMAGE_TAG`` - docker tag for the backend (default latest)
 
 Variables related to frontend GitHub repo:
 
-*   ``FE_NAMESPACE`` – front-end user/account
-*   ``FE_BRANCH`` - branch
+*   ``FE_NAMESPACE`` – front-end namespace to use in the stack
+*   ``FE_BRANCH`` - front-end branch
 
 Variables related to stack GitHub repo:
 
-*   ``STACK_NAMESPACE`` – stack user/account
-*   ``STACK_BRANCH`` - GitHub user/account branch
-
-Loader variables (Optional)
------------------------------
-
-Variables related to loader image (Dockerhub):
-
-*   ``PUBLISH_IMAGES`` - yes to push to docker
-*   ``DOCKER_USERNAME`` - dockerhubb username
-*   ``DOCKER_PASSWORD`` - dockerhub password
-*   ``LOADER_NAMESPACE`` - the Dockerhub namespace you want to push to
-    (e.g. ``reskyner`` if you're pushing to ``reskyner/loader``)
-
-Variables to decide which backend image to use when building the loader image
-(optional - will default to ``xchem/master``):
-
-*   ``BE_NAMESPACE`` - the Dockerhub namespace you want to use
-    (e.g. ``reskyner`` if you're using ``reskyner/loader``)
-*   ``BE_IMAGE_TAG`` – version of image to use
-    (optional, will default to ``:latest``)
+*   ``STACK_NAMESPACE`` – stack namespace to trigger
+*   ``STACK_BRANCH`` - stack branch to trigger
 
 Stack variables (Mandatory for automated builds)
 ------------------------------------------------
 
 Variables related to stack image - the one your stack will use (Dockerhub):
 
-*   ``PUBLISH_IMAGES`` - yes to push to docker
-*   ``DOCKER_USERNAME`` - dockerhub username to allow push
-*   ``DOCKER_PASSWORD`` - dockerhub password to allow push
-*   ``PUBLISH_IMAGES`` - yes to push to docker - make sure to change
-    ``STACK_NAMESPACE`` to push to own docker hub account
+*   ``DOCKERHUB_USERNAME`` - dockerhub username to allow push
+*   ``DOCKERHUB_TOKEN`` - dockerhub password to allow push
 *   ``STACK_NAMESPACE`` - the Dockerhub namespace you want to push to
     (e.g. ``reskyner`` if you're pushing to ``reskyner/fragalysis-stack``)
 
@@ -237,83 +194,46 @@ Variables setting which back-end image to use
 (optional - ``will default to xchem/master``):
 
 *   ``BE_NAMESPACE`` - the Dockerhub namespace you want to use
-    (e.g. ``reskyner`` if you're using ``reskyner/fragalysis-stack``)
+    (e.g. ``reskyner`` if you're using ``reskyner/fragalysis-backend``)
 *   ``BE_IMAGE_TAG`` - docker image tag (optional, will default to ``:latest``)
-
-Variables to control automatic pushing to your AWX stack:
-
-*   ``AWX_HOST`` - AWX url (for devs: https://awx-xchem.informaticsmatters.org/)
-*   ``AWX_USER`` - AWX username provided by Rachael
-*   ``AWX_USER_PASSWORD`` - AWX password provided by Rachael
-*   ``TRIGGER_AWX`` – yes to push to AWX
-*   ``AWX_DEV_JOB_NAME`` - name of the developer AWX job to trigger stack auto build:
-
-    * NB: As the Job Name contains spaces it needs to be placed between
-      double quotes, e.g. ``"User (Rachael) Developer Fragalysis Stack (Version Change)"``.
-      This should be done with any variable value that contains spaces.
-    * NB: Change the name to your name!
 
 Recommended set-up for front-end developers
 ===========================================
 
 1. Fork the ``xchem/fragalysis-frontend`` repo from GitHub
-2. Fortk the ``xchem/fragalysis-stack`` repo from GitHub
-3. Add your forks to Travis
-4. Setup the following environment variables for the front-end Travis jobs:
+2. Fork the ``xchem/fragalysis-stack`` repo from GitHub
+4. Setup the following GutHub repository secrets for the front-end Travis jobs:
 
-    * Variables related to automated build (Travis)::
+    * Secrets related to triggering the stack::
 
         TRIGGER_DOWNSTREAM = yes
-        TRAVIS_ACCESS_TOKEN = <your access token here>
+        STACK_USER
+        STACK_USER_TOKEN
 
     * Variables related to frontend GitHub repo::
 
         FE_NAMESPACE = <your GitHub account name here>
         FE_BRANCH = master
 
-    * Variables related to stack GitHub repo::
+    * Variables related to stack GitHub repo (that you've forked)::
 
         STACK_NAMESPACE = <your GitHub account name here>
         STACK_BRANCH = master
 
-5. Setup the following environment variables for the stack Travis jobs:
+5. Setup the following GitHub secrets for the stack you've forked:
 
     * Variables related to stack image - the one your stack will use (Dockerhub)::
 
-        PUBLISH_IMAGES = yes
-        DOCKER_USERNAME = <Your dockerhub username here>
-        DOCKER_PASSWORD = <Your dockerhub password here>
-        PUBLISH_IMAGES = yes
-        STACK_NAMESPACE = <your GitHub account name here>
-
-    * Variables setting which back-end image to use
-      (optional as it will default to ``xchem/master``)::
-
-        BE_NAMESPACE = <Your dockerhub username here>
-
-    * Variables to control automatic pushing to your AWX stack::
-
-        AWX_HOST = https://awx-xchem.informaticsmatters.org/
-        AWX_USER = <Your AWX username here>
-        AWX_USER_PASSWORD = <Your AWX password here>
-        TRIGGER_AWX = yes
-        AWX_DEV_JOB_NAME = "User (<Your name here>) Developer Fragalysis Stack (Version Change)"
-
-6. Alter the **User (<Your name here>) Developer Fragalysis Stack (Version Change)** job in AWX:
-
-    * Click on the templates on the left hand side
-    * Click on the job name
-    * Under ``EXTRA VARIABLES`` change ``stack_image: xchem/fragalysis-stack``
-      to point to your image (e.g. ``reskyner/fragalysis-stack``)
+        DOCKERHUB_USERNAME
+        DOCKERHUB_TOKEN
 
 Now that you've done this, every time you push a change from a branch
 into ``master`` in your frontend fork:
 
-*   The tests for the front-end will run in Travis
-*   If the tests run, the back-end and stack jobs will be triggered
+*   The tests for the front-end will run as a GitHub Action
+*   If the tests pass, the stack CI/CD will be triggered
 *   When the stack-job completes, an image of that stack will be pushed to your Dockerhub repo
-*   After the image is pushed, a job is triggered in AWX
-*   That job takes the image that has just been pushed and re-builds the stack with it
+    that you can use in your AWX Job Template
 
 Alternative deployment strategy - Developing locally
 ====================================================
@@ -362,7 +282,8 @@ use those locally built images to push to your stack on AWX:
     live in the wild!
 
 .. _dockerhub: https://hub.docker.com
-.. _travis: https://travis-ci.com
+.. _actions: https://github.com/features/actions
+.. _personal access token: https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
 
 .. rubric:: Footnotes
 
