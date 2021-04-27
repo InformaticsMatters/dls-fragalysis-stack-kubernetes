@@ -5,6 +5,10 @@ The Fragalysis Stack Loader
 The *loader* is used to provision new Fragalysis Stack data (both Django media
 and the related database entries).
 
+..  warning::
+    The Fragalysis Loader is deprecated. You should be using the Stack
+    loader API. The loader may be removed in future releases.
+
 ************
 How it works
 ************

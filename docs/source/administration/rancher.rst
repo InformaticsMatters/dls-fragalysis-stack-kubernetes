@@ -15,7 +15,7 @@ Each cluster consists of key ``etcd`` and ``control plane`` nodes
 and various worker (``app`` and ``graph``) nodes. The instances are created
 and managed by the Rancher server.
 
-..  image:: ../images/frag-travis/frag-travis.016.png
+..  image:: ../images/frag-actions/frag-actions.016.png
 
 A full description of the Rancher installation and its configuration
 can be found in the following external (GoogleDoc) document: -

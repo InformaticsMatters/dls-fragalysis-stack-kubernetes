@@ -5,44 +5,18 @@ Continuous Development
 .. epigraph::
 
     Fragalysis Stack development procedures for Kubernetes deployment
-    and the role of `Travis`_ in the Fragalysis Stack *CI* process.
+    and the role of GitHub `Actions`_ in the Fragalysis Stack *CI* process.
 
-The OpenShift deployment of the Stack used **Jenkins** as the CI/CD build
-framework, relying on the container registry and build capabilities provided
-by OpenShift. Kubernetes has no registry as such and although you can install
-**Jenkins** it's role is diminished and it's of much less value than its
-OpenShift counterpart.
-
-Instead, in the Kubernetes world, without a clear CI/CD framework emerging,
-we have switched to relying on an external build process (**Travis**) to
+We rely on an external build process (**GitHub Actions**) to
 build, test and deploy the Fragalysis Stack container images.
 
-**Travis** is an external cloud-based service, free for open-source projects
-that is mature used by many to test and build software. It is programmed
-through the use of ``.travis.yml`` files placed in the root directory of
-GitHub projects.
+**GitHub Actions** are a built-in feature of GitHub repositories.
 
-We have added facilities to *chain* builds (for one Travis GitHub project
-to trigger another) using our `Trigger Travis`_ repository
-and to also deploy container images to the cluster using pre-deployed AWX
-Jobs using our `Trigger AWX`_ repository.
-
-Why not use **Jenkins**?
-
--   **Jenkins** is indeed powerful but it relies on *Agents* in order to
-    run Jobs. Setting these agents up requires effort. **Travis** runs in the
-    cloud where it has agents, of all kinds, that are simple and easy to
-    configure.
--   **Jenkins** is a complex service with a need for persistence (volumes)
-    that would eat away at the Kubernetes cluster in both CPU, disk and cost.
-    **Travis** does not require resources in the Kubernetes cluster
--   Job control in **Jenkins** is defined through the Groovy language. It's
-    powerful but it's *yet another language* and its syntax is not the easiest
-    to master. **Travis** is programmed in YAML, a syntax many are already
-    familiar with. It is simple, and easy to read.
--   Management and configuration of the **Jenkins** server is not trivial
-    and incurs management and maintenance costs. **Travis** needs no
-    management.
+We have added facilities to *chain* builds (for one GitHub repository
+to trigger another) using our custom `trigger-ci-action`_
+GitHub Action and to also deploy container images to the cluster using
+pre-deployed AWX Template Jobs using our custom `trigger-awx-action`_
+GitHub Action.
 
 *****************************
 Fragalysis Stack Repositories
@@ -55,7 +29,7 @@ two images::
     fragalysis
     fragalysis-backend
     fragalysis-frontend
-    fragalysis-loader
+    fragalysis-loader (deprecated)
     fragalysis-stack
 
 The by-product of each repository is: -
@@ -73,53 +47,53 @@ fragalysis-backend
 
 fragalysis-frontend
     The output of the ``fragalysis-frontend`` is nothing. The code is instead
-    *cloned* into the container image of the ``fragalysis-stack`` when it is
-    built.
+    *cloned* into the container image of the ``fragalysis-stack`` when the
+    stack is built.
 
-fragalysis-loader
+fragalysis-loader (deprecated)
     The output of the ``fragalysis-loader`` is a container image, written to
     `Docker Hub`_. It uses the image produced by the ``fragalysis-backend``
-    as it's ``FROM`` image.
+    as its ``FROM`` image.
 
 fragalysis-stack
     The output of the ``fragalysis-stack`` is a container image, written to
     `Docker Hub`_. Like the *Loader* it uses the image produced by the
-    ``fragalysis-backend`` as it's ``FROM`` image.
+    ``fragalysis-backend`` as its ``FROM`` image.
 
 **********************
 Build example (master)
 **********************
 
-Let's see how **Travis** works for the Fragalysis Stack by exploring
+Let's see how **GitHin Actions** work for the Fragalysis Stack by exploring
 a simple example, where a user-change to a repository's *master* branch
 results in the stack being re-built, illustrated by the following diagram.
 
-..  image:: ../images/frag-travis/frag-travis.001.png
+..  image:: ../images/frag-actions/frag-actions.001.png
 
 The diagram illustrates a *user* making a change (**A**) to the
 ``master`` branch of ``fragalysis-backend`` repository. The following steps
 occur, in approximate order: -
 
-1.  **Travis** detects the change and creates a VM on which the build
+1.  **GitHub Actions** detect the change and create a VM on which the build
     (and testing) takes place. The result of the build is a **docker push**
     to `Docker Hub`_. The image pushed is ``xchem/fragalysis-backend:latest``
     where the docker *user* is ``xchem``, the project is ``fragalysis-backend``
     and the tag is ``latest`` (the significance of these values will become
     important later).
 
-2.  At the end of the build of ``fragalysis-backend`` **Travis** is configured
-    to *trigger* a build in the remote repository ``fragalysis-stack`` [#f2]_ .
+2.  At the end of the build of ``fragalysis-backend`` the **Action** is configured
+    to *trigger* a build in the remote repository ``fragalysis-stack``.
     There's a new *backend* image so the stack, which depends on it, is
-    instructed to build. It uses the `Trigger Travis`_ code to do this.
+    instructed to build. It uses our `trigger-ci-action`_ Action to do this.
 
-3.  As the *Loader* also depends on the output of this build **Travis**
-    also *triggers** the ``fragalysis-loader`` to build.
+3.  As the *Loader* also depends on the output of this build **Actions**
+    also *trigger** the ``fragalysis-loader`` to build.
 
-4.  The ``fragalysis-loader`` **Travis** session (triggered by the *backend*)
+4.  The ``fragalysis-loader`` **Actions** session (triggered by the *backend*)
     builds and, as its output is a container image, the image is pushed to
     Docker Hub. The image pushed is ``xchem/fragalysis-loader:latest``
 
-5.  The ``fragalysis-stack`` **Travis** session (also triggered by the
+5.  The ``fragalysis-stack`` **Actions** session (also triggered by the
     *backend* changes above) builds and its image is pushed to Docker Hub.
     The image pushed is ``xchem/fragalysis-stack:latest``
 
@@ -131,39 +105,32 @@ That's a simplistic illustration of a *build chain* from one ``master``
 branch rippling through the dependent builds on the ``master`` branch.
 
 But software development's more complicated than just changes to the
-``master`` branch and, in these cases, **Travis** will need some help.
+``master`` branch and, in these cases, **GitHub Actions** will need some help.
 
-How does Travis know which repos to trigger?
-============================================
+How does the Action know which repos to trigger?
+================================================
 
-This is the responsibility of the repository owner. Our `Trigger Travis`_
-utility is used to simplify the calls the the **Travis** API but the
+This is the responsibility of the repository owner. Our `trigger-ci-action`_
+Action is used to simplify the calls the the **GitHub** API but the
 owner of each repository needs to know which repositories to trigger
-and simply adds calls to the `Trigger Travis`_ at a suitable point in their
-own ``.travis.yml`` file.
+and simply uses the `trigger-ci-action`_ at a suitable point in their
+own **workflow** file.
 
 The mechanism is essentially a *push-driven* trigger from *upstream* repository
 to *downstream*. A *downstream* repository cannot monitor *upstream*
 repositories, the author has to know which repositories depend on their code.
 
-..  epigraph::
-
-    Because **Jenkins** runs continuously it does allow Jobs to watch other
-    builds (Jobs) that are *upstream* and trigger *downstream* builds (Jobs).
-    But this advantage is considered insignificant compared to the disadvantages
-    (discussed earlier).
-
 How does a repo know what container tag to use?
 ===============================================
 
 By convention, in a CI/CD sense, automated builds on ``master`` produce
-container images tagged ``latest``. The **Travis** build can be easily
+container images tagged ``latest``. The **Action** build can be easily
 organised to produce a tag that is the branch name if the build is on a branch.
 Branch ``1-defect`` might therefore produce images that are pushed to docker
 using the tag ``1-defect``
 
-How do I instruct the downstream to use may image?
-==================================================
+How do I instruct the downstream to use my image?
+=================================================
 
 In our example we've assumed the branch being manipulated is ``master``
 and in this *very simple* workflow we want all the dependent ``master``
@@ -174,38 +141,46 @@ called ``1-defect``? Do you want to trigger a rebuild of the *Stack*'s
 ``latest`` image from ``fragalysis-backend:latest``? No, you want the
 stack to use ``fragalysis-backend:1-defect`` as its ``FROM``.
 
-So this is where the `Trigger Travis`_ utility, the **Travis** REST API
-and your ``.travis.yml`` file in both your *upstream* and *downstream*
+So this is where the `trigger-ci-action`_ Acton, calling the **GitHub** REST API
+and your **workflow** file in both your *upstream* and *downstream*
 repositories become a little more complex...
 
-The *downstream* (Stack) repository's ``.travis.yml`` file is configured to
-expect a number of environment variables, which have default values, namely: -
+The *downstream* (Stack) repository's **workflow** file is configured to
+expect a ``workflow_dispatch`` event, the variables of which are populated
+pu the upstream Action's use of its `trigger-ci-action`_.
+There are default values, namely: -
 
 *   ``BE_NAMESPACE`` AND ``BE_IMAGE_TAG`` (defaulting to ``xchem``
     and ``latest``)
 *   ``FE_NAMESPACE`` AND ``FE_BRANCH`` (defaulting to ``xchem``
     and ``master``)
 
+All the *upstream* repository's **workflow** has to do is ensure that
+it *injects* its own value for these variables using the
+`trigger-ci-action`_. For this example we'd set the variables::
 
-All the *upstream* repository's ``.travis.yml`` has to do is ensure that
-it *injects* its own value for these variables using it's ``STACK_VARS``
-variable. For this example we'd set this to
-``BE_IMAGE_TAG=1-defect,BE_NAMESPACE=xchem`` and the triggered build will
-produce for us a Stack image based on our ``1-defect`` backend image.
+    with:
+      ci-inputs: >-
+        be_namespace=1-defect
+        be_image_tag=xchem
+
+and the triggered build will produce for us a Stack image based on our
+``1-defect`` backend image.
 
 Brilliant!
 
 But hold on - the stack will be based on ``1-defect`` while producing
 a ``latest``.
 
-We can add more logic to our *downstream* repository so that the tag it uses
-is actually based on the tag found in the ``BE_IMAGE_TAG`` value.
+We can add more variables to our *downstream* repository's ``workflow_dispatch``
+handler so that the tag it uses is actually based on the tag found in the
+variable ``stack_namespace`` value.
 
 Simple ... ish
 
 But what if you forget to set the variable?
     After all, when you create your *backend* branch you need to adjust your
-    own Travis settings to provide a value for the variable. If you forget
+    own GitHub secrets to provide a value for the variable. If you forget
     (and you will) you'll end up causing a new build of ``latest`` in the
     downstream projects that contains your (probably untested) patch. Not what
     others might expect from ``latest``.
@@ -220,8 +195,8 @@ What if I want to trigger a non-master downstream branch?
 If I have a ``1-defect`` branch in the *upstream* build and I want to trigger
 the ``1-defect`` branch in the *downstream* project?
 
-It's solved by the `Trigger Travis`_ utility, which allows you to pass in
-a branch definition so that **Travis** build the branch you name rather than
+It's solved by the `trigger-ci-action`_ Action, which allows you to pass in
+a ``ci-ref`` definition so that **GitHub** builds the branch you name rather than
 the default ``master``.
 
 Brilliant!
@@ -255,7 +230,7 @@ Yes ... but that usefulness came with significant cost: -
 **Jenkins** could do this easily because it was cloning the repositories and
 building them, while pushing to Docker registries while armed with keys to the
 xchem Docker Hub account. We had the secrets safely stored in **Jenkins**.
-That is something we cannot achieve in the **Travis** world - we can;t give
+That is something we cannot achieve in the **GitHub** world - we can;t give
 everyone a key, that's not secure.
 
 Also, creating OpenShift deployments per developer and configuring Jenkins
@@ -263,7 +238,7 @@ takes several hours, probably half a day.
 
 So here we have a situation that was easily solved in **Jenkins** and
 OpenShift that becomes enormously complicated (and probably impossible or at
-the very least extremely undesirable) in the **Travis** World.
+the very least extremely undesirable) in the **GitHub** World.
 
 It's here we have to think about how developers develop code for the
 Fragalysis Stack and Kubernetes.
@@ -274,14 +249,14 @@ We need an altogether simpler approach.
 Development Recommendation
 **************************
 
-For the main production images for STAGING (latest) and PRODUCTION (tagged
+For the main production images for STAGING (latest) and PRODUCTION (tagged)
 we...
 
-1.  ...utilise **Travis** build triggers in the main ``xchem`` repositories.
+1.  ...utilise **trigger-ci-action** actions in the main ``xchem`` repositories.
     The build triggers are used *exclusively* for the automatic production of
     ``latest`` images on the ``master`` branch.
 
-2.  Similarly, Travis builds tagged images on the main ``xchem`` repositories
+2.  Similarly, GitHub builds tagged images on the main ``xchem`` repositories
     based on the presence of a release (or tag) in the repository.
     ``fragalysis-backend:1.0.0`` is automatically produced when the owner
     applies the tag ``1.0.0`` to the ``fragalysis-backend`` repository.
@@ -291,7 +266,7 @@ above all, simple.
 
 Individual developers...
 
-3.  ...work on branches of the main repositories or on branches of
+3.  ...work on branches of the main repositories or (ideally) on branches of
     *forks* of the main repos.
 
 4.  No images are automatically produced from changes to branches or forks.
@@ -305,10 +280,10 @@ Individual developers...
 
 6.  In order to deploy their project to Kubernetes (the subject of another Guide),
     users may push their container image to any Docker Hub namespace, project
-    or tag. **Tina** can push her image as ``xwz/stack-tina:1-defect`` if she
+    or tag. **Tina** can push her image as ``xyz/stack-tina:1-defect`` if she
     chooses. This works because she will have deployed her project to
     Kubernetes (now a developer responsibility) configured tso her cloud
-    deployment's stack should run using the image ``xwz/stack-tina:1-defect``
+    deployment's stack should run using the image ``xyz/stack-tina:1-defect``
     (rather than the default ``xchem/fragalysis-stack:latest``). **Tina**
     can also select the version of the database she wants to use and the URL
     of the graph database. When she's done she destroys the Kubernetes project.
@@ -348,7 +323,7 @@ Developing Front-end (F/E) Code Example
 Here you're developing front-end code, relying on a published backend image
 and the existing stack implementation.
 
-..  image:: ../images/frag-travis/frag-travis.002.png
+..  image:: ../images/frag-actions/frag-actions.002.png
 
 1.  The developer *forks* ``xchem/fragslysis-frontend``, into, say
     ``alan/fragslysis-frontend`` (**A**)
@@ -359,16 +334,16 @@ and the existing stack implementation.
     (locally) using Docker. This could be achieved through the use of a
     build script [#f3]_) where the developer provides a suitable set of
     *build-args*, as shown (**D**).
-5.  Upon conclusion of development a *pull-request* on the f/e repository
+5.  Upon conclusion of development a *pull-request* on the frontend repository
     propagates the changes back to the XChem repo.
 
-The produced *stack*, built from a tagged b/e and the code in
+The produced *stack*, built from a tagged backend and the code in
 the developer's 1-fix branch of their front-end repo fork, can then be pushed
 to Docker-hub and the Kubernetes cluster triggered to pull and run
 the updated code.
 
 The diagram also illustrates how the XChem ``STAGING/latest`` Fragalysis Stack
-is built and deployed (automatically using Travis). This *official* stack uses
+is built and deployed (automatically using GitHub). This *official* stack uses
 a tagged b/e image (the same version in this example) but its *build args*
 (**E**) are such that is uses the ``master`` branch of the ``xchem`` project
 as the source of the front-end code [#f4]_.
@@ -381,7 +356,7 @@ Developing Back-end (B/E) Code Example
 Here you're developing back-end code, relying on existing front-end and stack
 implementation.
 
-..  image:: ../images/frag-travis/frag-travis.003.png
+..  image:: ../images/frag-actions/frag-actions.003.png
 
 Here, in a less cluttered diagram: -
 
@@ -405,9 +380,9 @@ Developing Stack Code Example
 Here you're developing stack code, relying on a published back-end image
 and front-end implementation.
 
-..  image:: ../images/frag-travis/frag-travis.004.png
+..  image:: ../images/frag-actions/frag-actions.004.png
 
-1.  The developer *forks* the fragalysis stack repository (say to ``a;an``)
+1.  The developer *forks* the fragalysis stack repository (say to ``alan``)
     (**A**)
 2.  The developer creates a *branch* and clones it, e.g. ``1-fix``,
     in order to make changes (**B**)
@@ -424,7 +399,7 @@ Developing Everything Example
 
 Here you're developing front-end, back-end and stack code.
 
-..  image:: ../images/frag-travis/frag-travis.005.png
+..  image:: ../images/frag-actions/frag-actions.005.png
 
 This is essentially a combination of the three prior scenarios.
 
@@ -460,9 +435,6 @@ the debugging of your deployed applications.
 .. [#f1] Publishing to PyPi does not currently result in a trigger of the
          backend. It is something we can contemplate in the new development.
 
-.. [#f2] This is achieved through a POST operation to the **Travis** REST API
-         naming the *downstream* repository and passing in some extra material.
-
 .. [#f3] The build script will help by forcing a pull of the
          dependent backend container image for example.
 
@@ -474,6 +446,6 @@ the debugging of your deployed applications.
 .. _current: https://github.com/pavol-brunclik-m2ms/fragalysis-frontend/tree/develop
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
 .. _pypi: https://pypi.org/project/fragalysis/
-.. _travis: https://travis-ci.org/dashboard
-.. _trigger travis: https://github.com/InformaticsMatters/trigger-travis
-.. _trigger awx: https://github.com/InformaticsMatters/trigger-awx
+.. _actions: https://github.com/features/actions
+.. _trigger-ci-action: https://github.com/InformaticsMatters/trigger-ci-action
+.. _trigger-awx-action: https://github.com/InformaticsMatters/trigger-awx-action

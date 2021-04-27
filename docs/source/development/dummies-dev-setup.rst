@@ -156,7 +156,7 @@ Optional (have defaults): -
 Frontend variables (secrets)
 ----------------------------
 
-Variables related to automated build (Travis):
+Variables related to automated build:
 
 *   ``TRIGGER_DOWNSTREAM`` - ``yes`` to trigger build of the stack
 
@@ -202,7 +202,7 @@ Recommended set-up for front-end developers
 
 1. Fork the ``xchem/fragalysis-frontend`` repo from GitHub
 2. Fork the ``xchem/fragalysis-stack`` repo from GitHub
-4. Setup the following GutHub repository secrets for the front-end Travis jobs:
+4. Setup the following GutHub repository secrets for the front-end GitHub Actions: -
 
     * Secrets related to triggering the stack::
 

@@ -20,7 +20,7 @@ The following schematic illustrates what we'll be installing, which includes
 a number of infrastructure components as well as the Graph and Fragalysis
 Stack: -
 
-.. image:: ../../images/frag-travis/frag-travis.007.png
+.. image:: ../../images/frag-actions/frag-actions.007.png
 
 From this point we assume you have a viable cluster, what follows are
 the steps required to deploy a single Fragalysis Stack and

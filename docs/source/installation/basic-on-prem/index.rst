@@ -19,7 +19,7 @@ aspect of an *on-premises* installation is that you are responsible for the
 infrastructure, which consists of security policies, storage provisioners,
 certificate management and an ingress controller: -
 
-.. image:: ../../images/frag-travis/frag-travis.017.png
+.. image:: ../../images/frag-actions/frag-actions.017.png
 
 From this point we assume you have a viable cluster and suitable
 infrastructure. That means that you have the following: -
