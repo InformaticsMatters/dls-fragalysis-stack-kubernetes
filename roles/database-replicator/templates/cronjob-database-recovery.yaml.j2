@@ -39,7 +39,7 @@ spec:
           containers:
           - image: informaticsmatters/sql-recovery:{{ replicator_image_tag }}
             name: postgres-replicator-recovery
-            imagePullPolicy: IfNotPresent
+            imagePullPolicy: Always
             terminationMessagePolicy: FallbackToLogsOnError
             resources:
               limits:
