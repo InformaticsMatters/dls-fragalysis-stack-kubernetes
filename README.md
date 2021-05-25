@@ -16,7 +16,10 @@ server.
 You'll need a Python environment where you need to install the project
 requirements (for Python and Ansible): -
 
-    $ conda activate dls-fragalysis-stack-kubernetes
+    $ python -m venv ~/.venv/dls-fragalysis-stack-kubernetes
+    $ source ~/.venv/dls-fragalysis-stack-kubernetes/bin/activate
+    
+    $ pip install --upgrade pip
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r requirements.yaml --force
     $ ansible-galaxy collection install -r collection-requirements.yaml --force

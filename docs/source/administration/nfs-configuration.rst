@@ -32,6 +32,11 @@ the Staging stack and any User stack that requires them.
 The Static Media Volume Server
 ******************************
 
+..  warning::
+    The Static Media Volume Server is no longer used. The ability to load
+    media files directly from a NFS volume was removed on 25 May 2021.
+    The documentation remains for historical reference purposes only.
+
 This is a ``m1.large`` (2 core, 8Gi) instance type with Floating IP
 ``130.246.213.186`` that has one attached volume that acts as static root
 for new Fragalysis (Django) **Media** data.
