@@ -28,6 +28,11 @@ An AWX job launches a CronJob that replicates the production media
 static volumes. These replicas form the basis of the re-import into
 the Staging stack and any User stack that requires them.
 
+..  warning::
+    Media replication is no longer used. The ability replicate media data
+    between servers was removed on 25 May 2021.
+    The documentation remains for historical reference purposes only.
+
 ******************************
 The Static Media Volume Server
 ******************************
