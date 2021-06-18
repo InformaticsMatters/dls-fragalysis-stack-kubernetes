@@ -1,0 +1,5 @@
+---
+hostname: rancher-xchem.informaticsmatters.org
+ingress.tls.source: letsEncrypt
+letsEncrypt.email: tdudgeon@informaticsmatters.com
+letsEncrypt.environment: production
