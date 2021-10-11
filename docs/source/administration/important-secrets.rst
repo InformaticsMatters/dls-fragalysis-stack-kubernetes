@@ -7,9 +7,9 @@ A number of Fragalysis Stack repositories rely on a number of *secrets*
 defined for the code build and deployments to work. The most significant
 of which are identified here.
 
-Firstly it's worth understanding the documentation for GitHub's organisational,
-environment and repository secrets, which can be found at
-https://docs.github.com/en/actions/security-guides/encrypted-secrets
+Before reading further it's worth understanding the documentation for
+GitHub's **organisational**, **environment** and **repository** secrets,
+which can be found in their `encrypted-secrets`_ guide.
 
 ******
 GitHub
@@ -46,5 +46,6 @@ to allow it to push Python packages to PyPI: -
 
 - ``PYPI_APIKEY``
 
-.. _access token: https://docs.docker.com/docker-hub/access-tokens/
+.. _access token: https://docs.docker.com/docker-hub/access-tokens
+.. _encrypted secrets: https://docs.github.com/en/actions/security-guides/encrypted-secrets
 .. _personal access token: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
