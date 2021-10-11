@@ -14,3 +14,4 @@ Administration
     nfs-configuration
     awx
     related-repositories
+    important-secrets
