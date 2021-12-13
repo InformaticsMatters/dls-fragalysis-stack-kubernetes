@@ -25,6 +25,11 @@ defined in each repository that needs them as **repository** secrets.
 Repositories that trigger other repositories are ``fragalysis-frontend`` and
 ``fragalysis-backend``.
 
+..  note::
+
+    ``LOADER_`` variables relate to the legacy loader repository and its build.
+    These are no longer used and can be removed.
+
 *********
 DockerHub
 *********
