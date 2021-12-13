@@ -42,14 +42,28 @@ available to all ``xchem`` repositories: -
 - ``DOCKERHUB_USERNAME``
 - ``DOCKERHUB_TOKEN``
 
-*************
-Other secrets
-*************
+****
+PyPi
+****
 
 The ``fragalysis`` repository relies on the following **repository** secrets
 to allow it to push Python packages to PyPI: -
 
 - ``PYPI_APIKEY``
+
+******************
+Deployment Secrets
+******************
+
+A number of secrets are passed to the stack image through its environment
+at run-time in Kubernetes. The following secrets, of particular importance,
+because they may be related to accounts of "real" users, will be held/defined
+in the AWX server.
+
+- ``ISPYB_USER``
+- ``ISPYB_PASSWORD``
+- ``SSH_USER``
+- ``SSH_PASSWORD``
 
 .. _access token: https://docs.docker.com/docker-hub/access-tokens
 .. _encrypted secrets: https://docs.github.com/en/actions/security-guides/encrypted-secrets
