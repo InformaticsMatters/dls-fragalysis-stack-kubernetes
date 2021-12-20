@@ -6,6 +6,14 @@
 - debug:
     var: ansible_version.full
 
+# A container tag must be provided.
+- name: Assert stack container image tag
+  assert:
+    that:
+    - stack_image_tag is defined
+    - stack_image_tag|length > 0
+    fail_msg: "'stack_image_tag' is either undefined or blank"
+
 - name: Developer stack preparation
   block:
 
