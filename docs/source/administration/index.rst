@@ -12,6 +12,7 @@ Administration
     cloud-stfc
     rancher
     nfs-configuration
+    backup-and-replication
     awx
     related-repositories
     important-secrets
