@@ -130,7 +130,7 @@ stack_email_user: ''
 
 # A variable that can be used to avoid deploying the stack.
 # This can be used to pre-condition the Database.
-stack_skip_deploy: yes
+stack_skip_deploy: no
 
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
