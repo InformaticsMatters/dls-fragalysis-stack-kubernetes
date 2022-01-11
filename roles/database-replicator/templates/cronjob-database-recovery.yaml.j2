@@ -63,10 +63,14 @@ spec:
             volumeMounts:
             - name: source
               mountPath: /backup
+            - name: destination
+              mountPath: /recovery
 
           volumes:
           - name: source
             nfs:
               server: {{ replicator_nfs_server }}
               path: {{ replicator_nfs_path }}
+          - name: destination
+            emptyDir: {}
           restartPolicy: Never
