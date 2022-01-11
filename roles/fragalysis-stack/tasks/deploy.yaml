@@ -57,3 +57,4 @@
 
 - name: Deploy the stack
   import_tasks: deploy-stack.yaml
+  when: stack_skip_deploy|bool

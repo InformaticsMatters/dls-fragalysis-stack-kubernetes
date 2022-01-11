@@ -128,6 +128,10 @@ stack_oidc_op_logout_url_method: ''
 # otherwise no authentication takes place, but stack_email_user can be used as the from address.
 stack_email_user: ''
 
+# A variable that can be used to avoid deploying the stack.
+# This can be used to pre-condition the Database.
+stack_skip_deploy: yes
+
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank a database will be created specifically for the stack.
