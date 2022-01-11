@@ -53,8 +53,8 @@
   import_tasks: deploy-database.yaml
   when: database_host|string|length == 0
 
-# Now deploy the stack
+# Now (optionally) deploy the stack
 
 - name: Deploy the stack
   import_tasks: deploy-stack.yaml
-  when: stack_skip_deploy|bool
+  when: not stack_skip_deploy|bool
