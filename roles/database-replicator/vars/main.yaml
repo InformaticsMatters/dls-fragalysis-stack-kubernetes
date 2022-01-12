@@ -2,3 +2,7 @@
 
 replicator_node_purpose: application
 replicator_image_tag: 'stable'
+
+# Debug?
+# i.e. do not delete the recovery Pod (when run as a Job)
+replicator_job_recovery_debug: no

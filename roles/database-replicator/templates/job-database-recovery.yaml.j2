@@ -47,8 +47,6 @@ spec:
             cpu: 100m
             memory: 128Mi
         env:
-        - name: DATABASE
-          value: frag
         - name: PGHOST
           value: database
         - name: PGUSER
@@ -58,6 +56,10 @@ spec:
             secretKeyRef:
               name: database
               key: root_password
+{% if replicator_job_recovery_debug %}
+        - name: POST_DEBUG
+          value: '1'
+{% endif %}
         volumeMounts:
         - name: source
           mountPath: /backup
