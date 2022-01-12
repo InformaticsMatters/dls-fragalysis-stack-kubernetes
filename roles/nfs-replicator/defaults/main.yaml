@@ -9,7 +9,9 @@
 # In this role the static volume is mounted into the Pod as 'volume-a'
 # and the (dynamic) PVC as 'volume-b'. The replicator then accepts
 # a 'REPLICATE_DIRECTION' environment variable that is either
-# 'AtoB' or 'BtoA'.
+# 'AtoB' or 'BtoA'. So, to copy the data from a PVC in a namespace to NFS
+# (i.e. essentially a 'backup') the direction would be 'BtoA`.
+# To recover NFS data to a namespace PVC the direction would be 'AtoB'.
 #
 # The replica Pod employs 'rsync' where '--delete' is used to ensure
 # the destination is a copy of the source (with extraneous files removed).
@@ -22,9 +24,12 @@
 # Set one of 'developer stack name' (typically 'default')
 # or 'production stack namespace'.
 #
-# The direction replica direction is based on which variable is set.
-# If 'stack_name' is used the direction will be 'AtoB',
-# otherwise it's 'BtoA'
+# The replica direction is based on which variable is set.
+# If 'stack_name' is used like 'default' (assumed to be a developer stack's name)
+# the 'stack_ns' must not be used and the direction will be 'AtoB'.
+# If the 'stack_ns' is used it must be one of 'production-stack' ('BtoA') or
+# 'staging-stack' ('AtoB'). This way you cannot write to the production volume,
+# but you are forced to write to the staging volume.
 replicator_stack_name: ''
 replicator_stack_ns: ''
 

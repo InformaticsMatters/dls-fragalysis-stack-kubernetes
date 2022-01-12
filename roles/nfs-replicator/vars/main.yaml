@@ -13,6 +13,9 @@ replicator_node_purpose: application
 # The image you want to deploy,
 # consisting of a (public) container registry,
 # image and image tag...
+#
+# The reference image is maintained
+# in our GitHub repo 'docker-volume-replicator'
 replicator_image_registry: docker.io
 replicator_image: informaticsmatters/volume-replicator
 replicator_image_tag: latest
