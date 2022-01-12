@@ -19,3 +19,7 @@ replicator_nfs_path: /nfs/kubernetes-db-replica
 # If 'replicator_schedule' is blank ('') the playbook will use this as the
 # length of time to wait for the 'Job' to complete.
 replicator_job_timeout_minutes: 15
+
+# Do not stop if there's an error?
+# Default 'no'.
+replicator_recovery_do_not_stop_on_error: no

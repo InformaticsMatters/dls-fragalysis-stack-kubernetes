@@ -58,6 +58,10 @@ spec:
                 secretKeyRef:
                   name: database
                   key: root_password
+{% if replicator_recovery_do_not_stop_on_error %}
+            - name: DO_NOT_STOP_ON_ERROR
+              value: '1'
+{% endif %}
             volumeMounts:
             - name: source
               mountPath: /backup
