@@ -1,6 +1,6 @@
 ---
 
-# Job that relies on a statically-provisioned NFS export (volume-a).
+# Job that relies on an S3 bucket (volume-a).
 # The export is assumed to contain the 'replica'
 # that is either copied into (from production)
 # or copied out of (into development).
@@ -12,7 +12,7 @@
 kind: CronJob
 apiVersion: batch/v1beta1
 metadata:
-  name: nfs-replicator
+  name: media-replicator
   namespace: {{ stack_namespace_fact }}
 spec:
   schedule: '{{ replicator_schedule }}'
@@ -24,7 +24,7 @@ spec:
       template:
         metadata:
           labels:
-            name: nfs-replicator
+            name: media-replicator
         spec:
           serviceAccountName: {{ replicator_sa_name }}
 
@@ -47,7 +47,7 @@ spec:
 {% endif %}
 
           containers:
-          - name: nfs-replicator
+          - name: media-replicator
             image: '{{ replicator_image_registry }}/{{ replicator_image }}:{{ replicator_image_tag }}'
 {% if replicator_image_tag in ['latest', 'stable'] %}
             imagePullPolicy: Always

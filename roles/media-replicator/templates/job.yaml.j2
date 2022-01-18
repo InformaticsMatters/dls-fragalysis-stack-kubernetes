@@ -12,7 +12,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nfs-replicator
+  name: media-replicator
   namespace: {{ stack_namespace_fact }}
 spec:
   # Clean-up completed (or failed) Jobs
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        name: nfs-replicator
+        name: media-replicator
     spec:
       serviceAccountName: {{ replicator_sa_name }}
 
@@ -45,7 +45,7 @@ spec:
 {% endif %}
 
       containers:
-      - name: nfs-replicator
+      - name: media-replicator
         image: '{{ replicator_image_registry }}/{{ replicator_image }}:{{ replicator_image_tag }}'
 {% if replicator_image_tag in ['latest', 'stable'] %}
         imagePullPolicy: Always
