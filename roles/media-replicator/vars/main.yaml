@@ -21,7 +21,7 @@ replicator_image: informaticsmatters/volume-replicator
 replicator_image_tag: 2.0.0
 
 # Container requests/limits
-replicator_cpu_limit: 500m
+replicator_cpu_limit: 1
 replicator_mem_limit: 128Mi
 replicator_cpu_request: 10m
 replicator_mem_request: 128Mi
