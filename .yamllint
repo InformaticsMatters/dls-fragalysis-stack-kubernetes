@@ -19,8 +19,8 @@ ignore: |
   roles/fragalysis-stack/templates/cronjob-postgres-backup.yaml.j2
   roles/data-loader/templates/job-nfs.yaml.j2
   roles/data-loader/templates/job-s3.yaml.j2
-  roles/nfs-replicator/templates/job.yaml.j2
-  roles/nfs-replicator/templates/cronjob.yaml.j2
+  roles/media-replicator/templates/job.yaml.j2
+  roles/media-replicator/templates/cronjob.yaml.j2
 
 rules:
   indentation:
