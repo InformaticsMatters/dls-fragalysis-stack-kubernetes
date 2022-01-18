@@ -55,6 +55,16 @@ spec:
             imagePullPolicy: IfNotPresent
 {% endif %}
             terminationMessagePolicy: FallbackToLogsOnError
+{% if volume_a_is_s3 %}
+            # In order to use 'fuse' and mount S3 buckets
+            # the container needs to run as 'privileged'
+            # and as SYS-ADMIN.
+            securityContext:
+              privileged: true
+              capabilities:
+                add:
+                - SYS_ADMIN
+{% endif %}
             resources:
               limits:
                 cpu: {{ replicator_cpu_limit }}
