@@ -18,7 +18,7 @@ replicator_node_purpose: application
 # in our GitHub repo 'docker-volume-replicator'
 replicator_image_registry: docker.io
 replicator_image: informaticsmatters/volume-replicator
-replicator_image_tag: 2.0.0
+replicator_image_tag: latest
 
 # Container requests/limits
 replicator_cpu_limit: 1
