@@ -1,6 +1,6 @@
 ---
 
-# The nfs-replicator provides the ability to replicate files from one volume
+# The media-replicator provides the ability to replicate files from one volume
 # to another, where one volume is for a PVC in one cluster and the other a
 # static volume available to other clusters. So data can be replicated out of
 # one cluster (onto the static volume) and into another (from the static
@@ -52,3 +52,13 @@ replicator_schedule: '21 * * * *'
 # But expect replication of production media data (say around 4.5Gi)
 # to take at least 10 minutes to complete over NFS.
 replicator_job_timeout_minutes: 45
+
+# Are we using S3 for volume A?
+volume_a_is_s3: no
+# If volume A is S3, we must provide these...
+s3_access_key: ''
+s3_secret_key: ''
+s3_bucket_name: ''
+# And (optionally) provide these...
+s3_url: ''
+s3_request_style: ''

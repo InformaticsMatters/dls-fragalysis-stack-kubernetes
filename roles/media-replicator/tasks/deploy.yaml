@@ -1,14 +1,27 @@
 ---
 
-- name: Check key variables
+- name: Check key variables (common)
+  assert:
+    that:
+    - replicator_b_pvc_name|string|length > 0
+    - replicator_b_pvc_name|string != 'SetMe'
+
+- name: Check key variables (non-S3)
   assert:
     that:
     - replicator_a_nfs_server|string|length > 0
     - replicator_a_nfs_server|string != 'SetMe'
     - replicator_a_nfs_path|string|length > 0
     - replicator_a_nfs_path|string != 'SetMe'
-    - replicator_b_pvc_name|string|length > 0
-    - replicator_b_pvc_name|string != 'SetMe'
+  when: not volume_a_is_s3|bool
+
+- name: Check key variables (S3)
+  assert:
+    that:
+    - s3_access_key|string|length > 0
+    - s3_secret_key|string|length > 0
+    - s3_bucket_name|string|length > 0
+  when: volume_a_is_s3|bool
 
 - name: Check direction
   assert:

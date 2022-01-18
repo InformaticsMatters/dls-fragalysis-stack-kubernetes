@@ -1,7 +1,7 @@
 ---
 
-# Job that relies on a statically-provisioned NFS export (volume-a).
-# The export is assumed to contain the 'replica'
+# Job that relies on a statically-provisioned NFS export (volume-a)
+# or an S3 Bucket. The export is assumed to contain the 'replica'
 # that is either copied into (from production)
 # or copied out of (into development).
 #
@@ -63,22 +63,43 @@ spec:
         env:
         - name: REPLICATE_DIRECTION
           value: {{ replicate_direction_fact }}
+{% if volume_a_is_s3 %}
+        - name: VOLUME_A_IS_S3
+        - name: S3_ACCESS_KEY
+          value: {{ s3_access_key }}
+        - name: S3_SECRET_KEY
+          value: {{ s3_secret_key }}
+        - name: S3_BUCKET_NAME
+          value: {{ s3_bucket_name }}
+{% if s3_url %}
+        - name: S3_URL
+          value: {{ s3_url }}
+{% endif %}
+{% if s3_request_style %}
+        - name: S3_REQUEST_STYLE
+          value: {{ s3_request_style }}
+{% endif %}
+{% endif %}
 {% if not replicator_delete_destination %}
         # Default is 'yes'
         - name: REPLICATE_DELETE
           value: 'no'
 {% endif %}
         volumeMounts:
+{% if not volume_a_is_s3 %}
         - name: volume-a
           mountPath: /volume-a
+{% endif %}
         - name: volume-b
           mountPath: /volume-b
 
       volumes:
+{% if not volume_a_is_s3 %}
       - name: volume-a
         nfs:
           server: {{ replicator_a_nfs_server }}
           path: {{ replicator_a_nfs_path }}
+{% endif %}
       - name: volume-b
         persistentVolumeClaim:
           claimName: {{ replicator_b_pvc_name }}
