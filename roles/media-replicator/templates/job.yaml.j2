@@ -63,6 +63,10 @@ spec:
         env:
         - name: REPLICATE_DIRECTION
           value: {{ replicate_direction_fact }}
+{% if not replicate_quietly %}
+        - name: REPLICATE_QUIETLY
+          value: no
+{% endif %}
 {% if volume_a_is_s3 %}
         - name: VOLUME_A_IS_S3
         - name: S3_ACCESS_KEY

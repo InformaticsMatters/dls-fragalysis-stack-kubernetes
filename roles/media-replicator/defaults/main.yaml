@@ -47,6 +47,9 @@ replicator_b_pvc_name: media
 # running this too often!
 replicator_schedule: '21 * * * *'
 
+# Decrease log for replication?
+replicate_quietly: yes
+
 # If 'replicator_schedule' is blank ('') the playbook will use this as the
 # length of time to wait for the replicator 'Job' to complete.
 # But expect replication of production media data (say around 4.5Gi)
