@@ -55,13 +55,3 @@ replicate_quietly: yes
 # But expect replication of production media data (say around 4.5Gi)
 # to take at least 10 minutes to complete over NFS.
 replicator_job_timeout_minutes: 45
-
-# Are we using S3 for volume A?
-volume_a_is_s3: no
-# If volume A is S3, we must provide these...
-s3_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-s3_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-s3_bucket_name: ''
-# And (optionally) provide these...
-s3_url: ''
-s3_request_style: ''

@@ -1,6 +1,6 @@
 ---
 
-# Job that relies on an S3 bucket (volume-a).
+# Job that relies on a statically-provisioned NFS export (volume-a).
 # The export is assumed to contain the 'replica'
 # that is either copied into (from production)
 # or copied out of (into development).
@@ -55,16 +55,6 @@ spec:
             imagePullPolicy: IfNotPresent
 {% endif %}
             terminationMessagePolicy: FallbackToLogsOnError
-{% if volume_a_is_s3 %}
-            # In order to use 'fuse' and mount S3 buckets
-            # the container needs to run as 'privileged'
-            # and as SYS-ADMIN.
-            securityContext:
-              privileged: true
-              capabilities:
-                add:
-                - SYS_ADMIN
-{% endif %}
             resources:
               limits:
                 cpu: {{ replicator_cpu_limit }}
@@ -79,43 +69,22 @@ spec:
             - name: REPLICATE_QUIETLY
               value: no
 {% endif %}
-{% if volume_a_is_s3 %}
-            - name: VOLUME_A_IS_S3
-            - name: S3_ACCESS_KEY
-              value: {{ s3_access_key }}
-            - name: S3_SECRET_KEY
-              value: {{ s3_secret_key }}
-            - name: S3_BUCKET_NAME
-              value: {{ s3_bucket_name }}
-{% if s3_url %}
-            - name: S3_URL
-              value: {{ s3_url }}
-{% endif %}
-{% if s3_request_style %}
-            - name: S3_REQUEST_STYLE
-              value: {{ s3_request_style }}
-{% endif %}
-{% endif %}
 {% if not replicator_delete_destination %}
             # Default is 'yes'
             - name: REPLICATE_DELETE
               value: 'no'
 {% endif %}
             volumeMounts:
-{% if not volume_a_is_s3 %}
             - name: volume-a
               mountPath: /volume-a
-{% endif %}
             - name: volume-b
               mountPath: /volume-b
 
           volumes:
-{% if not volume_a_is_s3 %}
           - name: volume-a
             nfs:
               server: {{ replicator_a_nfs_server }}
               path: {{ replicator_a_nfs_path }}
-{% endif %}
           - name: volume-b
             persistentVolumeClaim:
               claimName: {{ replicator_b_pvc_name }}
