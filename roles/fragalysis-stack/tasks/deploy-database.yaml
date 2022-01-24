@@ -1,5 +1,30 @@
 ---
 
+# If 'stack_allow_pre_existing_database_volume' is 'no'
+# we must stop if we find the database volume exists.
+# This step is designed to prevent the user from running consecutive
+# 'replication' plays where they are expected to have 'shutdown'
+# the corresponding stack before replicating again.
+
+- name: Check database volume
+  block:
+
+  - name: Get database volume
+    k8s_info:
+      kind: PersistentVolumeClaim
+      name: database
+      namespace: "{{ stack_namespace }}"
+    register: db_pvc_result
+
+  - name: Assert database volume is absent
+    assert:
+      that: db_pvc_result.resources|length == 0
+      fail_msg: >-
+        The database volume exists but shouldn't.
+        Do you need to run the corresponding 'shutdown' play first?
+
+  when: not stack_allow_pre_existing_database_volume|bool
+
 - name: Create database volume claim
   k8s:
     definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"

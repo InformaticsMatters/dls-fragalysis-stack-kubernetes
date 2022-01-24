@@ -9,6 +9,19 @@
 # one of 'present' or 'absent'
 stack_state: present
 
+# Used typically by the staging deployment (which uses a copy of
+# production database and media). This variable prevents the
+# playbook from running if the Database volume is found in the namespace.
+# This is used to prevent a user running consecutive replications of
+# production to staging without running the 'shutdown' play between them.
+#
+# The user is required to 'shutdown' between replications to
+# a) create a clean copy of the production database, and
+# b) force the stack to run through its migrations.
+#
+# The 'production replica' workflow will set this value to 'no'
+stack_allow_pre_existing_database_volume: yes
+
 # Whether to remove the media volume when 'shutting down' the stack
 # (used by the shutdown play). By default the media volume
 # (time-consuming to recreate) is left alone during shutdown.
