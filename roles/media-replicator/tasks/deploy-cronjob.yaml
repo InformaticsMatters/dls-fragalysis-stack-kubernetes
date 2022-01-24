@@ -2,7 +2,7 @@
 
 # Launch the replicator (as a CronJob)
 
-- name: Create replicator CronJob
+- name: Create Media replicator CronJob
   k8s:
     definition: "{{ lookup('template', 'cronjob.yaml.j2') }}"
     wait: yes

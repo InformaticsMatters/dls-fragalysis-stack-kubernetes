@@ -4,7 +4,7 @@
 # and remove any stopped (Succeeded) Jobs (now Pods)
 # before starting a new replication...
 
-- name: Remove exising replicator Job
+- name: Remove existing Media replicator Job
   k8s:
     state: absent
     definition: "{{ lookup('template', 'job.yaml.j2') }}"
@@ -17,17 +17,17 @@
 # The logic that follows list all NFS replicator Jobs (Pods)
 # that have Succeeded and then deletes them.
 
-- name: Get Succeeded replicator Pods
+- name: Get Succeeded Media replicator Pods
   k8s_info:
     kind: Pod
     namespace: "{{ stack_namespace_fact }}"
     label_selectors:
-    - name=nfs-replicator
+    - name=media-replicator
     field_selectors:
     - status.phase=Succeeded
   register: pods_result
 
-- name: Delete Succeeded replicator Pods
+- name: Delete Succeeded Media replicator Pods
   k8s:
     kind: Pod
     namespace: "{{ stack_namespace_fact }}"
@@ -38,18 +38,18 @@
 
 # All clean - start a new Job
 
-- name: Launching new replicator Job
+- name: Launching new Media replicator Job
   k8s:
     definition: "{{ lookup('template', 'job.yaml.j2') }}"
     wait: yes
 
 # Wait for the replicator to complete
 
-- name: Wait for replicator Job ({{ replicator_job_timeout_minutes }} minutes)
+- name: Wait for Media replicator Job ({{ replicator_job_timeout_minutes }} minutes)
   k8s_info:
     kind: Job
     namespace: "{{ stack_namespace_fact }}"
-    name: nfs-replicator
+    name: media-replicator
   register: result
   until: >-
     result.resources[0].status.completionTime is defined
@@ -57,7 +57,7 @@
   delay: 60
   retries: "{{ (replicator_job_timeout_minutes|int * 60 / 60)|int }}"
 
-- name: Display replicator Job status
+- name: Display Media replicator Job status
   debug:
     var: result.resources[0].status
 
