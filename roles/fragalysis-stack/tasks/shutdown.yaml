@@ -1,0 +1,111 @@
+---
+
+# Tasks required to 'shutdown' a deployed version of Fragalysis.
+# Rather than a full delete, which would simply require the removal of the
+# namespace, this play leaves the SSL certificate and (optionally)
+# the database (normally no) and media (normally yes) volumes.
+#
+# Designed for use predominantly for the Production cluster's staging stack.
+#
+# This playbook first ensures that the Fragalysis namespace exists
+# and that an existing deployment exists - the user is first supposed
+# to have deployed the stack before shutting it down.
+
+- include_tasks: prep.yaml
+
+# If it looks like we're deploying to OpenShift
+# we need to use the k8s authentication module to login
+# and obtain an API key.
+- include_tasks: login.yaml
+  when: okd_master_hostname is defined
+
+# A kubernetes (or OpenShift) host and an API key must be set.
+# We will either have authenticated against an OpenShift server
+# or the AWX kubernetes credentials will have injected suitable
+# values for the K8S_AUTH_HOST and K8S_AUTH_API_KEY environment variables.
+# Either way the ansible variables 'k8s_auth_host' and
+# 'k8s_auth_api_key' will have been set.
+- name: Assert authentication
+  assert:
+    that:
+    - k8s_auth_host|length > 0
+    - k8s_auth_api_key|length > 0
+
+# Go...
+
+- block:
+
+  # Include sensitive (encrypted) material.
+
+  - name: Include sensitive variables
+    include_vars:
+      file: sensitive.vault
+
+  # Assert namespace, a stateful set and database secrets exist...
+
+  - name: Get expected namespace ({{ stack_namespace }})
+    k8s_info:
+      kind: Namespace
+      name: "{{ stack_namespace }}"
+    register: result
+
+  - name: Assert namespace exists
+    assert:
+      that: result.resources|length > 0
+      fail_msg: Namespace '{{ stack_namespace }}' does not exist
+
+  - name: Display ansible_date_time.iso8601_micro
+    debug:
+      var: ansible_date_time.iso8601_micro
+
+  # To 'shutdown' we remove: -
+  # - Database
+  # - Stack
+  # And then, delete...
+  # - Database volume
+  # - Media volume (optional)
+
+  - name: Shutdown stack and database
+    k8s:
+      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+      state: absent
+      wait: yes
+    loop:
+    - statefulset-stack
+    - statefulset-database
+
+  - name: Wait for database to disappear
+    k8s_info:
+      kind: Pod
+      name: database-0
+      namespace: "{{ stack_namespace }}"
+    register: db_result
+    until: db_result.resources|length == 0
+    delay: 5
+    retries: "{{ (wait_timeout|int / 5)|int }}"
+
+  - name: Remove database volume
+    k8s:
+      definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
+      state: absent
+      wait: yes
+    when: stack_shutdown_remove_database_volume|bool
+
+  - name: Remove media volume
+    k8s:
+      definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
+      state: absent
+      wait: yes
+    when: stack_shutdown_remove_media_volume|bool
+
+  # Done.
+
+  module_defaults:
+    group/k8s:
+      host: "{{ k8s_auth_host }}"
+      api_key: "{{ k8s_auth_api_key }}"
+
+# If it looks like we're deploying to OpenShift
+# we now need to logout...
+- include_tasks: logout.yaml
+  when: okd_master_hostname is defined
