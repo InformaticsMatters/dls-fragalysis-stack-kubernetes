@@ -54,4 +54,4 @@ replicate_quietly: yes
 # length of time to wait for the replicator 'Job' to complete.
 # But expect replication of production media data (say around 4.5Gi)
 # to take at least 10 minutes to complete over NFS.
-replicator_job_timeout_minutes: 45
+replicator_job_timeout_minutes: 90
