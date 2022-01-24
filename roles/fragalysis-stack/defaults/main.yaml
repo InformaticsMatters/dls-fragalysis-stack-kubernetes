@@ -134,7 +134,7 @@ stack_skip_deploy: no
 
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
-# If blank a database will be created specifically for the stack.
+# If blank ('') a database will be created specifically for the stack.
 database_host: ''
 # If you're not using an externally provisioned (pre-existing database)
 # then you must provide a storage class for the data volume that will be

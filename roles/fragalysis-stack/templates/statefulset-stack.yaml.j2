@@ -119,9 +119,9 @@ spec:
               name: database
               key: user_password
         - name: POSTGRESQL_HOST
-          value: '{{ database_host_fact }}'
+          value: '{{ database_host_fact|default('database', true) }}'
         - name: POSTGRESQL_PORT
-          value: '{{ database_port_fact }}'
+          value: '{{ database_port_fact|default('5432', true) }}'
 {% if stack_discourse_host %}
         - name: DISCOURSE_HOST
           value: '{{ stack_discourse_host }}'
