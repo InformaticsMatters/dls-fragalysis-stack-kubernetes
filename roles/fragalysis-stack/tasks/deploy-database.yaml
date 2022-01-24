@@ -6,7 +6,7 @@
 # 'replication' plays where they are expected to have 'shutdown'
 # the corresponding stack before replicating again.
 #
-# We run theis check if we don't allow a pre-existing DB volume
+# We run this check if we don't allow a pre-existing DB volume
 # (when we're also skipping the deployment of the stack).
 
 - name: Check database volume
