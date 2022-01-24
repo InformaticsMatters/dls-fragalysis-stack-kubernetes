@@ -5,6 +5,9 @@
 # This step is designed to prevent the user from running consecutive
 # 'replication' plays where they are expected to have 'shutdown'
 # the corresponding stack before replicating again.
+#
+# We run theis check if we don't allow a pre-existing DB volume
+# (when we're also skipping the deployment of the stack).
 
 - name: Check database volume
   block:
@@ -23,7 +26,9 @@
         The database volume exists but shouldn't.
         Do you need to run the corresponding 'shutdown' play first?
 
-  when: not stack_allow_pre_existing_database_volume|bool
+  when:
+  - not stack_allow_pre_existing_database_volume|bool
+  - stack_skip_deploy|bool
 
 - name: Create database volume claim
   k8s:
