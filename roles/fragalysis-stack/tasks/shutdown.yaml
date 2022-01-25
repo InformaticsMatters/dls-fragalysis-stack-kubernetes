@@ -65,38 +65,38 @@
   # - Database volume
   # - Media volume (optional)
 
-  - name: Shutdown stack and database
-    k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-      state: absent
-      wait: yes
-    loop:
-    - statefulset-stack
-    - statefulset-database
+#  - name: Shutdown stack and database
+#    k8s:
+#      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+#      state: absent
+#      wait: yes
+#    loop:
+#    - statefulset-stack
+#    - statefulset-database
 
-  - name: Wait for database to disappear
-    k8s_info:
-      kind: Pod
-      name: database-0
-      namespace: "{{ stack_namespace }}"
-    register: db_result
-    until: db_result.resources|length == 0
-    delay: 5
-    retries: "{{ (wait_timeout|int / 5)|int }}"
+#  - name: Wait for database to disappear
+#    k8s_info:
+#      kind: Pod
+#      name: database-0
+#      namespace: "{{ stack_namespace }}"
+#    register: db_result
+#    until: db_result.resources|length == 0
+#    delay: 5
+#    retries: "{{ (wait_timeout|int / 5)|int }}"
 
-  - name: Remove database volume
-    k8s:
-      definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
-      state: absent
-      wait: yes
-    when: stack_shutdown_remove_database_volume|bool
+#  - name: Remove database volume
+#    k8s:
+#      definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
+#      state: absent
+#      wait: yes
+#    when: stack_shutdown_remove_database_volume|bool
 
-  - name: Remove media volume
-    k8s:
-      definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
-      state: absent
-      wait: yes
-    when: stack_shutdown_remove_media_volume|bool
+#  - name: Remove media volume
+#    k8s:
+#      definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
+#      state: absent
+#      wait: yes
+#    when: stack_shutdown_remove_media_volume|bool
 
   # Done.
 
