@@ -40,7 +40,7 @@ The user is expected to provide the stack image tag in the workflow's
 stack version 2.6.6-rc.1 they would set ``stack_image_tag`` in the parameter
 section to ``2.6.6-rc.1`` as they start the workflow.
 
-..  note::
+..  warning::
     The time it take for the stack to become usable will depend on the database
     and media content. For a new stack the media directory is the most
     time-consuming element and (at the time of writing) takes more than
@@ -58,18 +58,23 @@ The stop template removes the stack, database and the database volume.
 The stack's media volume is left intact, which results in faster instantiation
 of subsequent stacks.
 
+..  note::
+    After the first staging instantiation you can expect subsequent stacks
+    to be ready after about 10 minutes (depending largely on media changes),
+    and the stop operation to complete in about 1 minute.
+
 ********************************
 Replication to a Developer stack
 ********************************
 
 Developers are able to start their stacks (on the Development cluster)
-using the same process described above but this requires them to build
-their own Job and Workflow Templates.
+using the same process described above but this requires them to manage
+their own Workflow Template.
 
 An example pair of Templates can be found on the AWX developer server: -
 
 -   **Production Replica (Alan) [START]**
--   **Production Replica (Common) [STOP]**
+-   **Production Replica (Common) [STOP]** (everyone can use this one)
 
 .. rubric:: Footnotes
 
