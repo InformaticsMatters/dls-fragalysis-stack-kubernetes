@@ -84,19 +84,19 @@
     delay: 5
     retries: "{{ (wait_timeout|int / 5)|int }}"
 
-#  - name: Remove database volume
-#    k8s:
-#      definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
-#      state: absent
-#      wait: yes
-#    when: stack_shutdown_remove_database_volume|bool
+  - name: Remove database volume
+    k8s:
+      definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
+      state: absent
+      wait: yes
+    when: stack_shutdown_remove_database_volume|bool
 
-#  - name: Remove media volume
-#    k8s:
-#      definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
-#      state: absent
-#      wait: yes
-#    when: stack_shutdown_remove_media_volume|bool
+  - name: Remove media volume
+    k8s:
+      definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
+      state: absent
+      wait: yes
+    when: stack_shutdown_remove_media_volume|bool
 
   # Done.
 
