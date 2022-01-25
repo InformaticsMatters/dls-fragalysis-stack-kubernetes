@@ -64,7 +64,7 @@
 
   # If developer then the namespace must not be set.
 
-  - name: Check namespace value (developer)
+  - name: Check namespace is not set (developer)
     assert:
       that:
       - stack_namespace|string|length == 0
@@ -122,11 +122,16 @@
   block:
 
   # If non-developer then the namespace must be set.
+  # And it must be one from a restricted set of values.
 
-  - name: Check namespace value (non-developer)
+  - name: Check namespace is set (non-developer)
     assert:
       that:
       - stack_namespace|string|length > 0
+
+  - name: Check namespace value (non-developer)
+    assert:
+      that: stack_namespace in ['staging-stack', 'production-stack']
 
   when: not stack_is_for_developer|bool
 
