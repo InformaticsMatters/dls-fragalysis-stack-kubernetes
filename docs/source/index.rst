@@ -16,6 +16,8 @@ Fragalysis Stack (Kubernetes)
 
     architecture/index
     development/index
+    backups/index
+    production-replication/index
 
 ..  toctree::
     :maxdepth: 2
