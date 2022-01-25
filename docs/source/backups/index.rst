@@ -24,11 +24,15 @@ The containers that perform the backups are, respectively: -
 -   ``informaticsmatters/sql-backup:stable``
 -   ``informaticsmatters/volume-replicator:stable``
 
-They create backups of the database (compressed) and the Media
+They create backups of the database (compressed) and the stack media
 (uncompressed using rsync) on the following NFS server volumes: -
 
 -   ``/nfs/kubernetes-db-replica``
 -   ``/nfs/kubernetes-media-replica``
+
+..  note::
+    At the time of writing the stack database backup size is **1.1GiB**
+    (compressed) and the media directory is **110GiB**
 
 The backups form the source of Production replicas
 (see :doc:`../production-replication/index`).
