@@ -21,6 +21,9 @@ stack_state: present
 #
 # The 'production replica' workflow will set this value to 'no'
 stack_allow_pre_existing_database_volume: yes
+# Is an existing media volume permitted?
+# Added for latest staging deployment, which fails if the volume is present.
+stack_allow_pre_existing_media_volume: yes
 
 # Whether to remove the media volume when 'shutting down' the stack
 # (used by the shutdown play). By default the media volume

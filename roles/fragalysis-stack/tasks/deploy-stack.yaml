@@ -1,10 +1,25 @@
 ---
 
+- name: Get media volume
+  k8s_info:
+    kind: PersistentVolumeClaim
+    name: media
+    namespace: "{{ stack_namespace }}"
+  register: media_pvc_result
+
+- name: Assert media volume is absent
+  assert:
+    that: media_pvc_result.resources|length == 0
+    fail_msg: >-
+      The media volume exists but shouldn't
+  when: not stack_allow_pre_existing_media_volume|bool
+
 - name: Create stack media volume claim
   k8s:
     definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
+  when: media_pvc_result.resources|length == 0
 
 # Best practice ... wait for the PVC to bind.
 # e.g. wait until resources[0].status.phase == Bound (initially Pending)
