@@ -164,6 +164,14 @@ spec:
         - name: EMAIL_PASSWORD
           value: '{{ stack_email_password }}'
 {% endif %}
+        - name: IBM_API_KEY
+          value: '{{ stack_ibm_api_key }}'
+        - name: MANIFOLD_API_KEY
+          value: '{{ stack_manifold_api_key }}'
+        - name: MCULE_API_KEY
+          value: '{{ stack_mcule_api_key }}'
+        - name: SENDGRID_API_KEY
+          value: '{{ stack_sendgrid_api_key }}'
 {% if stack_ispyb_host_fact is defined %}
         # Extracted from ispyb secrets...
         #
