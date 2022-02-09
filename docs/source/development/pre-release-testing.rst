@@ -1,6 +1,6 @@
-#############################
-Pre-release testing procedure
-#############################
+###################
+Pre-release testing
+###################
 
 Prior to deploying a Fragalysis Stack build to the production Kubernetes
 namespace you are first required to deploy the proposed build to the staging
@@ -21,25 +21,37 @@ You will need access to: -
 -   The ``fragalysis-stack`` GitHub repository
 -   The production cluster AWX server
 
-#.  Trigger a Fragalysis Stack build by tagging the ``fragalysis-stack``
-    repository with a **pre-release tag**. Use `Semantic Versioning`_ where
-    a pre-release tag should be denoted by appending a hyphen and a series of
-    dot separated identifiers immediately following the patch version.
-    Examples: ````2.6.6-alpha.1``, ``2.6.6-beta.1`` ``2.6.6-rc.1``
+1. Tag
+======
 
-#.  Decide if you need to re-synchronise the staging stack with the
-    current production data.
+Trigger a Fragalysis Stack build by tagging the ``fragalysis-stack``
+repository with a **pre-release tag**. Use `Semantic Versioning`_ where
+a pre-release tag should be denoted by appending a hyphen and a series of
+dot separated identifiers immediately following the patch version.
+Examples: ``2.6.6-alpha.1``, ``2.6.6-beta.1`` ``2.6.6-rc.1``
 
-    #.  If you need to synchronise, you need to shutdown the existing stack
-        and restart it (synchronising database and media files) using the
-        ``STOP`` and ``START`` playbooks shown in the flowchart below.
-        This will take approximately 10 minutes.
+2. Sync and/or deploy
+=====================
 
-    #.  If you do not need to synchronise you can simply deploy the tagged
-        stack image over the existing deployment using ``CHANGE`` AWX Job
-        Template shown in the flowchart below
+Decide if you need to re-synchronise the staging stack with the
+current production data.
+
+*   **If you need to synchronise**, you need to shutdown the existing stack
+    and restart it (synchronising database and media files) using the
+    ``STOP`` and ``START`` playbooks shown in the flowchart below.
+    This will take approximately 10 minutes.
+
+*   If you do not need to synchronise you can simply deploy the tagged
+    stack image over the existing deployment using ``CHANGE`` AWX Job
+    Template shown in the flowchart below
+
+3. Test
+=======
 
 With the stack deployed you can now execute any testing you see fit.
+
+Flowchart reminder
+==================
 
 ..  image:: ../images/fragalysis-stack-staging-process/fragalysis-stack-staging-process.001.png
 

@@ -200,9 +200,11 @@ Variables setting which back-end image to use
 Recommended set-up for front-end developers
 ===========================================
 
-1. Fork the ``xchem/fragalysis-frontend`` repo from GitHub
-2. Fork the ``xchem/fragalysis-stack`` repo from GitHub
-4. Setup the following GutHub repository secrets for the front-end GitHub Actions: -
+Fork the ``xchem/fragalysis-frontend`` repo from GitHub
+
+Fork the ``xchem/fragalysis-stack`` repo from GitHub
+
+Setup the following GutHub repository secrets for the front-end GitHub Actions: -
 
     * Secrets related to triggering the stack::
 
@@ -220,7 +222,7 @@ Recommended set-up for front-end developers
         STACK_NAMESPACE = <your GitHub account name here>
         STACK_BRANCH = master
 
-5. Setup the following GitHub secrets for the stack you've forked:
+Setup the following GitHub secrets for the stack you've forked:
 
     * Variables related to stack image - the one your stack will use (Dockerhub)::
 
