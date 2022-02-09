@@ -10,7 +10,7 @@ Before starting with either you will need a *configuration file*, called
 a *kube config*. Your system administrator should be able to provide you
 with one for the cluster you're deploying to.
 
-Armed with this, folloo instructions based on whether you'll
+Armed with this, follow instructions based on whether you'll
 be using ``kubectl`` or ``lens``.
 
 ..  toctree::
