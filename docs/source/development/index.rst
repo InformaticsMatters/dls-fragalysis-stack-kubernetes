@@ -42,6 +42,7 @@ Then repeat steps **1**, **2** and **5** each time you build the stack.
     preparing-for-kubernetes
     cheat-sheets/index
     dummies-dev-setup
+    pre-release-testing
 
 Sensitive Material (Ansible Vault)
 ----------------------------------
