@@ -30,6 +30,10 @@ a pre-release tag should be denoted by appending a hyphen and a series of
 dot separated identifiers immediately following the patch version.
 Examples: ``2.6.6-alpha.1``, ``2.6.6-beta.1`` ``2.6.6-rc.1``
 
+..  note::
+    You will need to use the tag you have chosen in the START/CHANGE AWX
+    Job Template you decide to run next...
+
 2. Sync and/or deploy
 =====================
 
@@ -44,6 +48,12 @@ current production data.
 *   If you do not need to synchronise you can simply deploy the tagged
     stack image over the existing deployment using ``CHANGE`` AWX Job
     Template shown in the flowchart below
+
+..  warning::
+    Whether you synchronise or not you *MUST* provide the tag of the build
+    that you want to deploy in either the ``START`` or ``CHANGE`` template
+    (by using it for the ``stack_image_tag`` variable in the corresponding
+    Job Template's ``EXTRA VARIABLES`` block)
 
 3. Test
 =======
