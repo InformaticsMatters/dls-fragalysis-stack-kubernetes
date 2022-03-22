@@ -158,6 +158,12 @@ database_bu_hourly_history: 24
 # (found in vars/sensitive.vault)
 database_bu_use_rsync: no
 
+# Squonk/2 material, unset by default.
+# User can provide UI AND DM/API URLs.
+# There are URLs to the services, i.e. https://example.com/data-manager-api/api
+squonk_api_url: ''
+squonk_ui_url: ''
+
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,
 # so their variables names are not to be altered. If not using AWX
