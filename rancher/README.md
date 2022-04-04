@@ -10,8 +10,12 @@ Here we rely on a Kubernetes cluster based on instances created in the
     using a simple `cluster.yml` configuration file (enclosed) - as
     described on the Rancher site
 -   **Rancher** is installed using the same, official, documentation
+-   This repository is cloned on the **xchem-follow-up** project's bastion
+    node (`xch-bastion`) in Alan's account under
+   `git/dls-fragalysis-stack-kubernetes`. Run everything from
+   `git/dls-fragalysis-stack-kubernetes/rancher`
 
-The following steps are performed on the project's bastion node.
+The following steps are performed on the project's bastion node (`xch-bastion`).
 
 Essentially, the high-level stages consist of...
 
@@ -69,7 +73,7 @@ Follow instructions at [installing kubectl] to install the `kubectl` client: -
 >   Ensure you are using kubectl 1.18 or better.
 
 ### Installing helm
-For reference refer to the [installing Helm] documentation.
+For a detailed reference refer to the [installing Helm] documentation.
 Helm now has an installer script that will automatically grab the latest
 version of Helm and install it locally: -
 
@@ -90,7 +94,7 @@ We create instances using the STFC OpenStack console. We create 3
 
 Instances details: -
 
--   **etcd** is `m1.large` (2-core 8Gi RAM)
+-   **etcd** is `c1.large` (2-core 8Gi RAM)
 -   **control plane** is `c1.large` (2-core 8Gi RAM)
 -   **worker** is `c1.large` (2-core 8Gi RAM)
 -   Base image for all is `ScienbtificLinux-7-NoGui`
@@ -114,7 +118,7 @@ Create the `cluster.yml` and then install Kubernetes...
     $ rke up
     [...]
     INFO[0321] Finished building Kubernetes cluster successfully 
-    $ export KUBECONFIG=${HOME}/rke/kube_config_cluster.yml
+    $ export KUBECONFIG=${HOME}/git/dls-fragalysis-stack-kubernetes/rancher/kube_config_cluster.yml
     $ kubectl get no
     NAME             STATUS   ROLES          AGE    VERSION
     130.246.215.43   Ready    controlplane   3m6s   v1.17.5
