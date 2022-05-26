@@ -45,9 +45,9 @@ stack_sa_psp: im-core-unrestricted
 stack_cert_issuer: staging
 
 stack_cpu_limit: 8000m
-stack_mem_limit: 6Gi
+stack_mem_limit: 10Gi
 stack_cpu_request: 250m
-stack_mem_request: 2Gi
+stack_mem_request: 4Gi
 
 # The Django app's media directory.
 # To hold map and pdb target data, which
