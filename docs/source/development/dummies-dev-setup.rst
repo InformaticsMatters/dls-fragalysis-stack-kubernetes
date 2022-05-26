@@ -71,6 +71,30 @@ When the jobs are finished, navigate to the URL spat out by the job in
 step **1** above. You should now have a copy of the stack that is created from the
 ``xchem/master`` branches.
 
+Keycloak
+========
+
+Stack developers are likely to need access to a developer-specific *Client ID*
+configured on the `keycloak`_ server on the Development cluster.
+
+Use an existing client ID for reference but each will need its own ID and.
+For example, an ID called ``fragalysis-{developer}-default-xchem-dev`` with: -
+
+-   Client Protocol **openid-connect**
+-   Access Type **confidential**
+-   Standard FLow **Enabled**
+-   Direct Access Grants **Enabled**
+-   Service Accounts **Enabled**
+-   Authorization **Enabled**
+-   Valid Redirect URIs that contain: -
+    - https://fragalysis-{developer}-default.xchem-dev.diamond.ac.uk/oidc/callback/
+    - http://fragalysis-{developer}-default.xchem-dev.diamond.ac.uk/viewer/react/landing
+    - http://fragalysis-{developer}-default.xchem-dev.diamond.ac.uk/oidc/callback/
+
+Provide the developer with the **Client ID** and its **Secret**.
+
+.. _keycloak: https://keycloak.xchem-dev.diamond.ac.uk/auth
+
 ***********************************
 Setting up GitHub Actions for CI/CD
 ***********************************
