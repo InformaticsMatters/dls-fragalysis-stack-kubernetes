@@ -275,8 +275,24 @@ spec:
         volumeMounts:
         - name: media
           mountPath: /code/media
+        volumeMounts:
+        - name: log
+          mountPath: /code/logs
 
       volumes:
       - name: media
         persistentVolumeClaim:
           claimName: media
+
+  # Volume claim templates.
+  # Used to provide us with a log volume for each StatefulSet replica.
+  volumeClaimTemplates:
+  - metadata:
+      name: log
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: '{{ stack_log_vol_storageclass }}'
+      resources:
+        requests:
+          storage: 200Mi
