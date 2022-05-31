@@ -263,6 +263,10 @@ spec:
             secretKeyRef:
               name: ssh
               key: security_connector
+{% if stack_disable_logging_framework %}
+        - name: DISABLE_LOGGING_FRAMEWORK
+          value: 'Yes'
+{% endif %}
 {% endif %}
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
@@ -275,15 +279,17 @@ spec:
         volumeMounts:
         - name: media
           mountPath: /code/media
+{% if stack_log_vol_storageclass %}
         volumeMounts:
         - name: log
           mountPath: /code/logs
-
+{% endif %}
       volumes:
       - name: media
         persistentVolumeClaim:
           claimName: media
 
+{% if stack_log_vol_storageclass %}
   # Volume claim templates.
   # Used to provide us with a log volume for each StatefulSet replica.
   volumeClaimTemplates:
@@ -296,3 +302,4 @@ spec:
       resources:
         requests:
           storage: 200Mi
+{% endif %}

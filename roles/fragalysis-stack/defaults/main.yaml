@@ -92,11 +92,12 @@ stack_build_xcdb: no
 # If left as an empty string the default storage class of the cluster
 # will be used. You should strive to use a named storage class, e.g. 'efs'.
 stack_media_vol_storageclass: ' '
-stack_log_vol_storageclass: ' '
+stack_log_vol_storageclass:
 
 # When true, this starts the stack in debug mode.
 # It should be False on production.
 stack_debug_fragalysis: no
+stack_disable_logging_framework: no
 
 # Keycloak oidc variables
 # If the secret is defined, the other variables are expected
