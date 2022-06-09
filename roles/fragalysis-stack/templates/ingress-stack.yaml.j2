@@ -8,6 +8,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
 {% if stack_cert_issuer %}
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ stack_cert_issuer|lower }}"
 {% endif %}
