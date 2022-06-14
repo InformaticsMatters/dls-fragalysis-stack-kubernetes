@@ -23,13 +23,11 @@ spec:
           affinity:
             nodeAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 1
+              - weight: 40
                 preference:
                   matchExpressions:
-                  - key: purpose
-                    operator: In
-                    values:
-                    - {{ stack_node_purpose }}
+                  - key: informaticsmatters.com/purpose-application
+                    operator: Exists
 
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
           imagePullSecrets:

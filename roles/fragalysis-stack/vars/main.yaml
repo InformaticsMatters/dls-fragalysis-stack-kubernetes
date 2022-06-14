@@ -32,9 +32,6 @@ stack_shutdown_remove_media_volume: no
 # Same with database volume (default is to 'remove')
 stack_shutdown_remove_database_volume: yes
 
-# The node label for preferred selection,
-# A request to position pods onto a node for this purpose.
-stack_node_purpose: application
 # The Pod Security Policy (expected to exist in the cluster)
 # that is used by the stack Role object.
 stack_sa_psp: im-core-unrestricted

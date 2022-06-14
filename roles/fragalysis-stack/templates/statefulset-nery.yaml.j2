@@ -19,18 +19,32 @@ spec:
     spec:
       serviceAccountName: stack
 
-      # A 'preferred' (not guaranteed)
-      # node selection affinity...
+      # Pod Node Affinity.
+      # Prefer 'application' node before 'core'
+      # then try anything other than 'worker before finally trying 'worker'
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
+          - weight: 40
             preference:
               matchExpressions:
-              - key: purpose
-                operator: In
-                values:
-                - {{ stack_node_purpose }}
+              - key: informaticsmatters.com/purpose-application
+                operator: Exists
+          - weight: 30
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
+          - weight: 20
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-worker
+                operator: DoesNotExist
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-worker
+                operator: Exists
 
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
       imagePullSecrets:
