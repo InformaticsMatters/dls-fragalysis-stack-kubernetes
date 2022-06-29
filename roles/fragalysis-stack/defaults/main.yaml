@@ -13,6 +13,10 @@ stack_deploy_nery: no
 # This includes sensitive preset variables employed at Diamond.
 stack_include_sensitive: yes
 
+# Stack image pull policy?
+# If not set it's automatic.
+stack_image_pull_policy:
+
 # The Sentry SDK DSN - passed in via the environment variable
 # 'FRAGALYSIS_BACKEND_SENTRY_DNS'
 # If blank sentry is not initialised.

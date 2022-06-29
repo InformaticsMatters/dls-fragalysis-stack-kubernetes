@@ -64,7 +64,9 @@ spec:
       containers:
       - name: stack
         image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
-{% if stack_image_tag in ['latest', 'stable'] %}
+{% if stack_image_pull_policy %}
+        imagePullPolicy: {{ stack_image_pull_policy }}
+{% elif stack_image_tag in ['latest', 'stable'] %}
         imagePullPolicy: Always
 {% else %}
         imagePullPolicy: IfNotPresent
