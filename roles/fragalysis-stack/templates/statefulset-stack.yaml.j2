@@ -168,15 +168,15 @@ spec:
         - name: DEBUG_FRAGALYSIS
           value: 'True'
 {% endif %}
-{% if stack_squonk_api_url %}
+{% if stack_squonk2_dmapi_url %}
         # Material for communication with Squonk/2 (UI/API) services.
         # If an API is defined a UI is expected
-        - name: SQUONK_API_URL
-          value: '{{ stack_squonk_api_url }}'
+        - name: SQUONK2_DMAPI_URL
+          value: '{{ stack_squonk2_dmapi_url }}'
 {% endif %}
-{% if stack_squonk_ui_url %}
-        - name: SQUONK_UI_URL
-          value: '{{ stack_squonk_ui_url }}'
+{% if stack_squonk2_ui_url %}
+        - name: SQUONK2_UI_URL
+          value: '{{ stack_squonk2_ui_url }}'
 {% endif %}
 {% if stack_email_user %}
         - name: EMAIL_HOST

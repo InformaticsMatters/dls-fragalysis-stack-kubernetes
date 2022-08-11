@@ -167,8 +167,8 @@ database_bu_use_rsync: no
 # Squonk/2 material, unset by default.
 # User can provide UI AND DM/API URLs.
 # There are URLs to the services, i.e. https://example.com/data-manager-api/api
-stack_squonk_api_url: ''
-stack_squonk_ui_url: ''
+stack_squonk2_dmapi_url: ''
+stack_squonk2_ui_url: ''
 
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,
