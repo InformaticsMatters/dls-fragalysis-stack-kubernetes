@@ -4,7 +4,7 @@ A Developer Cheat-Sheet for kubectl
 
 .. epigraph::
 
-    Some useful ``kubectl`` command that might be useful during development.
+    Some useful ``kubectl`` commands.
     This is only a *taster** of common commands, you can also refer to the
     official `Kubernetes Cheat Sheet`_ for many more.
 
@@ -69,6 +69,7 @@ Display Pod logs
     You can see the logs from the last 10 minutes, or the last 10 lines: -
 
     ``$ kubectl logs stack-0 --since=10m``
+
     ``$ kubectl logs stack-0 --tail=10``
 
     You can see the logs from the previous container instance, if it exists

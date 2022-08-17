@@ -4,7 +4,7 @@ A Developer Cheat-Sheet for Lens
 
 .. epigraph::
 
-    Some useful ``lens`` operations that might be useful during development.
+    Some useful ``lens`` operations that might be useful.
 
 Viewing namespace Pods
     Selecting **Workloads -> Pods** will normally show ou all the Pods
