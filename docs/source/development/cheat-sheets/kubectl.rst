@@ -44,11 +44,14 @@ List more namespace content (PVCs, Secrets, Ingress)
     full object name: -
 
     ``$ kubectl get pvc``
+
     ``$ kubectl get svc``
+
     ``$ kubectl get service``
+
     ``$ kubectl get ing``
 
-    And combine them: -
+    Or combine them: -
 
     ``$ kubectl get pvc,svc,ing``
 
@@ -82,6 +85,17 @@ Shell into a Pod container
 
     Once you're done you can **ctrl-d** to get out of the container.
 
+Port-forwarding
+    You can access Pod ports from your local machine using the
+    ``kubectl port-forward`` command. For example, if you have a database
+    Pod (``database-0``) using port ``5432`` in namespace ``blob``
+    you can connect ``1234`` on your local machine to the Pod with...
+
+    ``kubectl port-forward database-0 -n blob 1234:5432``
+
+    Then, any local access to port ``1234`` will be redirected to the
+    Pod.
+
 Watching object state changes
     You can watch rolling update status of the stack until completion
     using the ``--watch`` argument
@@ -97,6 +111,7 @@ Restarting a Pod (scale down and up)
     that is not actively persisted.
 
     ``$ kubectl scale --replicas=0 statefulset/stack``
+
     ``$ kubectl scale --replicas=1 statefulset/stack``
 
 .. _kubernetes cheat sheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
