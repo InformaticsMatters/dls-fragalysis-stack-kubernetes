@@ -17,8 +17,8 @@ stack could have been pushed or the frontend's branch could have changed.
 
 By using tags from backend and frontend...
 
-* We create a much more reliable and repeatable build process
-* We have a clear reference to the underlying code for defect tracking
+#. We create a much more reliable and repeatable build process
+#. We have a clear reference to the underlying code for defect tracking
 
 By using a staging branch in the backend and frontend we are able to safely
 collect all the changes for the next release separately from the existing
@@ -112,10 +112,10 @@ Building stacks for staging deployments
 =======================================
 Whenever the ``staging`` branch of the **backend** is built it triggers a
 build of the **stack**, producing a stack image labelled ``latest``.
-These ``latest``images are manually deployed to the designated Kubernetes
+These ``latest`` images are manually deployed to the designated Kubernetes
 namespace using a production cluster AWX Job Template.
 
-The ``latest` stack is convenient for quickly testing the current development
+The ``latest`` stack is convenient for quickly testing the current development
 code but a stack that is expected to be promoted to production the developer
 needs to make sure the stack is based on a fixed copy of the backend and
 frontend. This is accomplished by applying a tag to the backend (or frontend)
@@ -123,19 +123,20 @@ staging branch.
 
 So, if you are testing code for a new release to production: -
 
-*   Your feature should have already been merged onto the corresponding ``staging``
+#.  Your feature should have already been merged onto the corresponding ``staging``
     branch for the repository that is changing, having passed through the
     appropriate integration branch for unit/functional testing.
-*   Tag (or create Release from) the corresponding ``staging`` branch
-    *   The tag (applied to the staging branch) should be a
-         non-production-grade tag, e.g. ``1.0.0-beta.1`` or ``1.0.1-rc.2``,
-         but **NOT** a tag like ``1.0.0``
+#.  Tag (or create Release from) the corresponding ``staging`` branch
+
+    #.  The tag (applied to the staging branch) should be a
+        non-production-grade tag, e.g. ``1.0.0-beta.1`` or ``1.0.1-rc.2``,
+        but **NOT** a tag like ``1.0.0``
 
 Tagging your repository's ``staging`` branch will trigger a build of the stack
 using your tag and it will be visible through the versioning display of the UI.
 
-It is this **stack** image (built from tagged references to the backend
-and frontend) that you should be testing if you anticipate creating a
+It is this **stack** image (built from tagged references to the **backend**
+and **frontend**) that you should be testing if you anticipate creating a
 production image.
 
 Building stacks for production deployment
@@ -147,20 +148,20 @@ branches of the underlying repositories.
 For example, if you have made changes to the backend
 (using the tag ``1.0.0-rc.1`` on the backend ``staging`` branch: -
 
-*   Merge the backend ``staging`` branch to the backend ``production`` branch
+#.  Merge the backend ``staging`` branch to the backend ``production`` branch
     (no stack will be built from build activity on production branches)
-*   When the new build is complete create a **release** or **tag**
+#.  When the new build is complete create a **release** or **tag**
     the ``production`` branch, this time with the corresponding production
     tag, e.g. ``1.0.0``. Again, no stack will be built
 
 When the build is complete...
 
-*   Edit the stack repository's ``.github/workflows/build-main.yaml`` workflow
+#.  Edit the stack repository's ``.github/workflows/build-main.yaml`` workflow
     file and replace the existing tag variable's value with the tag just created.
     There's a variable for the backend tag (``BE_IMAGE_TAG``) and a variable for
     the frontend tag (``FE_BRANCH``)
-*   Commit the workflow file
-*   Create a new **Release** in the stack repository, i.e. ``1.0.0``
+#.  Commit the workflow file
+#.  Create a new **Release** in the stack repository, i.e. ``1.0.0``
 
 The corresponding GitHub Action will ensure the new production build will be
 automatically deployed to the cluster.
@@ -188,8 +189,8 @@ the stack build. It triggers a stack build from the frontend code in this
 branch and the backend code from the most recent (tagged) build -
 i.e. the code in the most recent tag, captured in the ``stable`` image.
 
-*    be_image_tag: stable
-*    fe_branch: staging
+*    ``be_image_tag`` will have the value ``stable``
+*    ``fe_branch`` will have the value ``staging``
 
 Changes to the production branch
 --------------------------------
@@ -198,8 +199,8 @@ workflow. Like the **staging** branch above it triggers a build in the stack
 repository, sends the following two important variable values to the stack
 build: -
 
-*    be_image_tag: stable
-*    fe_branch: production
+*    ``be_image_tag`` will have the value ``stable``
+*    ``fe_branch`` will have the value ``production``
 
 Backend
 =======
@@ -222,8 +223,8 @@ By default the **backend** sends the following two important variable values
 to the stack build. It triggers a stack build using the frontend code from its
 ``production`` branch and the backend container images tagged ``latest``.
 
-*   be_image_tag: latest
-*   fe_branch: production
+*   ``be_image_tag`` will have the value ``latest``
+*   ``fe_branch`` will have the value ``production``
 
 Changes to production branch
 ----------------------------
@@ -233,5 +234,5 @@ workflow. This workflow only runs when the backend production branch is tagged.
 Like the **staging** branch above it triggers a build in the stack repository,
 sends the following two important variable values to the stack build: -
 
-*   be_image_tag: stable
-*   fe_branch: production
+*   ``be_image_tag`` will have the value ``stable``
+*   ``fe_branch`` will have the value ``production``
