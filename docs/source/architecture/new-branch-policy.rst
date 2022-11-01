@@ -17,8 +17,8 @@ stack could have been pushed or the frontend's branch could have changed.
 
 By using tags from backend and frontend...
 
-#. We create a much more reliable and repeatable build process
-#. We have a clear reference to the underlying code for defect tracking
+#.  We create a much more reliable and repeatable build process
+#.  We have a clear reference to the underlying code for defect tracking
 
 By using a staging branch in the backend and frontend we are able to safely
 collect all the changes for the next release separately from the existing
@@ -121,7 +121,8 @@ needs to make sure the stack is based on a fixed copy of the backend and
 frontend. This is accomplished by applying a tag to the backend (or frontend)
 staging branch.
 
-So, if you are testing code for a new release to production: -
+So, if you are testing code in staging prior to making a new release in
+production: -
 
 #.  Your feature should have already been merged onto the corresponding ``staging``
     branch for the repository that is changing, having passed through the
@@ -133,11 +134,18 @@ So, if you are testing code for a new release to production: -
         but **NOT** a tag like ``1.0.0``
 
 Tagging your repository's ``staging`` branch will trigger a build of the stack
-using your tag and it will be visible through the versioning display of the UI.
+using your tag, resulting in a new ``xchem/fragalysis-stack:latest`` image.
 
-It is this **stack** image (built from tagged references to the **backend**
-and **frontend**) that you should be testing if you anticipate creating a
-production image.
+When done deploy the stack using the appropriate AWX **Job Template**,
+this is likely to be the template **Staging Fragalysis Stack (Version Change)**.
+The ``stack_image_tag`` should already be set to ``latest``, the image
+just built.
+
+.. epigraph::
+
+    An expert user could also simply delete the corresponding **Pod**
+    (in the `staging-stack` **Namespace**) which will force Kubernetes to pull
+    the new (``latest``) container image before starting running it.
 
 Building stacks for production deployment
 =========================================
@@ -150,21 +158,31 @@ For example, if you have made changes to the backend
 
 #.  Merge the backend ``staging`` branch to the backend ``production`` branch
     (no stack will be built from build activity on production branches)
-#.  When the new build is complete create a **release** or **tag**
-    the ``production`` branch, this time with the corresponding production
-    tag, e.g. ``1.0.0``. Again, no stack will be built
+#.  When the new build is complete create a **release** from the
+    ``production`` branch, this time using a production-grade
+    tag like ``1.0.0``. Again, no stack will be built
 
-When the build is complete...
+Tagging the ``production`` branch like this will result in *two* images
+being pushed to Docker Hub, one with the chosen tag (e.g. ``1.0.0``) and
+another with the tag `stable``.
 
-#.  Edit the stack repository's ``.github/workflows/build-main.yaml`` workflow
-    file and replace the existing tag variable's value with the tag just created.
-    There's a variable for the backend tag (``BE_IMAGE_TAG``) and a variable for
-    the frontend tag (``FE_BRANCH``)
-#.  Commit the workflow file
-#.  Create a new **Release** in the stack repository, i.e. ``1.0.0``
+.. epigraph::
 
-The corresponding GitHub Action will ensure the new production build will be
-automatically deployed to the cluster.
+    As every backend production tag results in a new ``stable`` image
+    you don't need to know the most recent backend tag to use
+    the most recent image, you just need to use the image that's tagged
+    ``stable``.
+
+When the build is complete you can create a new **Release** in the stack
+repository, i.e. ``1.0.0``. It is programmed to use the ``stable`` image
+of the **backend** and the ``production`` branch of the **frontend**.
+So you should get an application based on the most recent official releases
+of the **backend** and **frontend**.
+
+The corresponding GitHub Action (in the stack repository) will ensure the new
+production build is automatically deployed to the ``production-stack``
+**Namespace** of the production Kubernetes cluster (using the Action's
+**deploy-production** job).
 
 ***********************************
 How the automated stack build works
