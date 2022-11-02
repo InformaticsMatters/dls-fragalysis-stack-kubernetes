@@ -100,90 +100,6 @@ define the following Secrets: -
 *   ``STACK_USER_TOKEN``
     (A suitable "personal access token" for thew stack user account)
 
-***************************
-BE and FE role in the stack
-***************************
-
-The **backend** is the source of Django application that forms the backend of
-the **stack**. The by-product of a backend build is a container image
-pushed to Docker hub. The backend is the ``FROM`` image used by the stack.
-
-Building stacks for staging deployments
-=======================================
-Whenever the ``staging`` branch of the **backend** is built it triggers a
-build of the **stack**, producing a stack image labelled ``latest``.
-These ``latest`` images are manually deployed to the designated Kubernetes
-namespace using a production cluster AWX Job Template.
-
-The ``latest`` stack is convenient for quickly testing the current development
-code but a stack that is expected to be promoted to production the developer
-needs to make sure the stack is based on a fixed copy of the backend and
-frontend. This is accomplished by applying a tag to the backend (or frontend)
-staging branch.
-
-So, if you are testing code in staging prior to making a new release in
-production: -
-
-#.  Your feature should have already been merged onto the corresponding ``staging``
-    branch for the repository that is changing, having passed through the
-    appropriate integration branch for unit/functional testing.
-#.  Tag (or create Release from) the corresponding ``staging`` branch
-
-    #.  The tag (applied to the staging branch) should be a
-        non-production-grade tag, e.g. ``1.0.0-beta.1`` or ``1.0.1-rc.2``,
-        but **NOT** a tag like ``1.0.0``
-
-Tagging your repository's ``staging`` branch will trigger a build of the stack
-using your tag, resulting in a new ``xchem/fragalysis-stack:latest`` image.
-
-When done deploy the stack using the appropriate AWX **Job Template**,
-this is likely to be the template **Staging Fragalysis Stack (Version Change)**.
-The ``stack_image_tag`` should already be set to ``latest``, the image
-just built.
-
-.. epigraph::
-
-    An expert user could also simply delete the corresponding **Pod**
-    (in the `staging-stack` **Namespace**) which will force Kubernetes to pull
-    the new (``latest``) container image before starting running it.
-
-Building stacks for production deployment
-=========================================
-When a **stack** built as described above is considered suitable for
-production a new stack should be built from tags made on the ``production``
-branches of the underlying repositories.
-
-For example, if you have made changes to the backend
-(using the tag ``1.0.0-rc.1`` on the backend ``staging`` branch: -
-
-#.  Merge the backend ``staging`` branch to the backend ``production`` branch
-    (no stack will be built from build activity on production branches)
-#.  When the new build is complete create a **release** from the
-    ``production`` branch, this time using a production-grade
-    tag like ``1.0.0``. Again, no stack will be built
-
-Tagging the ``production`` branch like this will result in *two* images
-being pushed to Docker Hub, one with the chosen tag (e.g. ``1.0.0``) and
-another with the tag `stable``.
-
-.. epigraph::
-
-    As every backend production tag results in a new ``stable`` image
-    you don't need to know the most recent backend tag to use
-    the most recent image, you just need to use the image that's tagged
-    ``stable``.
-
-When the build is complete you can create a new **Release** in the stack
-repository, i.e. ``1.0.0``. It is programmed to use the ``stable`` image
-of the **backend** and the ``production`` branch of the **frontend**.
-So you should get an application based on the most recent official releases
-of the **backend** and **frontend**.
-
-The corresponding GitHub Action (in the stack repository) will ensure the new
-production build is automatically deployed to the ``production-stack``
-**Namespace** of the production Kubernetes cluster (using the Action's
-**deploy-production** job).
-
 ***********************************
 How the automated stack build works
 ***********************************
@@ -230,27 +146,92 @@ repository build is triggered.
 
 Changes to staging branch
 -------------------------
-All changes on its **staging** branch are handled by its ``build-staging.yaml``
+All changes on its ``staging`` branch are handled by its ``build-staging.yaml``
 workflow. Pushes to the branch, excluding tags, result in a build that
 eventually ends in running the **Trigger stack** step.
 
 On the staging branch the backend build a container image with the
-Docker tag ``latest``.
+Docker tag ``latest`` or the repository tag if the ``staging`` branch is tagged
+(e.g. ``1.0.5-rc.1``).
 
 By default the **backend** sends the following two important variable values
-to the stack build. It triggers a stack build using the frontend code from its
-``production`` branch and the backend container images tagged ``latest``.
+to the stack build: -
 
 *   ``be_image_tag`` will have the value ``latest``
+    Or the ``staging`` **tag** if the backend build on staging is the
+    result of a tag.
 *   ``fe_branch`` will have the value ``production``
+
+The resultant **stack** image will be tagged ``latest``.
 
 Changes to production branch
 ----------------------------
-Changes on its **production** branch are handled by its ``build-production.yaml``
+Changes on its ``production`` branch are handled by its ``build-production.yaml``
 workflow. This workflow only runs when the backend production branch is tagged.
 
 Like the **staging** branch above it triggers a build in the stack repository,
-sends the following two important variable values to the stack build: -
+sending the following two important variable values to the stack build: -
 
-*   ``be_image_tag`` will have the value ``stable``
+*   ``be_image_tag`` will have the value of the **tag** applied to the backend
+    production branch (e.g. ``1.0.5``)
 *   ``fe_branch`` will have the value ``production``
+
+The resultant **stack** image will be tagged ``latest``.
+
+****************************
+Manual building of the stack
+****************************
+
+The **backend** is the source of Django application that forms the *base image*
+of the **stack**. The by-product of a backend build is a container image
+pushed to Docker hub and it is this image that is the ``FROM`` image used
+by the stack's ``Dockerfile``.
+
+Building stacks for staging deployments
+=======================================
+Whenever the ``staging`` or ``production`` branch of the **backend** is built
+it triggers a build of the **stack**, producing a stack image labelled ``latest``.
+These ``latest`` images are manually deployed to the designated Kubernetes
+namespace using a production cluster AWX Job Template.
+
+.. epigraph::
+
+    You *normally* do not need to build the stack, a ``latest`` version should
+    have been built automatically from the most recent activity in either the
+    **frontend** or **backed**.
+
+When done deploy the stack using the appropriate AWX **Job Template**,
+this is likely to be the template **Staging Fragalysis Stack (Version Change)**.
+The ``stack_image_tag`` should already be set to ``latest``, the image
+just built.
+
+.. epigraph::
+
+    An expert user could also simply delete the corresponding **Pod**
+    (in the `staging-stack` **Namespace**) which will force Kubernetes to pull
+    the new (``latest``) container image before starting running it.
+
+Building stacks for production deployment
+=========================================
+When you want to build a **stack** for **production** (which will be
+deployed automatically to the ``production-stack`` **Namespace** of the
+production Kubernetes cluster) you **MUST**: -
+
+#.  Decide which **backend** and **frontend** tags should be used to form
+    the resultant stack image and then set the stack's repository **secrets**
+    to these values
+#.  Tag the stack repository with your chosen **stack** tag.
+
+For example, to deploy a new production **stack** version ``2022.1`` based
+on **backend** ``1.0.0`` and **frontend** ``4.5.0`` set (or update) the
+following repository secrets: -
+
+*   ``BE_IMAGE_TAG`` to ``1.0.0``
+*   ``FE_BRANCH`` to ``4.5.0``
+
+And then tag the stack repository's ``master`` branch with ``2022.1``.
+
+The corresponding GitHub Action (in the stack repository) will ensure the new
+production build is automatically deployed to the ``production-stack``
+**Namespace** of the production Kubernetes cluster (using the Action's
+**deploy-production** job).
