@@ -217,21 +217,39 @@ When you want to build a **stack** for **production** (which will be
 deployed automatically to the ``production-stack`` **Namespace** of the
 production Kubernetes cluster) you **MUST**: -
 
-#.  Decide which **backend** and **frontend** tags should be used to form
-    the resultant stack image and then set the stack's repository **secrets**
-    to these values
+#.  Decide which **backend** and **frontend** versions should be used for the
+    new stack image
+#.  Using the chosen versions edit (and then commit) the stack repository's
+    ``.github/workflows/build-main.yaml`` file: -
+
+    #.  Replace the value of the ``env`` variable ``BE_IMAGE_TAG``
+        with your chosen version of the backend container image
+    #.  Replace the ``FE_BRANCH`` with your chosen version of the
+        frontend code (the variable is a GitHub *reference* and can
+        be a set to a tag as well as a branch name)
+
 #.  Tag the stack repository with your chosen **stack** tag.
 
-For example, to deploy a new production **stack** version ``2022.1`` based
-on **backend** ``1.0.0`` and **frontend** ``4.5.0`` set (or update) the
-following repository secrets: -
+Example
+-------
+To deploy a new production **stack** version ``3.7.32`` based
+on **backend** ``1.0.0`` and **frontend** ``4.5.0`` set the
+workflow file variables to this::
 
-*   ``BE_IMAGE_TAG`` to ``1.0.0``
-*   ``FE_BRANCH`` to ``4.5.0``
+    BE_IMAGE_TAG: 1.0.0
+    FE_BRANCH: 4.5.0
 
-And then tag the stack repository's ``master`` branch with ``2022.1``.
+Commit the change and then (when the build passes) tag the stack repository's
+``master`` branch with the value ``3.7.32``.
 
-The corresponding GitHub Action (in the stack repository) will ensure the new
-production build is automatically deployed to the ``production-stack``
-**Namespace** of the production Kubernetes cluster (using the Action's
-**deploy-production** job).
+The **stack** GitHub Action will ensure the new  build is automatically
+deployed to the ``production-stack`` **Namespace** of the production Kubernetes
+cluster (using the Action's **deploy-production** job step).
+
+.. epigraph::
+
+    The **stack** repository tag **MUST** be a 3-digit `Semantic Versioning`_
+    value, i.e. ``3.7.32``. If it is not the stack will be built
+    but it will not be deployed.
+
+.. _semantic versioning: https://semver.org
