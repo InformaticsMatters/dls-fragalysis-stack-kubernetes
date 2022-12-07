@@ -163,6 +163,8 @@ spec:
           value: '{{ stack_oidc_keycloak_realm }}'
         - name: OIDC_OP_LOGOUT_URL_METHOD
           value: '{{ stack_oidc_op_logout_url_method }}'
+        - name: OIDC_RENEW_ID_TOKEN_EXPIRY_MINUTES
+          value: '{{ stack_oidc_renew_id_token_expiry_minutes }}'
 {% endif %}
 {% if stack_debug_fragalysis %}
         - name: DEBUG_FRAGALYSIS
