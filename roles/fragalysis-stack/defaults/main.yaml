@@ -166,10 +166,20 @@ database_bu_hourly_history: 24
 database_bu_use_rsync: no
 
 # Squonk/2 material, unset by default.
-# User can provide UI AND DM/API URLs.
+# User can provide UI, DM and AS API URLs.
 # There are URLs to the services, i.e. https://example.com/data-manager-api/api
+stack_squonk2_asapi_url: ''
 stack_squonk2_dmapi_url: ''
 stack_squonk2_ui_url: ''
+stack_squonk2_org_owner: fragalysis
+stack_squonk2_org_owner_password: ''
+stack_squonk2_org_uuid: ''
+stack_squonk2_product_flavour: SILVER
+stack_squonk2_slug: ''
+stack_squonk2_unit_billing_day: 3
+# The Client ID (known to Keycloak)
+stack_oidc_as_client_id: ''
+stack_oidc_dm_client_id: ''
 
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,

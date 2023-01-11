@@ -166,6 +166,14 @@ spec:
         - name: OIDC_RENEW_ID_TOKEN_EXPIRY_MINUTES
           value: '{{ stack_oidc_renew_id_token_expiry_minutes }}'
 {% endif %}
+{% if stack_oidc_as_client_id %}
+        - name: OIDC_AS_CLIENT_ID
+          value: '{{ stack_oidc_as_client_id }}'
+{% endif %}
+{% if stack_oidc_dm_client_id %}
+        - name: OIDC_DM_CLIENT_ID
+          value: '{{ stack_oidc_dm_client_id }}'
+{% endif %}
 {% if stack_debug_fragalysis %}
         - name: DEBUG_FRAGALYSIS
           value: 'True'
@@ -176,9 +184,37 @@ spec:
         - name: SQUONK2_DMAPI_URL
           value: '{{ stack_squonk2_dmapi_url }}'
 {% endif %}
+{% if stack_squonk2_asapi_url %}
+        - name: SQUONK2_ASAPI_URL
+          value: '{{ stack_squonk2_asapi_url }}'
+{% endif %}
 {% if stack_squonk2_ui_url %}
         - name: SQUONK2_UI_URL
           value: '{{ stack_squonk2_ui_url }}'
+{% endif %}
+{% if stack_squonk2_org_owner %}
+        - name: SQUONK2_ORG_OWNER
+          value: '{{ stack_squonk2_org_owner }}'
+{% endif %}
+{% if stack_squonk2_org_owner_password %}
+        - name: SQUONK2_ORG_OWNER_PASSWORD
+          value: '{{ stack_squonk2_org_owner_password }}'
+{% endif %}
+{% if stack_squonk2_org_uuid %}
+        - name: SQUONK2_ORG_UUID
+          value: '{{ stack_squonk2_org_uuid }}'
+{% endif %}
+{% if stack_squonk2_product_flavour %}
+        - name: SQUONK2_PRODUCT_FLAVOUR
+          value: '{{ stack_squonk2_product_flavour }}'
+{% endif %}
+{% if stack_squonk2_slug %}
+        - name: SQUONK2_SLUG
+          value: '{{ stack_squonk2_slug }}'
+{% endif %}
+{% if stack_squonk2_unit_billing_day %}
+        - name: SQUONK2_UNIT_BILLING_DAY
+          value: '{{ stack_squonk2_unit_billing_day }}'
 {% endif %}
 {% if stack_email_user %}
         - name: EMAIL_HOST
