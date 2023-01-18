@@ -181,6 +181,10 @@ stack_squonk2_unit_billing_day: 3
 stack_oidc_as_client_id: ''
 stack_oidc_dm_client_id: ''
 
+# Logging framework level
+# A python logging level string
+stack_logging_framework_root_level: INFO
+
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,
 # so their variables names are not to be altered. If not using AWX

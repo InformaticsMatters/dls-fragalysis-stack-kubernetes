@@ -317,10 +317,8 @@ spec:
             secretKeyRef:
               name: ssh
               key: security_connector
-{% if stack_disable_logging_framework %}
-        - name: DISABLE_LOGGING_FRAMEWORK
-          value: 'Yes'
-{% endif %}
+        - name: LOGGING_FRAMEWORK_ROOT_LEVEL
+          value: '{{ stack_logging_framework_root_level }}'
 {% endif %}
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
