@@ -36,11 +36,16 @@ This *workflow* executes a number of underlying Job Templates that run in the
 4.  Recover the stack Media content (from its NFS backup)
 
 The user is expected to provide the stack image tag in the workflow's
-**EXTRA VARIABLES** parameter section. So, if the user wants to deploy
-stack version 2.6.6-rc.1 they would set ``stack_image_tag`` in the parameter
-section to ``2.6.6-rc.1`` as they start the workflow.
+**EXTRA VARIABLES** parameter section. The **most important** variable 
+is ``stack_image_tag``, which sets the image tag for the deployed stack.
 
-..  warning::
+.. warning::
+    You **MUST** set the ``stack_image_tag`` to the same value used in the
+    production stack prior to replicating the production data as the staging stack's
+    database model must be the same as that used in production. After recovery you
+    can deploy a new stack but during replication it must be the same.
+
+..  note::
     The time it take for the stack to become usable will depend on the database
     and media content. For a new stack the media directory is the most
     time-consuming element and (at the time of writing) takes more than

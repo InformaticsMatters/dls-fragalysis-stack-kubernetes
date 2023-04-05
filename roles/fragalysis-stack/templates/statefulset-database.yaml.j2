@@ -99,13 +99,15 @@ spec:
             - "-c"
             - pg_isready -h 127.0.0.1 -p 5432 -U admin -q
         volumeMounts:
+{% if database_use_init_file|bool %}
         # Database initialisation scripts
         # It's here we create additional - 'out-of-the-box' users and databases
         - mountPath: /docker-entrypoint-initdb.d/01-init.sh
           name: postgres-init
           subPath: 01-init.sh
           readOnly: true
-        # Postgres configuration
+{% endif %}
+          # Postgres configuration
         - mountPath: /etc/postgresql/postgresql.conf
           name: postgres-conf
           subPath: postgresql.conf
@@ -136,9 +138,11 @@ spec:
               key: root_password
 
       volumes:
+{% if database_use_init_file|bool %}
       - name: postgres-init
         configMap:
           name: postgres-init
+{% endif %}
       - name: postgres-conf
         configMap:
           name: postgres-conf

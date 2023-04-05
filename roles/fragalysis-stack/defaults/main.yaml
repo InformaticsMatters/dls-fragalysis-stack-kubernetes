@@ -164,6 +164,9 @@ database_bu_hourly_history: 24
 #   stack_backup_rsync_pass
 # (found in vars/sensitive.vault)
 database_bu_use_rsync: no
+# Populate the DB init file?
+# Typically set to 'no' when the DB is to be used for recovery.
+database_use_init_file: yes
 
 # Squonk/2 material, unset by default.
 # User can provide UI, DM and AS API URLs.
