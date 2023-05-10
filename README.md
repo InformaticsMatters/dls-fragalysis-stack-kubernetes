@@ -24,6 +24,11 @@ requirements (for Python and Ansible): -
     $ ansible-galaxy install -r requirements.yaml --force
     $ ansible-galaxy collection install -r collection-requirements.yaml --force
 
+Create a service account (and access token), that can be used to manufacture `KUBECONFIG` files providing users (and AWX) access to the cluster.
+This is a one-off task.
+
+See the README in `cluster-prep`.
+
 ## Configuring the AWX server
 To setup the AWX server for a specific cluster refer to the `README`
 in the `awx-configuration` directory.
