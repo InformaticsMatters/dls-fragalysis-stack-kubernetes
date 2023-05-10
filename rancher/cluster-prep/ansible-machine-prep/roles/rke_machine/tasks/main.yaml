@@ -46,4 +46,3 @@
   ansible.builtin.copy:
     dest: /etc/noquattor
     content: "{{ ansible_date_time.iso8601 }} {{ machine_user }}"
-

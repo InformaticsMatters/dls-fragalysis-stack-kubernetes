@@ -1,0 +1,4 @@
+[general]
+host = https://awx.example.com
+username = admin
+password = blob1234

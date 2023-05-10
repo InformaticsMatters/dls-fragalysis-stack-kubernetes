@@ -20,13 +20,13 @@ The following steps are performed on the project's bastion node (`xch-bastion`).
 Essentially, the high-level stages consist of...
 
 1.   Cluster preparation
-1.   Install rke
-1.   Install kubectl
-1.   Install helm
-1.   Prepare for AWS S3 etcd backups
-1.   Creating compute instances and a matched `cluster.yml`
-1.   Install Kubernetes (using rke)
-1.   Install rancher (using helm)
+2.   Install rke
+3.   Install kubectl
+4.   Install helm
+5.   Prepare for AWS S3 etcd backups
+6.   Creating compute instances and a matched `cluster.yml`
+7.   Install Kubernetes (using rke)
+8.   Install rancher (using helm)
 
 >   At the time of writing we were installing Kubernetes `v1.17.5`
     and Rancher `v2.4.3`
@@ -47,7 +47,7 @@ may RKE versions).
 Given a base machine on STFC (and a jump host (i..e the xch-bastion) you should be able to
 run the `site-rke-machine.yaml` playbook to initialise the base: -
 
-From the `cluster-prep/ansible` directory: -
+From the `cluster-prep/ansible-machine-prep` directory: -
 
 ```bash
 $ python -m venv venv
