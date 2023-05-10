@@ -38,38 +38,6 @@ Essentially, the high-level stages consist of...
     on the worker node (remember to leave enough time for the routing
     to resolve to the application node).
 
-### Cluster preparation
-At STFC we have provided a short playbook that, given a base (ubuntu) server,
-configures the server with the pre-requisites for RKE and our fragalsysis needs
-(i.e. noquattor and a docker registry lookup and Docker `20.10.24` suitable for
-may RKE versions).
-
-Given a base machine on STFC (and a jump host (i..e the xch-bastion) you should be able to
-run the `site-rke-machine.yaml` playbook to initialise the base: -
-
-From the `cluster-prep/ansible-machine-prep` directory: -
-
-```bash
-$ python -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-$ ansible-galaxy install -r requirements.yaml
-```
-
-If you provide a `/etc/hosts/` fil eon the bastion with the IP of the machine to be
-configured you should be able to use the inventory "as is"
-
-With a suitable machine setup and the account user's name uses for SSH access to
-the machine, run: -
-
-```bash
-$ ansible -m ping all
-$ MACHINE_USER=abc1234 ansible-playbook site-rke-machine.yaml
-```
-
-Once configured you can snapshot the machine to use as the base for machines in
-your RKE cluster.
-
 ### Installing rke
 Follow the instructions at [installing rke] to install `rke`
 
@@ -122,27 +90,50 @@ To do this you need a _bucket_, a _folder_ in the bucket and suitable
 AWS credentials.
 
 ### Creating compute instances
+At STFC we have provided a short playbook that, given a base (ubuntu) server,
+configures the server with the pre-requisites for RKE and our fragalsysis needs
+(i.e. noquattor and a docker registry lookup and Docker `20.10.24` suitable for
+may RKE versions).
+
+Given a base machine on STFC (and a jump host (i..e the xch-bastion) you should be able to
+run the `site-rke-machine.yaml` playbook to initialise the base: -
+
+From the `cluster-prep/ansible-machine-prep` directory: -
+
+```bash
+$ python -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ ansible-galaxy install -r requirements.yaml
+```
+
+If you provide a `/etc/hosts/` fil eon the bastion with the IP of the machine to be
+configured you should be able to use the inventory "as is"
+
+With a suitable machine setup and the account user's name uses for SSH access to
+the machine, run: -
+
+```bash
+$ ansible -m ping all
+$ MACHINE_USER=abc1234 ansible-playbook site-rke-machine.yaml
+```
+
+Once configured you can snapshot the machine to use as the base for machines in
+your RKE cluster.
+
 We create instances using the STFC OpenStack console. We create 3
 **etcd** nodes, dual control plane nodes and one or more worker nodes.
 
 Instances details: -
 
--   **etcd** is `c1.large` (2-core 8Gi RAM)
--   **control plane** is `c1.large` (2-core 8Gi RAM)
--   **worker** is `c1.large` (2-core 8Gi RAM)
--   Base image for all is `ScienbtificLinux-7-NoGui`
+-   **etcd** is `l3.nano` (2-core 8Gi RAM)
+-   **control plane** is `l3.nano` (2-core 8Gi RAM)
+-   **worker** is `l3.micro` (4-core 16Gi RAM)
+-   Base image for all is the image created above
 
 >   The control-plane and worker have publicly-accessible Floating IPs attached
     and it's these IPs that are used in the `cluster.yml` we create for
     installing **rke**.
-
-With the instances created we run our `site-rke.yaml` playbook
-in the `ansible-infrastructre` project having adjusted its `inventory.yaml`
-accordingly. This just ensures the instances have appropriate services
-(like Docker): -
-
-    $ ansible -m ping all
-    $ ansible-playbook site-rke.yaml
 
 ### Install Kubernetes (using rke)
 Create the `cluster.yml` and then install Kubernetes...
