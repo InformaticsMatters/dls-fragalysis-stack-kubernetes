@@ -1,0 +1,5 @@
+---
+- src: geerlingguy.docker
+  version: 6.1.0
+- src: geerlingguy.ntp
+  version: 2.3.1

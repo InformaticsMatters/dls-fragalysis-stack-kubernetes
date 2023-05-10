@@ -1,0 +1,5 @@
+all:
+  children:
+    control:
+      hosts:
+        rke-ii-base

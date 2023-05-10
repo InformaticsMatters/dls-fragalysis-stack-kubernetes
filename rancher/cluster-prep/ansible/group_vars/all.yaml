@@ -1,0 +1,18 @@
+---
+
+is_ubuntu: "'{{ansible_distribution}}' == 'Ubuntu'"
+is_debian: "'{{ansible_distribution}}' == 'Debian'"
+is_centos: "'{{ansible_distribution}}' == 'CentOS'"
+
+docker_users:
+- "{{ lookup('ansible.builtin.env', 'MACHINE_USER') }}"
+
+# We should not rely on the latest Docker engine,
+# we must use one that's compatible with the RKE version we
+# expect to be using.
+# For RKE 1.25 and Ubuntu it has to be 19.03.15 or 20.10.x
+docker_packages:
+- "docker-ce=5:20.10.24*"
+- "docker-ce-cli=5:20.10.24*"
+- "docker-ce-rootless-extras=5:20.10.24*"
+

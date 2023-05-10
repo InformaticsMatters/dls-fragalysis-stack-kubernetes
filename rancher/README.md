@@ -19,6 +19,7 @@ The following steps are performed on the project's bastion node (`xch-bastion`).
 
 Essentially, the high-level stages consist of...
 
+1.   Cluster preparation
 1.   Install rke
 1.   Install kubectl
 1.   Install helm
@@ -36,6 +37,38 @@ Essentially, the high-level stages consist of...
 >   Setup a hostname pointing to the IP address you expect to be using
     on the worker node (remember to leave enough time for the routing
     to resolve to the application node).
+
+### Cluster preparation
+At STFC we have provided a short playbook that, given a base (ubuntu) server,
+configures the server with the pre-requisites for RKE and our fragalsysis needs
+(i.e. noquattor and a docker registry lookup and Docker `20.10.24` suitable for
+may RKE versions).
+
+Given a base machine on STFC (and a jump host (i..e the xch-bastion) you should be able to
+run the `site-rke-machine.yaml` playbook to initialise the base: -
+
+From the `cluster-prep/ansible` directory: -
+
+```bash
+$ python -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ ansible-galaxy install -r requirements.yaml
+```
+
+If you provide a `/etc/hosts/` fil eon the bastion with the IP of the machine to be
+configured you should be able to use the inventory "as is"
+
+With a suitable machine setup and the account user's name uses for SSH access to
+the machine, run: -
+
+```bash
+$ ansible -m ping all
+$ MACHINE_USER=abc1234 ansible-playbook site-rke-machine.yaml
+```
+
+Once configured you can snapshot the machine to use as the base for machines in
+your RKE cluster.
 
 ### Installing rke
 Follow the instructions at [installing rke] to install `rke`

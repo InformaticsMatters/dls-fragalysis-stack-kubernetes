@@ -1,0 +1,9 @@
+---
+- hosts: all
+  roles:
+  - role: rke_machine
+    become: yes
+  - role: geerlingguy.docker
+    become: yes
+  - role: geerlingguy.ntp
+    become: yes

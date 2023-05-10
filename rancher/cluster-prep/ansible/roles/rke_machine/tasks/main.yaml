@@ -1,0 +1,49 @@
+---
+
+- name: Check MACHINE_USER
+  ansible.builtin.assert:
+    that:
+    - machine_user|string|length > 0
+    fail_msg: You must define the MACHINE_USER environment variable
+
+# Docker registry
+
+- name: Create the Docker daemon directory
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
+- name: Create Docker Hub mirror
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "registry-mirrors": ["https://dockerhub.stfc.ac.uk"]
+      }
+
+# NFS Clinet (for longhorn)
+
+- name: Package update
+  ansible.builtin.apt:
+    clean: yes
+    update_cache: yes
+  when: is_debian or is_ubuntu
+
+- name: Install NFS client
+  ansible.builtin.apt:
+    name: "{{ item }}"
+  loop:
+  - nfs-common
+  - net-tools
+  when: is_debian or is_ubuntu
+
+# Prevent automatic updates
+# See "Prevent Automatic Updates"
+# on https://stfc-cloud-docs.readthedocs.io/en/latest/howto/index.html
+
+- name: Create noquattor file
+  ansible.builtin.copy:
+    dest: /etc/noquattor
+    content: "{{ ansible_date_time.iso8601 }} {{ machine_user }}"
+

@@ -3,3 +3,4 @@
 **/vault-pass.txt
 docs/build/
 awx-configuration/config-basic.yaml
+**/venv
