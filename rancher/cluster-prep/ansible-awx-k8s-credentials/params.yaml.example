@@ -1,0 +1,4 @@
+---
+k8s_host: ""
+k8s_self_token: ""
+k8s_tower_url_base: ""

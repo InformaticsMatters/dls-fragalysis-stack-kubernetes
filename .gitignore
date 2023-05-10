@@ -6,3 +6,5 @@ awx-configuration/config-basic.yaml
 **/venv
 **/*.rkestate
 **/kube_config_cluster.*
+rancher/cluster-prep/ansible-awx-k8s-credentials/params.yaml
+rancher/cluster-prep/ansible-awx-k8s-credentials/tower_cli.cfg
