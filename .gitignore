@@ -4,3 +4,5 @@
 docs/build/
 awx-configuration/config-basic.yaml
 **/venv
+**/*.rkestate
+**/kube_config_cluster.*
