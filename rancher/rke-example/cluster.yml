@@ -19,7 +19,7 @@ nodes:
 
 # Control Plane (2-core 8Gi l3.nano machines)
 
-- address: 192.168.253.70
+- address: 130.246.215.43
   user: wmu55374
   ssh_key_path: ~/.ssh/stfc-abc-1
   role:

@@ -179,7 +179,6 @@ basically the following...
 Simplified (for our specific needs) into the following instructions: -
 
     $ helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-    $ kubectl create namespace cattle-system
     $ kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
     $ kubectl create namespace cert-manager
     $ helm repo add jetstack https://charts.jetstack.io
@@ -195,8 +194,10 @@ Simplified (for our specific needs) into the following instructions: -
 
 Install and wait for rancher...
 
+    $ kubectl create namespace cattle-system
     $ helm install rancher rancher-stable/rancher \
       --namespace cattle-system \
+      --version=2.3.11 \
       --set hostname=rancher-xchem.informaticsmatters.org
     $ kubectl -n cattle-system rollout status deploy/rancher
 
@@ -206,6 +207,15 @@ Now connect to the Rancher console at `rancher-xchem.informaticsmatters.org`
 importantly, set the initial administrator password
 (which we keep in our KeePass instance under
 **Rancher -> Admin User (XCHEM/STFC)**.
+
+You can reset the password for the `admin` user by shelling into a Rancher Pod
+and running reset-password: -
+
+    $ kubectl exec --stdin --tty -n cattle-system <Pod> -- /bin/bash
+    # reset-password
+    [...]
+    wAOdxMNux5EY4sbWLTJn
+    # exit
 
 ---
 
