@@ -1,4 +1,3 @@
 ---
 
 machine_user: "{{ lookup('ansible.builtin.env', 'MACHINE_USER') }}"
-

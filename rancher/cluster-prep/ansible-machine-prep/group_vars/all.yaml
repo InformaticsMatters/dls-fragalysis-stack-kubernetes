@@ -15,4 +15,3 @@ docker_packages:
 - "docker-ce=5:20.10.24*"
 - "docker-ce-cli=5:20.10.24*"
 - "docker-ce-rootless-extras=5:20.10.24*"
-
