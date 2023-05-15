@@ -10,28 +10,30 @@ Here we rely on a Kubernetes cluster based on instances created in the
     using a simple `cluster.yml` configuration file (enclosed) - as
     described on the Rancher site
 -   **Rancher** is installed using the same, official, documentation
--   This repository is cloned on the **xchem-follow-up** project's bastion
-    node (`xch-bastion`) in Alan's account under
-   `git/dls-fragalysis-stack-kubernetes`. Run everything from
-   `git/dls-fragalysis-stack-kubernetes/rancher`
+
+This repository is cloned on the **xchem-follow-up** project's bastion
+node (`xch-bastion`) in Alan's account under `git/dls-fragalysis-stack-kubernetes`.
+Run everything from `git/dls-fragalysis-stack-kubernetes/rancher`
 
 The following steps are performed on the project's bastion node (`xch-bastion`).
 
 Essentially, the high-level stages consist of...
 
-1.   Cluster preparation
-2.   Install rke
-3.   Install kubectl
-4.   Install helm
-5.   Prepare for AWS S3 etcd backups
-6.   Creating compute instances and a matched `cluster.yml`
-7.   Install Kubernetes (using rke)
-8.   Install rancher (using helm)
+1.  Cluster preparation
+2.  Install rke
+3.  Install kubectl
+4.  Install helm
+5.  Prepare for AWS S3 etcd backups
+6.  Creating compute instances and a matched `cluster.yml`
+7.  Install Kubernetes (using rke)
+8.  Install rancher (using helm)
 
->   At the time of writing we were installing Kubernetes `v1.17.5`
-    and Rancher `v2.4.3`
+At the time of writing the RKE cluster is using: -
 
->   We're not using a load-balancer, just one worker node
+-   kubernetes `v1.19.9`
+-   Rancher `v2.5.7`
+
+>   We're not using a load-balancer, just workers and control plane
     with a public IP address attached.
 
 >   Setup a hostname pointing to the IP address you expect to be using
@@ -89,14 +91,30 @@ We backup the RKE cluster to AWS S3 via settings in the `cluster.yml`.
 To do this you need a _bucket_, a _folder_ in the bucket and suitable
 AWS credentials.
 
+**IMPORTANT** The xch-bastion `cluster.yml` file **MUST NOT be committed back to
+revision control - it contains sensitive AWS credentials.
+
 ### Creating compute instances
-At STFC we have provided a short playbook that, given a base (ubuntu) server,
-configures the server with the pre-requisites for RKE and our fragalsysis needs
-(i.e. noquattor and a docker registry lookup and Docker `20.10.24` suitable for
-may RKE versions).
+At STFC we have provided a cluster-prep playbook that configures a base machine image
+that should be used for any new nodes for the RKE cluster. See the
+`site-rke-machine` playbook in `rancher/cluster-prep/ansible-machine-prep`.
 
 Given a base machine on STFC (and a jump host (i..e the xch-bastion) you should be able to
-run the `site-rke-machine.yaml` playbook to initialise the base: -
+run the `site-rke-machine.yaml` playbook to initialise the base image. This has already
+been done and so does not need to be done again unless you want a new base image.
+
+The current machine image snapshot is: -
+
+-  `rke-k8s-base-ubuntu-docker-20.10.24`.
+
+The base image contains: -
+
+-   Docker 10.20.24
+-   NFS client
+-   A Docker Hub mirror
+-   An /etc/noquattor file to avoid automated updates
+
+If you need to create a new base image...
 
 From the `cluster-prep/ansible-machine-prep` directory: -
 
@@ -107,19 +125,20 @@ $ pip install -r requirements.txt
 $ ansible-galaxy install -r requirements.yaml
 ```
 
-If you provide a `/etc/hosts/` fil eon the bastion with the IP of the machine to be
-configured you should be able to use the inventory "as is"
+>   If you provide a `/etc/hosts/` file on the bastion with the IP of the machine to be
+    configured (with an IP address for the name `rke-ii-base`) you should be able to use
+    the inventory "as is"
 
-With a suitable machine setup and the account user's name uses for SSH access to
-the machine, run: -
+With a suitable machine running and the account user's name that can be used used
+for SSH access to the machine, run: -
 
 ```bash
 $ ansible -m ping all
 $ MACHINE_USER=abc1234 ansible-playbook site-rke-machine.yaml
 ```
 
-Once configured you can snapshot the machine to use as the base for machines in
-your RKE cluster.
+Once configured you should snapshot the machine so the image can be used
+as the base for any new machines in your RKE cluster.
 
 We create instances using the STFC OpenStack console. We create 3
 **etcd** nodes, dual control plane nodes and one or more worker nodes.

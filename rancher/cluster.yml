@@ -6,16 +6,6 @@ nodes:
 
   # etcd
 
-- address: 192.168.253.14
-  user: wmu55374
-  ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
-  role:
-  - etcd
-- address: 192.168.253.30
-  user: wmu55374
-  ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
-  role:
-  - etcd
 - address: 192.168.253.47
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
@@ -29,14 +19,14 @@ nodes:
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - controlplane
-
-  # workers
-
-- address: 192.168.253.25
+- address: 192.168.253.166
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
-  - worker
+  - controlplane
+
+ # workers
+
 - address: 192.168.253.64
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
@@ -53,10 +43,10 @@ services:
     backup_config:
       enabled: true
       interval_hours: 6
-      retention: 21
+      retention: 28
       s3backupconfig:
-        access_key: "access-key"
-        secret_key: "secret-key"
+        access_key: <INSERT-ACCESS-KEY>
+        secret_key: <INSERT-SECRET-KEY>
         bucket_name: im-rancher
         folder: rancher-xchem
         endpoint: s3.eu-central-1.amazonaws.com
