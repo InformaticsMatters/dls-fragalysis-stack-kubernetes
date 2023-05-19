@@ -6,7 +6,19 @@ nodes:
 
   # etcd
 
+- address: 192.168.253.101
+  user: wmu55374
+  ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
+  role:
+  - etcd
+
 - address: 192.168.253.47
+  user: wmu55374
+  ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
+  role:
+  - etcd
+
+- address: 192.168.253.201
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
