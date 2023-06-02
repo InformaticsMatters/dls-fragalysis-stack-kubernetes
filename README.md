@@ -16,13 +16,13 @@ server.
 You'll need a Python environment where you need to install the project
 requirements (for Python and Ansible): -
 
-    $ python -m venv ~/.venv/dls-fragalysis-stack-kubernetes
-    $ source ~/.venv/dls-fragalysis-stack-kubernetes/bin/activate
+    python -m venv ~/.venv/dls-fragalysis-stack-kubernetes
+    source ~/.venv/dls-fragalysis-stack-kubernetes/bin/activate
     
-    $ pip install --upgrade pip
-    $ pip install -r requirements.txt
-    $ ansible-galaxy install -r requirements.yaml --force
-    $ ansible-galaxy collection install -r collection-requirements.yaml --force
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    ansible-galaxy install -r requirements.yaml --force
+    ansible-galaxy collection install -r collection-requirements.yaml --force
 
 Create a service account (and access token), that can be used to manufacture `KUBECONFIG` files providing users (and AWX) access to the cluster.
 This is a one-off task.
@@ -39,15 +39,15 @@ Certain, sensitive, variables are located in the encrypted file
 committed un-encrypted and can be edited from the project root without 
 decrypting it, armed with the repository vault password, using: -
 
-    $ ansible-vault edit roles/fragalysis-stack/vars/sensitive.vault
+    ansible-vault edit roles/fragalysis-stack/vars/sensitive.vault
 
 ## Project documentation
 The documentation is written in [Sphinx]. To build the documentation
 which results in the main index page `docs/build/html/index.html`,
 run the following from the project root: -
 
-    $ pip install -r build-requirements.txt
-    $ sphinx-build -Eab html docs/source docs/build/html
+    pip install -r build-requirements.txt
+    sphinx-build -Eab html docs/source docs/build/html
 
 The project documentation is also published to [Read The Docs],
 where you can find pre-compiled copies online.

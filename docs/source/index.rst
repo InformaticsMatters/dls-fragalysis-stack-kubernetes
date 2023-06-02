@@ -21,6 +21,12 @@ Fragalysis Stack (Kubernetes)
 
 ..  toctree::
     :maxdepth: 2
+    :caption: Squonk integration
+
+    squonk/index
+
+..  toctree::
+    :maxdepth: 2
     :caption: Kubernetes fragmentation process
 
     fragmentation/index
