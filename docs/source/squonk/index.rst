@@ -66,12 +66,23 @@ The Job Override
 ================
 
 The **Job Override** is a JSON document that defines the Jobs that are to be offered by
-the Fragalysis Stack. It is loaded into the Squonk Data Manager by an authenticated user
-using a **POST** to the ``/api/job_override`` endpoint.
+the Fragalysis Stack from the ``/api/job_override`` endpoint.
+
+By default a stack has no over-rides installed and the initial
+response will present the user with an empty list. New over-rides are loaded into
+Fragalysis by an authenticated user visiting the 
+``/api/job_override`` endpoint in a web browser. The user will be presented with the
+list of over-rides (which may be empty) and can paste the content of new one
+in the **Override** field of the ``POST`` dialogue at the bottom of the page
+(you mau need to scroll down to see it): -
+
+..  image:: ../images/squonk-job-override.png
+    :width: 100%
+    :alt: Squonk Job Override
 
 Clients, especially the Fragalysis Stack front-end, will use the ``/api/job_override``
-endpoint to retrieve the over-ride and present the Jobs it refers to the the user
-for selection and execution.
+endpoint to retrieve the "current" (latest) over-ride and present the Jobs it refers to
+to the user for selection and execution.
 
 ..  epigraph::
 

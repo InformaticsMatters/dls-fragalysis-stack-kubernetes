@@ -9,7 +9,7 @@ of which are identified here.
 
 Before reading further it's worth understanding the documentation for
 GitHub's **organisational**, **environment** and **repository** secrets,
-which can be found in their `encrypted-secrets`_ guide.
+which can be found in their `encrypted secrets`_ guide.
 
 ******
 GitHub
