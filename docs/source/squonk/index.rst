@@ -93,9 +93,6 @@ The *latest* official (complete) job override is maintained in the `backend`_ re
 in the directory ``viewer/squonk/``. Select one of these files to load into
 each new installation.
 
-The override contains three essential sections: ``global``, ``precompilation_ignore``
-and specific overrides for each supported Job in the ``fragalysis-jobs`` list.
-
 #######################
 Getting Job Definitions
 #######################
@@ -120,6 +117,12 @@ Once the job variables have been set the client can execute the job by issuing a
 to ``/api/job_request``, after first calling ``/api/job_file_transfer`` so that
 files referred to by the Job can be pre-loaded into Squonk. A **GET** from the
 same endpoint will return the state of the running Job.
+
+..  toctree::
+    :maxdepth: 2
+    :caption: Further reading
+
+    exposing-new-jobs
 
 .. _backend: https://github.com/xchem/fragalysis-backend  
 .. _rfc 1035: https://tools.ietf.org/html/rfc1035
