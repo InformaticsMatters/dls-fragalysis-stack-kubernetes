@@ -230,17 +230,21 @@ production Kubernetes cluster) you **MUST**: -
 
 #.  Tag the stack repository with your chosen **stack** tag.
 
+    #.  The preferred style of tags is ``YEAR.MONTH.ITERATION``, i.e.
+        ``2023.06.1`` for the first release in June 2023. The month
+        is a 2-digit value with a leading zero if necessary.
+
 Example
 -------
-To deploy a new production **stack** version ``3.7.32`` based
-on **backend** ``1.0.0`` and **frontend** ``4.5.0`` set the
+To deploy a new production **stack** version ``2023.06.2`` based
+on **backend** ``2023.05.1`` and **frontend** ``2023.05.4`` set the
 workflow file variables to this::
 
-    BE_IMAGE_TAG: 1.0.0
-    FE_BRANCH: 4.5.0
+    BE_IMAGE_TAG: 2023.05.1
+    FE_BRANCH: 2023.05.4
 
 Commit the change and then (when the build passes) tag the stack repository's
-``master`` branch with the value ``3.7.32``.
+``master`` branch with the value ``2023.06.2``.
 
 The **stack** GitHub Action will ensure the new  build is automatically
 deployed to the ``production-stack`` **Namespace** of the production Kubernetes
@@ -249,7 +253,7 @@ cluster (using the Action's **deploy-production** job step).
 .. epigraph::
 
     The **stack** repository tag **MUST** be a 3-digit `Semantic Versioning`_
-    value, i.e. ``3.7.32``. If it is not the stack will be built
+    value, i.e. ``2023.06.2``. If it is not the stack will be built
     but it will not be deployed.
 
 .. _semantic versioning: https://semver.org
