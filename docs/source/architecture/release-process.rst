@@ -36,12 +36,17 @@ just built.
 Releasing stacks to production
 ******************************
 
-When you want to build a **stack** for **production** (which will be
-deployed automatically to the ``production-stack`` **Namespace** of the
-production Kubernetes cluster) you **MUST**: -
+A release consists of material from three repositories (and three tags).
+You must have tagged the **backend** repository, the **frontend** repository and then,
+finally, the **stack** repository.
+
+When you want to build a **stack** for **production** you **MUST**: -
 
 #.  Decide which **backend** and **frontend** versions should be used for the
-    new stack image
+    new stack image.
+#.  The **backend** and **frontend** **MUST** have production-grade
+    tags on their corresponding ``production`` branches - you **MUST NOT**
+    use tags that are not on production branches
 #.  Using the chosen versions edit (and then commit) the stack repository's
     ``.github/workflows/build-main.yaml`` file: -
 
@@ -56,6 +61,11 @@ production Kubernetes cluster) you **MUST**: -
     #.  The preferred style of tags is ``YEAR.MONTH.ITERATION``, i.e.
         ``2023.06.1`` for the first release in June 2023. The month
         is a 2-digit value with a leading zero if necessary.
+
+The action of tagging the **stack** ``master`` branch will result in automated
+execution of the project's CI and CD processes, automatically deploying the resultant
+stack image to the ``production-stack`` **Namespace** of the
+production Kubernetes cluster.
 
 Example
 *******
