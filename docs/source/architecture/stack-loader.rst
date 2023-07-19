@@ -1,6 +1,6 @@
-###########################
-The Fragalysis Stack Loader
-###########################
+############################################
+The Fragalysis Stack Loader (no longer used)
+############################################
 
 The *loader* is used to provision new Fragalysis Stack data (both Django media
 and the related database entries).
