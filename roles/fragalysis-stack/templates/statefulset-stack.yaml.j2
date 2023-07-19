@@ -317,9 +317,9 @@ spec:
             secretKeyRef:
               name: ssh
               key: security_connector
+{% endif %}
         - name: LOGGING_FRAMEWORK_ROOT_LEVEL
           value: '{{ stack_logging_framework_root_level }}'
-{% endif %}
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
         # This is used in situations where the origin image's tag may not
