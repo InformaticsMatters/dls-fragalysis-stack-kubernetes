@@ -40,7 +40,21 @@ A release consists of material from three repositories (and three tags).
 You must have tagged the **backend** repository, the **frontend** repository and then,
 finally, the **stack** repository.
 
-When you want to build a **stack** for **production** you **MUST**: -
+At each step described here you must check the individual repository CI/CD GitHub Action
+to ensure that the action has completed successfully before moving to the next step.
+
+Releasing production code takes time. Currently the time-consuming actions
+(July 2023) are: -
+
+-   3-4 minutes for a **backend** build to complete
+    (which happens when you tag it)
+-   10-15 minutes for a **stack** build to complete
+    (which happens when you tag the backend and when you tag the stack)
+-   "N" minutes your time to verify the production stack is behaving as you expect
+
+So set aside at least 45 minutes of your time to make and check a production release
+
+When you are ready to release a production version of the **stack** you **MUST**: -
 
 #.  Decide which **backend** and **frontend** versions should be used for the
     new stack image.
