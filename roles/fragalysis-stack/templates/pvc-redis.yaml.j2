@@ -1,0 +1,13 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis
+  namespace: {{ stack_namespace }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: '{{ redis_vol_storageclass }}'
+  resources:
+    requests:
+      storage: '{{ redis_vol_size_g }}Gi'

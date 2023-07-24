@@ -76,6 +76,10 @@ database_vol_size_g: 2
 database_root_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
 database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 
+redis_image: redis
+redis_image_tag: '7.0.12-alpine3.18'
+redis_password: outhouses-silvery-glauberite
+
 # General variables -----------------------------------------------------------
 
 # General timeout, used within the k8s module for wait duration

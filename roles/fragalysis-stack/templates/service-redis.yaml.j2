@@ -1,0 +1,12 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: redis
+  namespace: {{ stack_namespace }}
+spec:
+  selector:
+    name: redis
+  ports:
+  - name: client
+    port: 6379

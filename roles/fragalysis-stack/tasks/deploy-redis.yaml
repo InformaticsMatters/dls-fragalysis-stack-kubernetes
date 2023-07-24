@@ -1,0 +1,49 @@
+---
+
+- name: Create redis volume claim
+  k8s:
+    definition: "{{ lookup('template', 'pvc-redis.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+
+# Best practice ... wait for the PVC to bind.
+# e.g. wait until resources[0].status.phase == Bound (initially Pending)
+
+- name: Wait for redis volume claim to bind
+  k8s_info:
+    kind: PersistentVolumeClaim
+    name: redis
+    namespace: "{{ stack_namespace }}"
+  register: bind_result
+  until: bind_result.resources[0].status.phase == 'Bound'
+  delay: 5
+  retries: "{{ (bind_timeout|int / 5)|int }}"
+  when: wait_for_bind|bool
+
+# Now deploy redis and its service.
+
+- name: Deploy redis
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - configmap-redis
+  - deployment-redis
+  - service-redis
+
+- name: Wait for redis to become Ready
+  k8s_info:
+    kind: Pod
+    label_selectors:
+    - application = redis
+    namespace: "{{ stack_namespace }}"
+  register: redis_result
+  until: >-
+    redis_result.resources is defined
+    and redis_result.resources|length == 1
+    and redis_result.resources[0].status is defined
+    and redis_result.resources[0].status.containerStatuses is defined
+    and redis_result.resources[0].status.containerStatuses|length == 1
+    and redis_result.resources[0].status.containerStatuses[0].ready
+  delay: 10
+  retries: "{{ (wait_timeout|int / 10)|int }}"

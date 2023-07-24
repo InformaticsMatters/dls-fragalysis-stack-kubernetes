@@ -1,0 +1,75 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: redis
+  namespace: {{ stack_namespace }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      application: redis
+  template:
+    metadata:
+      labels:
+        application: redis
+    spec:
+      serviceAccountName: stack
+
+      containers:
+      - name: redis
+        image: {{ redis_image }}:{{ redis_image_tag}}
+        imagePullPolicy: IfNotPresent
+        command:
+        - redis-server
+        - "/redis-master/redis.conf"
+        env:
+        - name: MASTER
+          value: "true"
+        ports:
+        - name: client
+          containerPort: 6379
+        resources:
+          limits:
+            cpu: 1
+            memory: 512Mi
+          requests:
+            cpu: 0.1
+            memory: 256Mi
+        livenessProbe:
+          tcpSocket:
+            port: client
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          periodSeconds: 10
+          failureThreshold: 5
+          successThreshold: 1
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - redis-cli -a {{ redis_password }} ping
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 10
+          failureThreshold: 5
+          successThreshold: 1
+        volumeMounts:
+        - mountPath: /redis-master-data
+          name: data
+        - mountPath: /redis-master
+          name: config
+
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: redis
+      - name: config
+        configMap:
+          name: redis-config
+          items:
+          - key: redis-config
+            path: redis.conf  

@@ -168,6 +168,10 @@ database_bu_use_rsync: no
 # Typically set to 'no' when the DB is to be used for recovery.
 database_use_init_file: yes
 
+# The redis Pod
+redis_vol_storageclass: ' '
+redis_vol_size_g: 1
+
 # Squonk/2 material, unset by default.
 # User can provide UI, DM and AS API URLs.
 # There are URLs to the services, i.e. https://example.com/data-manager-api/api
