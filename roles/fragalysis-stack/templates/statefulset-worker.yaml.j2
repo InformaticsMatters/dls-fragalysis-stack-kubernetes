@@ -1,0 +1,337 @@
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: worker
+  namespace: {{ stack_namespace }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: worker
+  serviceName: worker
+  replicas: {{ stack_replicas }}
+  template:
+    metadata:
+      name: worker
+      labels:
+        name: worker
+    spec:
+      serviceAccountName: stack
+
+      # Pod Node Affinity.
+      # Prefer 'application' node before 'core'
+      # then try anything other than 'worker before finally trying 'worker'
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 40
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-application
+                operator: Exists
+          - weight: 30
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
+          - weight: 20
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-worker
+                operator: DoesNotExist
+
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
+      # Init Containers
+      initContainers:
+      - image: {{ busybox_image_registry }}/library/busybox:1.28.0
+        name: wait-for-graph
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nslookup {{ graph_hostname }}; do echo waiting for neo4j; sleep 1; done;'
+        terminationMessagePolicy: FallbackToLogsOnError
+
+      containers:
+      - name: worker
+        image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
+{% if stack_image_pull_policy %}
+        imagePullPolicy: {{ stack_image_pull_policy }}
+{% elif stack_image_tag in ['latest', 'stable'] %}
+        imagePullPolicy: Always
+{% else %}
+        imagePullPolicy: IfNotPresent
+{% endif %}
+        terminationMessagePolicy: FallbackToLogsOnError
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: {{ stack_cpu_limit }}
+            memory: {{ stack_mem_limit }}
+          requests:
+            cpu: {{ stack_cpu_request }}
+            memory: {{ stack_mem_request }}
+        env:
+        # This container's role is a (celery) worker...
+        # Otehrwise everything else is configured just like the Stack container.
+        - name: CONTAINER_ROLE
+          value: worker
+        - name: NEO4J_BOLT_URL
+          value: bolt://neo4j:test@{{ graph_hostname }}:7687
+        - name: NEO4J_QUERY
+          value: {{ graph_hostname }}
+        - name: NEO4J_AUTH
+          value: 'neo4j/{{ graph_password }}'
+        # Extracted from stack secrets...
+        #
+        - name: WEB_DJANGO_SUPERUSER_NAME
+          value: admin
+        - name: WEB_DJANGO_SUPERUSER_EMAIL
+          value: noone@example.com
+        - name: WEB_DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: django
+              key: secret_key
+        - name: WEB_DJANGO_SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: django
+              key: superuser_password
+        # Extracted from database secrets...
+        #
+        - name: POSTGRESQL_DATABASE
+          value: frag
+        - name: POSTGRESQL_USER
+          value: fragalysis
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: user_password
+        - name: POSTGRESQL_HOST
+          value: '{{ database_host_fact|default('database', true) }}'
+        - name: POSTGRESQL_PORT
+          value: '{{ database_port_fact|default('5432', true) }}'
+{% if stack_discourse_host %}
+        - name: DISCOURSE_HOST
+          value: '{{ stack_discourse_host }}'
+{% endif %}
+{% if stack_discourse_api_key %}
+        - name: DISCOURSE_API_KEY
+          value: '{{ stack_discourse_api_key }}'
+{% endif %}
+{% if stack_discourse_dev_post_suffix %}
+        - name: DISCOURSE_DEV_POST_SUFFIX
+          value: '{{ stack_discourse_dev_post_suffix }}'
+{% endif %}
+{% if stack_backend_sentry_dsn %}
+        - name: FRAGALYSIS_BACKEND_SENTRY_DNS
+          value: '{{ stack_backend_sentry_dsn }}'
+{% endif %}
+{% if stack_oidc_rp_client_secret %}
+        - name: OIDC_RP_CLIENT_SECRET
+          value: '{{ stack_oidc_rp_client_secret }}'
+        - name: OIDC_RP_CLIENT_ID
+          value: '{{ stack_oidc_rp_client_id }}'
+        - name: OIDC_KEYCLOAK_REALM
+          value: '{{ stack_oidc_keycloak_realm }}'
+        - name: OIDC_OP_LOGOUT_URL_METHOD
+          value: '{{ stack_oidc_op_logout_url_method }}'
+        - name: OIDC_RENEW_ID_TOKEN_EXPIRY_MINUTES
+          value: '{{ stack_oidc_renew_id_token_expiry_minutes }}'
+{% endif %}
+{% if stack_oidc_as_client_id %}
+        - name: OIDC_AS_CLIENT_ID
+          value: '{{ stack_oidc_as_client_id }}'
+{% endif %}
+{% if stack_oidc_dm_client_id %}
+        - name: OIDC_DM_CLIENT_ID
+          value: '{{ stack_oidc_dm_client_id }}'
+{% endif %}
+{% if stack_debug_fragalysis %}
+        - name: DEBUG_FRAGALYSIS
+          value: 'True'
+{% endif %}
+{% if stack_squonk2_dmapi_url %}
+        # Material for communication with Squonk/2 (UI/API) services.
+        # If an API is defined a UI is expected
+        - name: SQUONK2_DMAPI_URL
+          value: '{{ stack_squonk2_dmapi_url }}'
+{% endif %}
+{% if stack_squonk2_asapi_url %}
+        - name: SQUONK2_ASAPI_URL
+          value: '{{ stack_squonk2_asapi_url }}'
+{% endif %}
+{% if stack_squonk2_ui_url %}
+        - name: SQUONK2_UI_URL
+          value: '{{ stack_squonk2_ui_url }}'
+{% endif %}
+{% if stack_squonk2_org_owner %}
+        - name: SQUONK2_ORG_OWNER
+          value: '{{ stack_squonk2_org_owner }}'
+{% endif %}
+{% if stack_squonk2_org_owner_password %}
+        - name: SQUONK2_ORG_OWNER_PASSWORD
+          value: '{{ stack_squonk2_org_owner_password }}'
+{% endif %}
+{% if stack_squonk2_org_uuid %}
+        - name: SQUONK2_ORG_UUID
+          value: '{{ stack_squonk2_org_uuid }}'
+{% endif %}
+{% if stack_squonk2_product_flavour %}
+        - name: SQUONK2_PRODUCT_FLAVOUR
+          value: '{{ stack_squonk2_product_flavour }}'
+{% endif %}
+{% if stack_squonk2_slug %}
+        - name: SQUONK2_SLUG
+          value: '{{ stack_squonk2_slug }}'
+{% endif %}
+{% if stack_squonk2_unit_billing_day %}
+        - name: SQUONK2_UNIT_BILLING_DAY
+          value: '{{ stack_squonk2_unit_billing_day }}'
+{% endif %}
+{% if stack_email_user %}
+        - name: EMAIL_HOST
+          value: '{{ stack_email_host }}'
+        - name: EMAIL_USE_TLS
+          value: '{{ stack_email_use_tls }}'
+        - name: EMAIL_PORT
+          value: '{{ stack_email_port }}'
+        - name: EMAIL_USER
+          value: '{{ stack_email_user }}'
+        - name: EMAIL_PASSWORD
+          value: '{{ stack_email_password }}'
+{% endif %}
+        - name: IBM_API_KEY
+          value: '{{ stack_ibm_api_key }}'
+        - name: MANIFOLD_API_KEY
+          value: '{{ stack_manifold_api_key }}'
+        - name: MCULE_API_KEY
+          value: '{{ stack_mcule_api_key }}'
+        - name: SENDGRID_API_KEY
+          value: '{{ stack_sendgrid_api_key }}'
+{% if stack_ispyb_host_fact is defined %}
+        # Extracted from ispyb secrets...
+        #
+        - name: ISPYB_USER
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: user
+        - name: ISPYB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: password
+        - name: ISPYB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: host
+        - name: ISPYB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: ispyb
+              key: port
+{% endif %}
+{% if stack_xchem_host_fact is defined %}
+        # Extracted from xchem secrets...
+        #
+        - name: XCHEM_NAME
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: name
+        - name: XCHEM_USER
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: user
+        - name: XCHEM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: password
+        - name: XCHEM_HOST
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: host
+        - name: XCHEM_PORT
+          valueFrom:
+            secretKeyRef:
+              name: xchem
+              key: port
+{% endif %}
+        - name: BUILD_XCDB
+{% if stack_build_xcdb %}
+          value: 'yes'
+{% else %}
+          value: 'no'
+{% endif %}
+{% if stack_ssh_host_fact is defined %}
+        # SSH material
+        - name: SSH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: host
+        - name: SSH_USER
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: user
+        - name: SSH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: password
+        - name: SECURITY_CONNECTOR
+          valueFrom:
+            secretKeyRef:
+              name: ssh
+              key: security_connector
+{% endif %}
+        - name: LOGGING_FRAMEWORK_ROOT_LEVEL
+          value: '{{ stack_logging_framework_root_level }}'
+        # The playbook date/time
+        # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
+        # This is used in situations where the origin image's tag may not
+        # have changed (e.g. it's 'latest' or 'stable') but a new build is
+        # expected to be available. Without changing something in the
+        # StatefulSet spec a roll-out will not occur if the tag has not changed.
+        - name: ANSIBLE_DATE_TIME_ISO8601_MICRO
+          value: '{{ ansible_date_time.iso8601_micro }}'
+        volumeMounts:
+        - name: media
+          mountPath: /code/media
+{% if stack_log_vol_storageclass %}
+        volumeMounts:
+        - name: log
+          mountPath: /code/logs
+{% endif %}
+      volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: media
+
+{% if stack_log_vol_storageclass %}
+  # Volume claim templates.
+  # Used to provide us with a log volume for each StatefulSet replica.
+  volumeClaimTemplates:
+  - metadata:
+      name: log
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: '{{ stack_log_vol_storageclass }}'
+      resources:
+        requests:
+          storage: 200Mi
+{% endif %}
