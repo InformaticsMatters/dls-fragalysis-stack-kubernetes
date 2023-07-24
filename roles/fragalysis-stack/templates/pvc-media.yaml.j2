@@ -6,7 +6,7 @@ metadata:
   namespace: {{ stack_namespace }}
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   storageClassName: '{{ stack_media_vol_storageclass }}'
   resources:
     requests:
