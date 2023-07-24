@@ -20,7 +20,7 @@ spec:
 
       containers:
       - name: redis
-        image: {{ redis_image }}:{{ redis_image_tag}}
+        image: {{ redis_image }}:{{ redis_image_tag }}
         imagePullPolicy: IfNotPresent
         command:
         - redis-server
@@ -72,4 +72,4 @@ spec:
           name: redis-config
           items:
           - key: redis-config
-            path: redis.conf  
+            path: redis.conf
