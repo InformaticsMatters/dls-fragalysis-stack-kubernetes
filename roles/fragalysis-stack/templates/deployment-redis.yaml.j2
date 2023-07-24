@@ -58,10 +58,10 @@ spec:
           failureThreshold: 5
           successThreshold: 1
         volumeMounts:
-        - mountPath: /redis-master-data
-          name: data
-        - mountPath: /redis-master
-          name: config
+        - name: data
+          mountPath: /redis-master-data
+        - name: config
+          mountPath: /redis-master
 
       volumes:
       - name: data
