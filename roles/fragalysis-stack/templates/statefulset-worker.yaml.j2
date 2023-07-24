@@ -10,7 +10,7 @@ spec:
     matchLabels:
       name: worker
   serviceName: worker
-  replicas: {{ stack_replicas }}
+  replicas: {{ worker_replicas }}
   template:
     metadata:
       name: worker

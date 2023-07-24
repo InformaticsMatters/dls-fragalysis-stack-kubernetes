@@ -7,6 +7,8 @@ stack_image_registry: docker.io
 stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
 stack_replicas: 2
+worker_replicas: 2
+
 # Deploy the nery service?
 stack_deploy_nery: no
 # Include the 'sensitive.yaml' file?
