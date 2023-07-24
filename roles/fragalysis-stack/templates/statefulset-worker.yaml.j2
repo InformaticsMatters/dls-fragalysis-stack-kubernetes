@@ -81,6 +81,8 @@ spec:
         # Otehrwise everything else is configured just like the Stack container.
         - name: CONTAINER_ROLE
           value: worker
+        - name: C_FORCE_ROOT
+          value: 'true'
         - name: NEO4J_BOLT_URL
           value: bolt://neo4j:test@{{ graph_hostname }}:7687
         - name: NEO4J_QUERY
