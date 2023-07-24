@@ -11,6 +11,7 @@ ignore: |
   roles/database-replicator/templates/job-database-backup.yaml.j2
   roles/database-replicator/templates/job-database-recovery.yaml.j2
   roles/database-replicator/templates/cronjob-database-backup.yaml.j2
+  roles/fragalysis-stack/templates/deployment-redis.yaml.j2
   roles/fragalysis-stack/templates/statefulset-database.yaml.j2
   roles/fragalysis-stack/templates/statefulset-nery.yaml.j2
   roles/fragalysis-stack/templates/statefulset-stack.yaml.j2
