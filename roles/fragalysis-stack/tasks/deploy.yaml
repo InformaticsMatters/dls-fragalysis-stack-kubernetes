@@ -55,6 +55,10 @@
 
 # Now (optionally) deploy the stack
 
+- name: Deploy redis
+  import_tasks: deploy-redis.yaml
+  when: not stack_skip_deploy|bool
+
 - name: Deploy the stack
   import_tasks: deploy-stack.yaml
   when: not stack_skip_deploy|bool
