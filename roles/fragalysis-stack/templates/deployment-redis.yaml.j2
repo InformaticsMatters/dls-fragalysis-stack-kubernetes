@@ -18,6 +18,28 @@ spec:
     spec:
       serviceAccountName: stack
 
+      # Pod Node Affinity.
+      # Prefer 'core' before 'application'
+      # then try anything other than 'worker before finally trying 'worker'
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 40
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
+          - weight: 30
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-application
+                operator: Exists
+          - weight: 20
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-worker
+                operator: DoesNotExist
+
       containers:
       - name: redis
         image: {{ redis_image }}:{{ redis_image_tag }}

@@ -39,11 +39,6 @@ spec:
               matchExpressions:
               - key: informaticsmatters.com/purpose-worker
                 operator: DoesNotExist
-          - weight: 10
-            preference:
-              matchExpressions:
-              - key: informaticsmatters.com/purpose-worker
-                operator: Exists
 
       # To access the mounted database volume
       # we set the security context's fsGroup

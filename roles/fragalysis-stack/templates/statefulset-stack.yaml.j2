@@ -40,11 +40,6 @@ spec:
               matchExpressions:
               - key: informaticsmatters.com/purpose-worker
                 operator: DoesNotExist
-          - weight: 10
-            preference:
-              matchExpressions:
-              - key: informaticsmatters.com/purpose-worker
-                operator: Exists
 
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
       imagePullSecrets:
