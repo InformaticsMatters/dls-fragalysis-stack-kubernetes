@@ -80,7 +80,7 @@ spec:
         # But check every 15 seconds and permit 36 failures before
         # considering the startup to have failed (that's about 10 minutes).
         readinessProbe:
-          initialDelaySeconds: 30
+          initialDelaySeconds: 20
           periodSeconds: 10
           timeoutSeconds: 3
           failureThreshold: 10
@@ -89,10 +89,10 @@ spec:
         # Consider the container dead if the port is not open
         # after 4 attempts over a 1 minute period after about 4 minutes.
         livenessProbe:
-          initialDelaySeconds: 60
-          periodSeconds: 15
+          initialDelaySeconds: 30
+          periodSeconds: 10
           timeoutSeconds: 3
-          failureThreshold: 4
+          failureThreshold: 10
           tcpSocket:
             port: 80
         env:
