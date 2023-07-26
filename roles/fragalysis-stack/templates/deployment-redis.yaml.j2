@@ -63,7 +63,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: client
-          initialDelaySeconds: 30
+          initialDelaySeconds: 20
           timeoutSeconds: 5
           periodSeconds: 10
           failureThreshold: 5
@@ -73,7 +73,7 @@ spec:
             command:
             - sh
             - -c
-            - redis-cli -a {{ redis_password }} ping
+            - redis-cli ping
           initialDelaySeconds: 10
           timeoutSeconds: 5
           periodSeconds: 10
