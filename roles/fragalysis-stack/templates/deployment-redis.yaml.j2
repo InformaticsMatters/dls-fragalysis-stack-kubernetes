@@ -83,7 +83,9 @@ spec:
         - name: data
           mountPath: /redis-master-data
         - name: config
-          mountPath: /redis-master
+          mountPath: /redis-master/redis.conf
+          subPath: redis.conf
+          readOnly: true
 
       volumes:
       - name: data
@@ -91,7 +93,4 @@ spec:
           claimName: redis
       - name: config
         configMap:
-          name: redis-config
-          items:
-          - key: redis-config
-            path: redis.conf
+          name: redis-conf

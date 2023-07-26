@@ -5,10 +5,10 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: redis-config
+  name: redis-conf
   namespace: {{ stack_namespace }}
 data:
-  redis-config: |
+  redis.conf: |
     # NETWORK ##########################################################################
     protected-mode no
     # GENERAL ##########################################################################
