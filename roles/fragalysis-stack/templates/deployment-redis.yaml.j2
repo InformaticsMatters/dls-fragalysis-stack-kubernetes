@@ -64,7 +64,7 @@ spec:
           tcpSocket:
             port: client
           initialDelaySeconds: 20
-          timeoutSeconds: 5
+          timeoutSeconds: 4
           periodSeconds: 10
           failureThreshold: 5
           successThreshold: 1
@@ -75,7 +75,7 @@ spec:
             - -c
             - redis-cli ping
           initialDelaySeconds: 10
-          timeoutSeconds: 5
+          timeoutSeconds: 4
           periodSeconds: 10
           failureThreshold: 5
           successThreshold: 1

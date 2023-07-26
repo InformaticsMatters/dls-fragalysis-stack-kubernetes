@@ -35,7 +35,7 @@
   k8s_info:
     kind: Pod
     label_selectors:
-    - application = redis
+    - name = redis
     namespace: "{{ stack_namespace }}"
   register: redis_result
   until: >-
