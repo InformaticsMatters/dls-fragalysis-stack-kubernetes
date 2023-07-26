@@ -20,8 +20,6 @@ data:
     dir /redis-master-data
     save 3600 1 300 100 60 10000
     sanitize-dump-payload yes
-    # SECURITY #########################################################################
-    requirepass {{ redis_conf_requirepass }}
     # MEMORY MANAGEMENT ################################################################
     maxmemory {{ redis_conf_maxmemory }}
     maxmemory-policy allkeys-lru

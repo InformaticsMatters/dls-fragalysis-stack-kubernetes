@@ -96,9 +96,9 @@ spec:
         - name: CONTAINER_ROLE
           value: worker
         - name: CELERY_BROKER_URL
-          value: redis://:{{ redis_conf_requirepass }}@redis:6379/0
+          value: redis://redis:6379/0
         - name: CELERY_RESULT_BACKEND
-          value: redis://:{{ redis_conf_requirepass }}@redis:6379/0
+          value: redis://redis:6379/0
         - name: NEO4J_BOLT_URL
           value: bolt://neo4j:test@{{ graph_hostname }}:7687
         - name: NEO4J_QUERY
