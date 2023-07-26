@@ -81,6 +81,7 @@ redis_image_tag: '7.0.12-alpine3.18'
 # Redis configuration (ConfigMap) values
 redis_conf_loglevel: notice
 redis_conf_maxmemory: 256mb
+redis_conf_requirepass: calcining-carbon-allegretto
 
 # General variables -----------------------------------------------------------
 

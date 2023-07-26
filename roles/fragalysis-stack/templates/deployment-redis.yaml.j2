@@ -73,7 +73,7 @@ spec:
             command:
             - sh
             - -c
-            - redis-cli ping
+            - redis-cli -a {{ redis_conf_requirepass }} ping
           initialDelaySeconds: 10
           timeoutSeconds: 4
           periodSeconds: 10
