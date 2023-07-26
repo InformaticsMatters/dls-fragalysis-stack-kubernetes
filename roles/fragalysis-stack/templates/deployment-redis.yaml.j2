@@ -10,11 +10,11 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      application: redis
+      name: redis
   template:
     metadata:
       labels:
-        application: redis
+        name: redis
     spec:
       serviceAccountName: stack
 
