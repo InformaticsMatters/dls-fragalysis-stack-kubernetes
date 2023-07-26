@@ -24,6 +24,8 @@ data:
     requirepass {{ redis_conf_requirepass }}
     # MEMORY MANAGEMENT ################################################################
     maxmemory {{ redis_conf_maxmemory }}
+    maxmemory-policy allkeys-lru
+    maxmemory-samples 10
     # APPEND ONLY MODE #################################################################
     appenddirname "append-only-files"
     appendonly yes
