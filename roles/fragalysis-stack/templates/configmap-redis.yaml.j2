@@ -15,7 +15,7 @@ data:
     always-show-logo yes
     databases 1
     logfile ""
-    loglevel {{ redis_cof_loglevel }}
+    loglevel {{ redis_conf_loglevel }}
     # SNAPSHOTTING #####################################################################
     dir /redis-master-data
     save 3600 1 300 100 60 10000
