@@ -23,5 +23,5 @@ data:
     # MEMORY MANAGEMENT ################################################################
     maxmemory {{ redis_conf_maxmemory }}
     # APPEND ONLY MODE #################################################################
-    appenddirname /redis-master-data
+    appenddirname "append-only-files"
     appendonly yes
