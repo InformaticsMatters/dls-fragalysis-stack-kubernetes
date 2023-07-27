@@ -40,6 +40,11 @@ spec:
               - key: informaticsmatters.com/purpose-worker
                 operator: DoesNotExist
 
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+
       containers:
       - name: redis
         image: {{ redis_image }}:{{ redis_image_tag }}

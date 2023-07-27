@@ -40,7 +40,11 @@ spec:
               - key: informaticsmatters.com/purpose-worker
                 operator: DoesNotExist
 
-      # Init Containers
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+          
       initContainers:
       - name: wait-for-database
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
@@ -69,10 +73,10 @@ spec:
 {% endif %}
         resources:
           limits:
-            cpu: 0.25
+            cpu: 250m
             memory: 512Mi
           requests:
-            cpu: 0.1
+            cpu: 100m
             memory: 256Mi
         env:
         # This container's role is a (celery) beat scheduler...
@@ -82,7 +86,7 @@ spec:
           value: redis://redis:6379/0
         - name: CELERY_RESULT_BACKEND
           value: redis://redis:6379/0
-          - name: WEB_DJANGO_SUPERUSER_NAME
+        - name: WEB_DJANGO_SUPERUSER_NAME
           value: admin
         - name: WEB_DJANGO_SUPERUSER_EMAIL
           value: noone@example.com
