@@ -195,7 +195,7 @@
 
 - name: Deploy beat
   k8s:
-    definition: deployment-beat.yaml.j2
+    definition: "{{ lookup('template', 'deployment-beat.yaml.j2') }}"
     wait: yes
   when: enable_beat_pod|bool
 
