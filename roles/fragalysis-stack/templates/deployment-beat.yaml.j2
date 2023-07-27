@@ -115,3 +115,11 @@ spec:
           value: '{{ database_host_fact|default('database', true) }}'
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact|default('5432', true) }}'
+        # The playbook date/time
+        # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
+        # This is used in situations where the origin image's tag may not
+        # have changed (e.g. it's 'latest' or 'stable') but a new build is
+        # expected to be available. Without changing something in the
+        # StatefulSet spec a roll-out will not occur if the tag has not changed.
+        - name: ANSIBLE_DATE_TIME_ISO8601_MICRO
+          value: '{{ ansible_date_time.iso8601_micro }}'
