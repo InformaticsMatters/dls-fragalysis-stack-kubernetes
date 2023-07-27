@@ -45,39 +45,10 @@ spec:
       - name: {{ all_image_preset_pullsecret_name }}
 {% endif %}
 
-      initContainers:
-      - name: wait-for-database
-        image: {{ busybox_image_registry }}/library/busybox:1.28.0
-        command:
-        - 'sh'
-        - '-c'
-        - 'until nslookup database; do echo waiting for database; sleep 1; done;'
-        terminationMessagePolicy: FallbackToLogsOnError
-      - name: wait-for-redis
-        image: {{ busybox_image_registry }}/library/busybox:1.28.0
-        command:
-        - 'sh'
-        - '-c'
-        - 'until nslookup redis; do echo waiting for redis; sleep 1; done;'
-        terminationMessagePolicy: FallbackToLogsOnError
-
       containers:
       - name: beat
         image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
-{% if stack_image_pull_policy %}
-        imagePullPolicy: {{ stack_image_pull_policy }}
-{% elif stack_image_tag in ['latest', 'stable'] %}
         imagePullPolicy: Always
-{% else %}
-        imagePullPolicy: IfNotPresent
-{% endif %}
-        resources:
-          limits:
-            cpu: 250m
-            memory: 512Mi
-          requests:
-            cpu: 100m
-            memory: 256Mi
         env:
         # This container's role is a (celery) beat scheduler...
         - name: CONTAINER_ROLE
