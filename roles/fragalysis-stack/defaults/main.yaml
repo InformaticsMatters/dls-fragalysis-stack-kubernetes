@@ -9,6 +9,9 @@ stack_image_tag: latest
 stack_replicas: 2
 worker_replicas: 2
 
+# Run the celery 'beat' Pod?
+enable_beat_pod: yes
+
 # Deploy the nery service?
 stack_deploy_nery: no
 # Include the 'sensitive.yaml' file?

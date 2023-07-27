@@ -48,22 +48,22 @@ spec:
 
       # Init Containers
       initContainers:
-      - image: {{ busybox_image_registry }}/library/busybox:1.28.0
-        name: wait-for-database
+      - name: wait-for-database
+        image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
         - 'sh'
         - '-c'
         - 'until nslookup database; do echo waiting for database; sleep 1; done;'
         terminationMessagePolicy: FallbackToLogsOnError
-      - image: {{ busybox_image_registry }}/library/busybox:1.28.0
-        name: wait-for-graph
+      - name: wait-for-graph
+        image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
         - 'sh'
         - '-c'
         - 'until nslookup {{ graph_hostname }}; do echo waiting for neo4j; sleep 1; done;'
         terminationMessagePolicy: FallbackToLogsOnError
-      - image: {{ busybox_image_registry }}/library/busybox:1.28.0
-        name: wait-for-redis
+      - name: wait-for-redis
+        image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
         - 'sh'
         - '-c'
@@ -92,7 +92,7 @@ spec:
             memory: {{ stack_mem_request }}
         env:
         # This container's role is a (celery) worker...
-        # Otehrwise everything else is configured just like the Stack container.
+        # Otherwise everything else is configured just like the Stack container.
         - name: CONTAINER_ROLE
           value: worker
         - name: CELERY_BROKER_URL

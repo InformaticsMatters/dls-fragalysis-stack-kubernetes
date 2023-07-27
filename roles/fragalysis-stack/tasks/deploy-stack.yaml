@@ -193,6 +193,12 @@
   - service-stack
   - ingress-stack
 
+- name: Deploy beat
+  k8s:
+    definition: deployment-beat.yaml.j2
+    wait: yes
+  when: enable_beat_pod|bool
+
 - name: Deploy nery
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
