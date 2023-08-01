@@ -1,5 +1,5 @@
 # Rancher
-Material to configure the RKE-based xchem Rancher deployment.
+Material to configure the RKE-based XChem Rancher deployment.
 
 Here we rely on a Kubernetes cluster based on instances created in the
 `xchem-follow-up` STFC project.
@@ -99,17 +99,17 @@ At STFC we have provided a cluster-prep playbook that configures a base machine 
 that should be used for any new nodes for the RKE cluster. See the
 `site-rke-machine` playbook in `rancher/cluster-prep/ansible-machine-prep`.
 
-Given a base machine on STFC (and a jump host (i..e the xch-bastion) you should be able to
+Given a base machine on STFC and a jump host (i.ee the `xch-bastion`) you should be able to
 run the `site-rke-machine.yaml` playbook to initialise the base image. This has already
 been done and so does not need to be done again unless you want a new base image.
 
 The current machine image snapshot is: -
 
--  `rke-k8s-base-ubuntu-docker-20.10.24`.
+-  `rke-k8s-base-ubuntu-docker-20.10.24-b`.
 
 The base image contains: -
 
--   Docker 10.20.24
+-   Docker 20.10.24
 -   NFS client
 -   A Docker Hub mirror
 -   An /etc/noquattor file to avoid automated updates
@@ -118,12 +118,8 @@ If you need to create a new base image...
 
 From the `cluster-prep/ansible-machine-prep` directory: -
 
-```bash
-$ python -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-$ ansible-galaxy install -r requirements.yaml
-```
+    source ~/.venv/dls-fragalysis-stack-kubernetes/bin/activate
+    ansible-galaxy install -r requirements.yaml
 
 >   If you provide a `/etc/hosts/` file on the bastion with the IP of the machine to be
     configured (with an IP address for the name `rke-ii-base`) you should be able to use
@@ -132,10 +128,8 @@ $ ansible-galaxy install -r requirements.yaml
 With a suitable machine running and the account user's name that can be used used
 for SSH access to the machine, run: -
 
-```bash
-$ ansible -m ping all
-$ MACHINE_USER=abc1234 ansible-playbook site-rke-machine.yaml
-```
+    ansible -m ping all
+    MACHINE_USER=abc1234 ansible-playbook site-rke-machine.yaml
 
 Once configured you should snapshot the machine so the image can be used
 as the base for any new machines in your RKE cluster.

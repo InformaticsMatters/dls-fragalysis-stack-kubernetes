@@ -26,7 +26,6 @@
 
 - name: Package update
   ansible.builtin.apt:
-    clean: yes
     update_cache: yes
   when: is_debian or is_ubuntu
 
