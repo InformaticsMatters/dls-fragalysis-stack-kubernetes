@@ -1,6 +1,6 @@
 ---
 kind: Ingress
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: stack
   namespace: {{ stack_namespace }}
@@ -13,6 +13,7 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-nginx-{{ stack_cert_issuer|lower }}"
 {% endif %}
 spec:
+  ingressClassName: nginx
 {% if stack_cert_issuer %}
   tls:
   - hosts:
@@ -24,6 +25,9 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: stack
-          servicePort: http
+          service:
+            name: stack
+            port:
+              name: http
