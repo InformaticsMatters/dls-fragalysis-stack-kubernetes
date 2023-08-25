@@ -1,4 +1,14 @@
 ---
+
+# ------- #
+# CAUTION #
+# ------- #
+#
+# THIS IS A LIVE WORKING RKE CLUSTER FILE
+# EDIT WIHT  -> EXTREME CARE <-
+# AND DO NOT COMMIT TO REVISION CONTROL - IT HAS SENSITIVE AWS CONFIGURATION SECRETS
+
+
 cluster_name: rancher-xchem
 kubernetes_version: v1.19.9-rancher1-1
 
@@ -12,13 +22,13 @@ nodes:
   role:
   - etcd
 
-- address: 192.168.253.47
+- address: 192.168.253.201
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - etcd
 
-- address: 192.168.253.201
+- address: 192.168.253.29
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
@@ -26,12 +36,12 @@ nodes:
 
   # control plane
 
-- address: 130.246.215.43
+- address: 192.168.253.166
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - controlplane
-- address: 192.168.253.166
+- address: 192.168.253.114
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
@@ -39,12 +49,12 @@ nodes:
 
  # workers
 
-- address: 192.168.253.64
+- address: 192.168.253.49
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:
   - worker
-- address: 192.168.253.36
+- address: 192.168.253.6
   user: wmu55374
   ssh_key_path: /home/wmu55374/.ssh/stfc-abc-1
   role:

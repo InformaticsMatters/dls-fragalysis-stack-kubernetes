@@ -77,7 +77,7 @@ database_root_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_
 database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
 
 redis_image: redis
-redis_image_tag: '7.0.12-alpine3.18'
+redis_image_tag: '7.2.0-alpine3.18'
 # Redis configuration (ConfigMap) values
 redis_conf_loglevel: notice
 redis_conf_maxmemory: 256mb
