@@ -188,6 +188,9 @@ stack_oidc_dm_client_id: ''
 # A python logging level string
 stack_logging_framework_root_level: INFO
 
+# Wait for the neo4j graph to become ready before starting the stack?
+stack_wait_for_graph: yes
+
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,
 # so their variables names are not to be altered. If not using AWX
