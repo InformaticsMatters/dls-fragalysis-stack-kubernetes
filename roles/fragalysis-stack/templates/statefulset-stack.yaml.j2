@@ -334,7 +334,6 @@ spec:
         - name: media
           mountPath: /code/media
 {% if stack_log_vol_storageclass %}
-        volumeMounts:
         - name: log
           mountPath: /code/logs
 {% endif %}
