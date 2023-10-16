@@ -22,6 +22,104 @@ For a Stack **without access to a Graph database** you will need the following: 
     will probably be no real advantage. AWS EKS is extremely robust and resilient
     and the cost of will ultimately depend on the total cores and RAM you're using.
 
+***********
+The cluster
+***********
+
+.. warning::
+    To avoid the following steps for disturbing any local **KUBECONFIG** file you may
+    have defined you should run ``unset KUBECONFIG`` before proceeding.
+
+Create a cluster in AWS using `eksctl`_. The best way to do this is byt defining
+yor cluster in a ``cluster.yaml`` file. The following example, which creates
+a Kubernetes 1.23 cluster in  London (``eu-west-2``), should be sufficient
+for our needs::
+
+    ---
+    apiVersion: eksctl.io/v1alpha5
+    kind: ClusterConfig
+
+    metadata:
+      name: fragalysis-production
+      region: eu-west-2
+      version: '1.23'
+
+    availabilityZones:
+    - eu-west-2a
+    - eu-west-2b
+    - eu-west-2c
+
+    managedNodeGroups:
+    - name: mng-1
+    # The 2xlarge is an 8 core 32Gi instance
+    instanceType: m5.2xlarge
+    minSize: 1
+    maxSize: 1
+    desiredCapacity: 1
+    volumeSize: 80
+    volumeType: gp2
+    labels:
+      informaticsmatters.com/purpose-core: 'yes'
+      informaticsmatters.com/purpose-worker: 'yes'
+      informaticsmatters.com/purpose-application: 'yes'
+
+This file can be found in the `dls-fragalysis-stack-kubernetes`_ repository
+(as ``eks-relocation/cluster.yaml``).
+
+.. note::
+    The schema for the ``cluster.yaml`` file can be found on the `exksctl schema`_ page.
+
+It is vitally important that the cluster version you have chosen is compatible
+with the kubernetes cluster we are relocating. At the time of writing this
+is **1.23**.
+
+With a cluster configuration available, create it with the following command::
+
+    eksctl create cluster -f cluster.yaml
+
+The cluster should be ready in about 15 minutes. Once it is ready you will find
+that cluster credentials were added in ``~/.kube/config``.
+
+if you need to you can list and select a kubernetes context using the context ``NAME``
+using ``kubectl``::
+
+    kubectl config get-contexts
+    kubectl config set current-context MY-CONTEXT
+
+You'll now be able to inspect your new cluster with ``kubectl``, where you should
+discover one node::
+
+    kubectl get nodes
+
+*************************
+Public IPv4 IP addressing
+*************************
+
+Using the example cluster file your cluster node should have been allocated a
+publicly accessible IP address. You can find the associated IP address using the
+AWS console.
+
+As this address may change if the node is replaced by AWS you might want to consider
+**allocating** your own floating IP address (using the AWS console and region you have
+chosen) and **associating** it to one of the EC2 nodes in your cluster.
+This will ensure that you are in better control of IP routing to the cluster.
+
+CHECK IF THIS IS ACTUALLY REQUIRED
+
+**************
+Domain routing
+**************
+
+With the cluster prepared nwo is the time to arrange for the original domain name
+to be routed to the IP address assigned to the Kubernetes cluster. For us this will
+be::
+
+    fragalysis.diamond.ac.uk
+    *.xchem.diamond.ac.uk (for the kycloak server)
+
+Do this as soon as you can. DNS changes may just take a few minutes but they may
+also take a few hours.
+
 *****************************
 Preparation (base components)
 *****************************
@@ -29,13 +127,12 @@ Preparation (base components)
 Before installing Keycloak and the Fragalysis Stack you will need to configure and
 install some base components, namely: -
 
-*   Install a suitable **Pod Security Policy (PSP)** (for kubernetes prior to 1.25)
 *   Install an NGINX **Ingress Controller**
 *   Install the SSL **Certificate Manager**
 
-But, first, set the ``KUBECONFIG`` environment variable to point to your ``KUBECONFIG``
-file. This wil be used by the ``kubectl`` client to access your cluster and our
-playbooks::
+But first, if you need to, set the ``KUBECONFIG`` environment variable to point to
+your ``KUBECONFIG`` file. This wil be used by the ``kubectl`` client to access your
+cluster and our playbooks::
 
     export KUBECONFIG=/path/to/your/kubeconfig
 
@@ -108,14 +205,18 @@ Infrastructure
 With the base components installed you can now install the infrastructure.
 
 For our application **Pods** we will need to label the worker nodes in the cluster.
-We do this by applying a label to each node. Run the following for each node in your
+
+If you've used the example ```cluster.yaml``file you can skip these labelling commands
+and the ``eksctl`` utility will ensure that any nodes it created will have the
+appropriate labels applied.
+
+To label nodes we apply them to each node. Run the following for each node in your
 cluster::
 
     node=<NODE-NAME>
     kubectl label nodes ${node} informaticsmatters.com/purpose-core=yes
     kubectl label nodes ${node} informaticsmatters.com/purpose-worker=yes
     kubectl label nodes ${node} informaticsmatters.com/purpose-application=yes
-
 
 From this point we rely on Ansible playbooks that are provided in the
 the Informatics Matters `ansible-infrastructure`_ repository, so you will need to clone
@@ -178,3 +279,5 @@ Production Stack
 .. _dls-fragalysis-stack-kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
 .. _poetry: https://python-poetry.org
 .. _letsencrypt: https://letsencrypt.org
+.. _eksctl: https://eksctl.io/getting-started
+.. _eksctl schema: https://eksctl.io/usage/schema

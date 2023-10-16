@@ -63,6 +63,15 @@ The minimal installation does not include the following: -
 
     reinstallation
 
+*******
+Removal
+*******
+
+..  toctree::
+    :maxdepth: 1
+
+    removal
+
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 
 .. rubric:: Footnotes
