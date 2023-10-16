@@ -194,7 +194,12 @@ with the following content (replacing ``<EMAIL-ADDRESS>`` by one appropriate for
             ingress:
               ingressClassName: nginx
 
-Then, apply the definition to your cluster::
+You will find an example in the ``eks-relocation`` directory that you can edit.
+The name of the **ClusterIssuer** is important, and it is expected to be
+called ``letsencrypt-nginx-production``.
+
+Once you have a valid **ClusterIssuer** you can then apply the definition to
+your cluster::
 
     kubectl apply -f cluster-issuer.yaml
 
