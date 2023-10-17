@@ -1,0 +1,18 @@
+---
+database_image_tag: '12.2'
+database_vol_size_g: 18
+database_vol_storageclass: gp2
+database_root_user: postgres
+database_root_password: <ROOT-USER-PASSWORD>
+database_create_users_and_databases: no
+database_bu_state: present
+database_bu_vol_storageclass: gp2
+database_bu_vol_size_g: 18
+
+stack_namespace: production-stack
+stack_is_for_developer: no
+stack_include_sensitive: no
+
+install_prerequisite_python_modules: no
+
+stack_skip_deploy: yes

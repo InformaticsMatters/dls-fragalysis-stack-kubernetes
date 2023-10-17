@@ -19,10 +19,12 @@
     that:
     - k8s_auth_host|length > 0
     - k8s_auth_api_key|length > 0
+  when: k8s_kubeconfig|string|length == 0
 
 # Go...
 
-- block:
+- name: Deploy (without KUBECONFIG)
+  block:
 
   - include_tasks: deploy.yaml
     when: stack_state|string == 'present'
@@ -34,6 +36,22 @@
       host: "{{ k8s_auth_host }}"
       api_key: "{{ k8s_auth_api_key }}"
       validate_certs: "{{ k8s_auth_verify_ssl|default('no', true) }}"
+
+  when: k8s_kubeconfig|string|length == 0
+
+- name: Deploy (with KUBECONFIG)
+  block:
+
+  - include_tasks: deploy.yaml
+    when: stack_state|string == 'present'
+  - include_tasks: undeploy.yaml
+    when: stack_state|string == 'absent'
+
+  module_defaults:
+    group/k8s:
+      kubeconfig: "{{ k8s_kubeconfig }}"
+
+  when: k8s_kubeconfig|string|length > 0
 
 # If it looks like we're deploying to OpenShift
 # we now need to logout...

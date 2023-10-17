@@ -2,14 +2,23 @@
 Relocation
 ##########
 
-These instructions cover the process of relocating the production fragalysis stack.
-By relocation we mean moving the stack from one cluster to another.
-Importantly, these instructions *do not* cover the provisioning of the AWX server.
+These instructions cover the process of relocating the production fragalysis stack
+to an AWS EKS Kubernetes 1.23 cluster. By relocation we mean moving the stack from one
+cluster to another.
+
+.. note::
+    These instructions *do not* cover the provisioning of the AWX server,
+    Squonk or Discourse
+
+before you begin you will need::
+
+*   Access to the production AWX server
+*   The Ansible Vault secret for the sensitive stack parameters that are
+    encrypted within the `dls-fragalysis-stack-kubernetes`_ repository
 
 In order for the stack to operate it will need the following essential (minimal)
-**infrastructure** components: -
+**core** and **infrastructure** components: -
 
-*   Storage class provisioners (EFS)
 *   An nginx ingress controller
 *   A certificate manager to manager SSL certificates
 *   A keycloak server [#f1]_
@@ -73,6 +82,7 @@ Removal
     removal
 
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
+.. _dls-fragalysis-stack-kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
 
 .. rubric:: Footnotes
 

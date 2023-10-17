@@ -73,8 +73,13 @@ database_vol_size_g: 2
 
 # Auto-generated passwords.
 # Different lengths to avoid the Ansible caching problem.
+database_root_user: admin
 database_root_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters') }}"
 database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters') }}"
+
+# Set to create the initial database user and database
+# via the postgres-init ConfigMap.
+database_create_users_and_databases: yes
 
 # General variables -----------------------------------------------------------
 
@@ -86,3 +91,7 @@ wait_timeout: 600
 wait_for_bind: no
 # Volume binding timeout (seconds)
 bind_timeout: 120
+# Install prerequisite Python modules?
+# Normally required from early AWX, not expected when run from a control machine
+# (where modules are expected to have been installed).
+install_prerequisite_python_modules: yes

@@ -13,7 +13,8 @@ data:
   01-init.sh: |
     #!/bin/bash
     set -e
-    psql -v ON_ERROR_STOP=1 --username "admin" --dbname "admin" <<-EOSQL
+{% if database_create_users_and_databases %}
+        psql -v ON_ERROR_STOP=1 --username "admin" --dbname "admin" <<-EOSQL
         -- Configure a user and database for Fragalysys
         CREATE USER fragalysis;
         ALTER USER fragalysis WITH PASSWORD '{{ stack_db_user_password_fact }}';
@@ -23,3 +24,4 @@ data:
         ALTER ROLE fragalysis SET timezone TO 'UTC';
         GRANT ALL PRIVILEGES ON DATABASE frag TO fragalysis;
     EOSQL
+{% endif %}

@@ -1,6 +1,6 @@
-########################
+#########################
 Installation and recovery
-########################
+#########################
 
 *************
 Prerequisites
@@ -308,8 +308,8 @@ With parameters set we should now be able to deploy the infrastructure database 
 
     ansible-playbook site.yaml -e @parameters.yaml
 
-Restoring the database
-======================
+Restore the database
+====================
 
 With a new "empty" inFrastructure installed we can now restore the database from
 a backup of the original database. YOu can use the **AWS CLI** and ``kubectl`` to copy
@@ -324,13 +324,13 @@ and then write it into the database **Pod**::
         ./dumpall.sql.gz
 
     kubectl cp ./dumpall.sql.gz \
-        database-0:/var/lib/postgresql/data/dumpall.sql.gz \
+        database-0:/tmp/dumpall.sql.gz \
         -n im-infra
 
 You can now shell into the **Pod**, and decompress and load the backup::
 
-    kubectl exec -it database-0 bash -n im-infra
-    cd /var/lib/postgresql/data
+    kubectl exec -it database-0 -n im-infra -- bash
+    cd /tmp
     gzip -d dumpall.sql.gz
     psql -q -U postgres -f dumpall.sql template1
 
@@ -366,6 +366,156 @@ by appending ``/auth``.
 Production Stack
 ****************
 
+From this point we rely on Ansible playbooks that are provided in the
+the Informatics Matters `dls-fragalysis-stack-kubernetes`_ repository,
+so you will need to clone the recommended version now::
+
+    git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
+    cd dls-fragalysis-stack-kubernetes
+    git checkout 2023.10
+
+Deploy the database
+===================
+
+We need a new set of parameters to replicate the database installation. Create
+a ``parameters.yaml`` and populate it with the following. The root user password
+can be any value you like but ``<USER-PASSWORD>`` must be the value assigned to the
+``frag`` database user in the original production stack::
+
+    ---
+    database_image_tag: '12.2'
+    database_vol_size_g: 18
+    database_vol_storageclass: gp2
+    database_root_user: postgres
+    database_root_password: <ROOT-USER-PASSWORD>
+    database_user_password: <USER-PASSWORD>
+    database_create_users_and_databases: no
+    database_bu_state: present
+    database_bu_vol_storageclass: gp2
+    database_bu_vol_size_g: 18
+
+    stack_namespace: production-stack
+    stack_is_for_developer: no
+    stack_skip_deploy: yes
+
+    install_prerequisite_python_modules: no
+
+You will find a ``parameters.template.yaml`` in the ``eks-relocation`` directory.
+You can use this to create a ``parameters.yaml`` file in the project root
+(which is protected by the ``.gitignore``).
+
+And then run the stack playbook. Because we are including sensitive material
+that's encrypted in this repository we'll need to provide a vault password.
+You will need this to run the playbook::
+
+    ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml --ask-vault-password
+
+Restore the database
+====================
+
+Just as we did with the infrastructure database we restore the database from
+a backup of the original production stack.
+
+Copy the backup from your AWS S3 bucket onto your control machine
+and then write it into the database **Pod**::
+
+    aws s3 cp \
+        s3://im-fragalysis/production-stack-db/backup-2023-10-16T12\:51\:01Z-dumpall.sql.gz \
+        ./dumpall.sql.gz
+
+    kubectl cp ./dumpall.sql.gz \
+        database-0:/tmp/dumpall.sql.gz \
+        -n production-stack
+
+This is likely to be a large file, so it may take a while to copy.
+
+Once done you can shell into the **Pod**, and decompress and load the backup::
+
+    kubectl exec -it database-0 -n production-stack -- bash
+    cd /tmp
+    gzip -d dumpall.sql.gz
+    psql -q -U postgres -f dumpall.sql template1
+
+With the database restored use the Database **StatefulSet** to scale down the **Pod**
+(to remove it) and then scale it up again (to restart it), essentially rebooting the
+database server::
+
+    kubectl scale statefulset database --replicas=0 -n production-stack
+    kubectl scale statefulset database --replicas=1 -n production-stack
+
+Deploy the Stack
+================
+
+Now we can adjust our ``parameters.yaml`` so that it can now be re-executed to
+install the stack against the recovered database.
+
+.. note::
+    The production stack needs a large number of variables to control its behaviour,
+    many of which are used to populate environment variables in the stack's **Pod**.
+    It might be worth inspecting the variables that are used in the
+    **Production Fragalysis Stack (Version Change)** Job Template on the production
+    AWX server.
+
+Here's a typical set of variables and values but you should always check with the
+production stack. Set your exiting ``stack_skip_deploy`` to ``no`` and then add the
+following to your exiting ``parameters.yaml``, setting an appropriate
+``<PRODUCTION-TAG>``, ``<ISPYB-USER-PASSWORD>``, and ``<CLIENT-SECRET>``::
+
+    stack_image_tag: <PRODUCTION-TAG>
+    stack_hostname: fragalysis.diamond.ac.uk
+    stack_cert_issuer: production
+    stack_wait_for_graph: no
+    stack_replicas: 1
+    stack_oidc_keycloak_realm: 'https://keycloak.xchem.diamond.ac.uk/auth/realms/xchem'
+    stack_oidc_op_logout_url_method: fragalysis.views.keycloak_logout
+    stack_oidc_rp_client_id: fragalysis
+    stack_oidc_rp_client_secret: <CLIENT-SECRET>
+    stack_ispyb_user: ispyb_api_fragalysis
+    stack_ispyb_password: <ISPYB-USER-PASSWORD>
+    stack_ispyb_host: ispybdbproxy.diamond.ac.uk
+    stack_ispyb_port: '4306'
+    stack_mem_limit: 15Gi
+    stack_mem_request: 15Gi
+    stack_media_vol_storageclass: gp2
+    stack_media_vol_size_g: 200
+
+    stack_oidc_renew_id_token_expiry_minutes: 210
+
+Remember to check all the parameter and check that the ``stack_media_vol_size_g``
+suits your needs.
+
+With suitable values in our revised ``parameters.yaml`` file we can now re-run the
+stack playbook::
+
+    ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml --ask-vault-password
+
+Populate the media directory
+============================
+
+As the media directory resides on a volume in the stack **Pod**, which is a python
+container, it will be faster to copy the media from your chosen S3 bucket
+directly to the ``/code/media`` directory from within the **Pod**.
+
+Shell into the **Pod**::
+
+    kubectl exec -it stack-0 -n production-stack -- bash
+
+Add suitable AWS credentials::
+
+    export AWS_ACCESS_KEY_ID=00000000
+    export AWS_SECRET_ACCESS_KEY=00000000
+    export AWS_DEFAULT_REGION=eu-west-2
+
+Then install the **AWS CLI** and copy the media from your S3 bucket::
+
+    pip install awscli
+    cd /code/media
+    aws s3 cp --recursive s3://im-fragalysis/production-stack-media/ .
+
+This is a lot of data, expect it to take a while, with an estimate of approximately
+10 to 15 minutes for 150Gi of data.
+
+Once copied your stack should be ready to use.
 
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 .. _ansible-vault: https://docs.ansible.com/ansible/latest/vault_guide/index.html
