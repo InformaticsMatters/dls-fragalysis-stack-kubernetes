@@ -22,9 +22,9 @@ For a Stack **without access to a Graph database** you will need the following: 
     will probably be no real advantage. AWS EKS is extremely robust and resilient
     and the cost of will ultimately depend on the total cores and RAM you're using.
 
-***********
-The cluster
-***********
+**********************
+The Kubernetes cluster
+**********************
 
 .. warning::
     To avoid the following steps for disturbing any local **KUBECONFIG** file you may
@@ -91,35 +91,6 @@ discover one node::
 
     kubectl get nodes
 
-*************************
-Public IPv4 IP addressing
-*************************
-
-Using the example cluster file your cluster node should have been allocated a
-publicly accessible IP address. You can find the associated IP address using the
-AWS console.
-
-As this address may change if the node is replaced by AWS you might want to consider
-**allocating** your own floating IP address (using the AWS console and region you have
-chosen) and **associating** it to one of the EC2 nodes in your cluster.
-This will ensure that you are in better control of IP routing to the cluster.
-
-CHECK IF THIS IS ACTUALLY REQUIRED
-
-**************
-Domain routing
-**************
-
-With the cluster prepared nwo is the time to arrange for the original domain name
-to be routed to the IP address assigned to the Kubernetes cluster. For us this will
-be::
-
-    fragalysis.diamond.ac.uk
-    *.xchem.diamond.ac.uk (for the kycloak server)
-
-Do this as soon as you can. DNS changes may just take a few minutes but they may
-also take a few hours.
-
 *****************************
 Preparation (base components)
 *****************************
@@ -127,6 +98,7 @@ Preparation (base components)
 Before installing Keycloak and the Fragalysis Stack you will need to configure and
 install some base components, namely: -
 
+*   Configure Amazon EBS CSI driver
 *   Install an NGINX **Ingress Controller**
 *   Install the SSL **Certificate Manager**
 
@@ -136,10 +108,30 @@ cluster and our playbooks::
 
     export KUBECONFIG=/path/to/your/kubeconfig
 
+EBS CSI driver
+==============
+
+From EKS 1.23 a Container Storage Interface (CSI) driver is needed in order to get
+your **PersisentVolumeClaims** served by a **PersistentVolume** as you are used to
+from earlier EKS versions (see `aws-ebs-csi-driver`_ for more information).
+
+Firstly, setup the driver permissions using ``kubectl`` to create a secret from your
+AWS credentials::
+
+    kubectl create secret generic aws-secret \
+        --namespace kube-system \
+        --from-literal "key_id=${AWS_ACCESS_KEY_ID}" \
+        --from-literal "access_key=${AWS_SECRET_ACCESS_KEY}"
+
+Then, use the ``kubectl`` **kustomize** feature to deploy the driver::
+
+    kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.23"
+
 Ingress Controller
 ==================
 
-Using ``kubectl`` install a recent NGINX Ingress Controller::
+Use ``kubectl`` to install a recent NGINX Ingress Controller, used as an in-cluster
+*load balancer* to the various application **Pods**::
 
     repo=https://raw.githubusercontent.com/kubernetes/ingress-nginx
     path=deploy/static/provider/cloud/deploy.yaml
@@ -156,7 +148,8 @@ Using ``kubectl`` install a recent NGINX Ingress Controller::
 Certificate Manager
 ===================
 
-Using ``kubectl`` install a recent Certificate Manager::
+Use ``kubectl`` to install a recent Certificate Manager, used to automatically
+provision SSL certificates for the kubernetes **Ingress** definitions::
 
     repo=https://github.com/cert-manager/cert-manager/releases/download
     path=cert-manager.yaml
@@ -203,11 +196,50 @@ your cluster::
 
     kubectl apply -f cluster-issuer.yaml
 
+Configure the load balancer
+===========================
+
+Check on the "inactive" *Classic* Load Balancer that will have been
+created and then **Migrate** it by clicking the **Launch NLB migration wizard**
+button. From the new page simply click the **Create** button
+to create a **Network Load balancer** (**NLB**), and close the final window upon
+success.
+
+If you return to the Load Balancers page you will probably find the LB
+**State** to be *Provisioning*. This may take a few minutes so refresh the page
+after a minute or two. When it is *Active* make sure your EKS cluster EC2 instances are
+in the **Listeners Target Group** for the pre-assigned Protocols.
+
+Domain routing
+==============
+
+With the cluster prepared now is the time to arrange for any applicable domain names
+to be re-routed to the assigned DNS name of the **NLB** created for your EKS cluster.
+
+For us we'll need to make sure the following domains are routed to the NLB via a suitable
+*A record*: -
+
+    fragalysis.diamond.ac.uk
+    *.xchem.diamond.ac.uk (for the kycloak server)
+
+the DNS name for the **NLB** will be of the form ``000000-000000.elb.eu-west-2.amazonaws.com``,
+and this should be used as an **A record** (or **A record alias**) for the domains
+appropriate domains.
+
+Do this as soon as you can as DNS changes may just take a few minutes but they can
+also take several hours.
+
 **************
 Infrastructure
 **************
 
 With the base components installed you can now install the infrastructure.
+Because we are recovering the infrastructure database from elsewhere the
+creation of the infrastructure will take several steps: -
+
+-  Create the infrastructure database server
+-  Restore the infrastructure databases
+-  Create the keycloak instance
 
 For our application **Pods** we will need to label the worker nodes in the cluster.
 
@@ -229,9 +261,9 @@ the recommended version now::
 
     git clone https://github.com/InformaticsMatters/ansible-infrastructure.git
     cd ansible-infrastructure
-    git checkout 2023.3
+    git checkout 2023.4
 
-Al the playbooks are controlled by variables that we typically define in a
+All the playbooks are controlled by variables that we typically define in a
 YAML *parameter* file. A number of parameter files exist in the root of the
 repository, encrypted using `ansible-vault`_. You will need to create your own
 parameter file and decide whether you want to encrypt it. We suggest you do,
@@ -239,9 +271,13 @@ in case it contains sensitive information.
 
 Use ``parameters.template`` as a template for your own parameter file.
 
+Create infrastructure database server
+=====================================
+
 For this exercise the following, written to ``parameter.yaml`` (ignored by the
-project gitignore file) should suffice for an AWS EKS cluster, replacing
-``<ADMIN-PASSWORD>``, ``<HOSTNAME>``, and ``<KEYCLOAK-PASSWORD>`` as appropriate::
+project gitignore file), should suffice. Replace ``<NEW-ADMIN-PASSWORD>``,
+``<HOSTNAME>``, ``<KEYCLOAK-DB-PASSWORD>``, and ``<KEYCLOAK-ADMIN-PASSWORD>``
+as appropriate::
 
     ---
     cm_state: absent
@@ -253,26 +289,78 @@ project gitignore file) should suffice for an AWS EKS cluster, replacing
     pg_version: 12.3-alpine
     pg_vol_storageclass: gp2
     pg_vol_size_g: 18
+    pg_create_users_and_databases: no
+    pg_user: postgres
+    pg_user_password: <NEW-ADMIN-PASSWORD>
+    pg_database: postgres
     pg_bu_state: absent
-    db_user: governor
-    db_user_password: <ADMIN-PASSWORD>
 
-    kc_version: 10.0.2
+    kc_state: absent
     kc_hostname: <HOSTNAME>
-    kc_admin: admin
-    kc_admin_password: <KEYCLOAK-PASSWORD>
+    kc_user_password: <KEYCLOAK-DB-PASSWORD>
+    kc_admin_password: <KEYCLOAK-ADMIN-PASSWORD>
 
 .. warning::
-    As we're replicating an existing installation be sure to use the same
-    usernames and passwords used in the original installation.
+    As we're replicating an existing installation be sure to use a different
+    admin user and password (``NEW-ADMIN-PASSWORD``).
 
-With parameters set we should now be able to deploy the infrastructure::
+With parameters set we should now be able to deploy the infrastructure database server::
 
     ansible-playbook site.yaml -e @parameters.yaml
 
-********
-Keycloak
-********
+Restoring the database
+======================
+
+With a new "empty" inFrastructure installed we can now restore the database from
+a backup of the original database. YOu can use the **AWS CLI** and ``kubectl`` to copy
+the backup from S3 to the PostgreSQL Pod's database volume, and then restore the data
+using ``psql`` from within the Database **Pod**.
+
+Copy the backup from your AWS S3 bucket onto your control machine
+and then write it into the database **Pod**::
+
+    aws s3 cp \
+        s3://im-fragalysis/production-keycloak-db/backup-2023-10-16T12\:07\:01Z-dumpall.sql.gz \
+        ./dumpall.sql.gz
+
+    kubectl cp ./dumpall.sql.gz \
+        database-0:/var/lib/postgresql/data/dumpall.sql.gz \
+        -n im-infra
+
+You can now shell into the **Pod**, and decompress and load the backup::
+
+    kubectl exec -it database-0 bash -n im-infra
+    cd /var/lib/postgresql/data
+    gzip -d dumpall.sql.gz
+    psql -q -U postgres -f dumpall.sql template1
+
+With the database restored use the Database **StatefulSet** to scale down the **Pod**
+(to remove it) and then scale it up again (to restart it), essentially rebooting the
+database server::
+
+    kubectl scale statefulset database --replicas=0 -n im-infra
+    kubectl scale statefulset database --replicas=1 -n im-infra
+
+Installing Keycloak
+===================
+
+With the original database restored we can install Keycloak by adjusting
+our parameter file and re-running the same infrastructure playbook.
+
+Ensure the following parameter values are now set in your parameter file,
+making sure you set the hostname (i.e. ``example.com``) and ``<KEYCLOAK-DB-PASSWORD>``
+and ``<KEYCLOAK-ADMIN-PASSWORD>`` passwords have the values that were used in the
+backup you restored earlier::
+
+    kc_state: present
+    kc_version: 10.0.2
+
+And then re-run the infrastructure playbook::
+
+    ansible-playbook site.yaml -e @parameters.yaml
+
+Verify that you are able to reach the Keycloak server at the hostname you defined
+by appending ``/auth``.
 
 ****************
 Production Stack
@@ -286,3 +374,4 @@ Production Stack
 .. _letsencrypt: https://letsencrypt.org
 .. _eksctl: https://eksctl.io/getting-started
 .. _eksctl schema: https://eksctl.io/usage/schema
+.. _aws-ebs-csi-driver: https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/install.md
