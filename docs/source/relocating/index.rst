@@ -1,46 +1,53 @@
-##########
-Relocation
-##########
+##################
+Relocation (basic)
+##################
 
-These instructions cover the process of relocating the production fragalysis stack
-to an AWS EKS Kubernetes 1.23 cluster. By relocation we mean moving the stack from one
-cluster to another.
+These instructions cover the process of relocating a *basic* copy of the
+production fragalysis stack to an AWS EKS Kubernetes 1.23 cluster. By relocation
+we mean moving the stack from A *source* cluster to a separate *destination* cluster..
 
-.. note::
-    These instructions *do not* cover the provisioning of the AWX server,
-    Squonk or Discourse
+*Basic* is meant to imply that the stack is not using any of the optional
+applications like an AWX ansible playbook server, Squonk, Discourse or a Graph Database.
 
-before you begin you will need::
+The relocation uses playbooks already employed in the original AWX server but also
+requires some manual effort.
 
+Before you begin you will need: -
+
+*   A compatible kubernetes cluster (i.e. Kubernetes 1.23)
+*   Worker nodes, with each that providing at least 18Gi RAM and 8 cores with
+    a combined total of at least 25Gi RAM cores and 12 cores.
+*   Kubernetes config files for the source and destination clusters
 *   Access to the production AWX server
+*   An AWS S3 bucket
 *   The Ansible Vault secret for the sensitive stack parameters that are
     encrypted within the `dls-fragalysis-stack-kubernetes`_ repository
 
 In order for the stack to operate it will need the following essential (minimal)
-**core** and **infrastructure** components: -
+**core** and **infrastructure** components in the destination cluster: -
 
-*   An nginx ingress controller
-*   A certificate manager to manager SSL certificates
-*   A keycloak server [#f1]_
-*   A PostgreSQL database for keycloak [#f2]_
+*   At least one Persistent volume **StorageClass** (*core*)
+*   An nginx **ingress controller** (*core*)
+*   The kubernetes **certificate manager** to manager SSL certificates (*core*)
+*   A keycloak server (*infrastructure*) [#f1]_
+*   A PostgreSQL database for keycloak (*infrastructure*) [#f2]_
 
-You can rely on our *built-in* infrastructure components (which come with
-a number of cluster pre-requisites) that are handled by our
-`ansible-infrastructure`_ repository.
+There are three basic steps to the relocation: -
 
-With these installed an(and restored) you can then deploy the Stack and then restore
-its Django database and media directory.
+*   Install core components in the destination cluster
+*   Install and recover the infrastructure database
+*   Install and recover the stack
 
-What follows is a simplified guide to relocating the production stack [#f3]_.
+What follows is a simplified guide to relocating a basic production stack.
 
-***********
-Preparation
-***********
+*****************************
+Preparation (collect backups)
+*****************************
 
 Prior to relocating the production stack a number of resources need to be backed up.
-This is essentially all the data that is impossible to reproduce.
+This is essentially all the data that is too complex to reproduce.
 
-..  image:: images/frag-actions/frag-actions.018.png
+..  image:: ../images/frag-actions/frag-actions.018.png
 
 It includes: -
 
@@ -58,14 +65,9 @@ Installation and recovery
 *************************
 
 With preparation done up we can now install the infrastructure and then the stack
-on the new cluster whilst also restoring the data, remembering that we will need
-to preserve any postgres passwords used in the original cluster.
+on the new cluster whilst also restoring the data.
 
-..  image:: images/frag-actions/frag-actions.019.png
-
-The minimal installation does not include the following: -
-
-*   The AWX server
+..  image:: ../images/frag-actions/frag-actions.019.png
 
 ..  toctree::
     :maxdepth: 1
@@ -76,12 +78,13 @@ The minimal installation does not include the following: -
 Removal
 *******
 
+When we're finished with the destination cluster we can delete it.
+
 ..  toctree::
     :maxdepth: 1
 
     removal
 
-.. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 .. _dls-fragalysis-stack-kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
 
 .. rubric:: Footnotes

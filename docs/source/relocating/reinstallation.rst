@@ -8,9 +8,6 @@ Prerequisites
 
 For a Stack **without access to a Graph database** you will need the following: -
 
-*   A compatible kubernetes cluster (i.e. Kubernetes 1.23)
-*   Worker nodes, with each that providing at least 18Gi RAM and 8 cores with
-    a combined total of at least 25Gi RAM cores and 12 cores.
 *   A ``KUBECONFIG`` file (providing admin access to the cluster)
 *   A compatible kubectl client (i.e. kubectl 1.23)
 *   An ACME/let's encrypt account (for SSL certificates) (`letsencrypt`_)
@@ -30,8 +27,8 @@ The Kubernetes cluster
     To avoid the following steps for disturbing any local **KUBECONFIG** file you may
     have defined you should run ``unset KUBECONFIG`` before proceeding.
 
-Create a cluster in AWS using `eksctl`_. The best way to do this is byt defining
-yor cluster in a ``cluster.yaml`` file. The following example, which creates
+Create a cluster in AWS using `eksctl`_. The best way to do this is by defining
+your cluster in a ``cluster.yaml`` file. The following example, which creates
 a Kubernetes 1.23 cluster in  London (``eu-west-2``), should be sufficient
 for our needs::
 
@@ -67,11 +64,11 @@ This file can be found in the `dls-fragalysis-stack-kubernetes`_ repository
 (as ``eks-relocation/cluster.yaml``).
 
 .. note::
-    The schema for the ``cluster.yaml`` file can be found on the `exksctl schema`_ page.
+    The schema for the ``cluster.yaml`` file can be found on the `eksctl schema`_ page.
 
-It is vitally important that the cluster version you have chosen is compatible
-with the kubernetes cluster we are relocating. At the time of writing this
-is **1.23**.
+    It is vitally important that the cluster version you have chosen is compatible
+    with the kubernetes cluster we are relocating. At the time of writing this
+    is **1.23**.
 
 With a cluster configuration available, create it with the following command::
 
@@ -80,7 +77,7 @@ With a cluster configuration available, create it with the following command::
 The cluster should be ready in about 15 minutes. Once it is ready you will find
 that cluster credentials were added in ``~/.kube/config``.
 
-if you need to you can list and select a kubernetes context using the context ``NAME``
+If you need to you can list and select a kubernetes context using the context ``NAME``
 using ``kubectl``::
 
     kubectl config get-contexts
@@ -92,18 +89,18 @@ discover one node::
     kubectl get nodes
 
 *****************************
-Preparation (base components)
+Preparation (core components)
 *****************************
 
 Before installing Keycloak and the Fragalysis Stack you will need to configure and
-install some base components, namely: -
+install some core components, namely: -
 
-*   Configure Amazon EBS CSI driver
+*   Configure Amazon EBS CSI driver to create a GP2 **StorageClass**
 *   Install an NGINX **Ingress Controller**
 *   Install the SSL **Certificate Manager**
 
 But first, if you need to, set the ``KUBECONFIG`` environment variable to point to
-your ``KUBECONFIG`` file. This wil be used by the ``kubectl`` client to access your
+your ``KUBECONFIG`` file. This will be used by the ``kubectl`` client to access your
 cluster and our playbooks::
 
     export KUBECONFIG=/path/to/your/kubeconfig
@@ -112,7 +109,7 @@ EBS CSI driver
 ==============
 
 From EKS 1.23 a Container Storage Interface (CSI) driver is needed in order to get
-your **PersisentVolumeClaims** served by a **PersistentVolume** as you are used to
+your **PersistentVolumeClaims** served by a **PersistentVolume** as you are used to
 from earlier EKS versions (see `aws-ebs-csi-driver`_ for more information).
 
 Firstly, setup the driver permissions using ``kubectl`` to create a secret from your
@@ -131,7 +128,7 @@ Ingress Controller
 ==================
 
 Use ``kubectl`` to install a recent NGINX Ingress Controller, used as an in-cluster
-*load balancer* to the various application **Pods**::
+*load balancer* and required by the various application **Ingress** definitions::
 
     repo=https://raw.githubusercontent.com/kubernetes/ingress-nginx
     path=deploy/static/provider/cloud/deploy.yaml
@@ -165,11 +162,12 @@ provision SSL certificates for the kubernetes **Ingress** definitions::
 
 You will also need to provide a **ClusterIssuer** definition that allows the application
 **Ingress** definitions to trigger the automatic creation of SSL certificates. We use
-``ACME`` (Let's encrypt) and suggest you do to. For ACNE you will need to have registered
+``ACME`` (Let's encrypt) and suggest you do to. For this you will need to have registered
 and have the email address you used to register.
 
-Armed with your ACME account email address create a file called ``cluster-issuer.yaml``
-with the following content (replacing ``<EMAIL-ADDRESS>`` by one appropriate for you)::
+Armed with your let's encrypt account email address create a
+file called ``cluster-issuer.yaml`` with the following content
+(replacing ``<EMAIL-ADDRESS>`` by one appropriate for you)::
 
     ---
     kind: ClusterIssuer
@@ -187,7 +185,7 @@ with the following content (replacing ``<EMAIL-ADDRESS>`` by one appropriate for
             ingress:
               ingressClassName: nginx
 
-You will find an example in the ``eks-relocation`` directory that you can edit.
+You will find a template file in the ``eks-relocation`` directory that you can edit.
 The name of the **ClusterIssuer** is important, and it is expected to be
 called ``letsencrypt-nginx-production``.
 
@@ -199,16 +197,17 @@ your cluster::
 Configure the load balancer
 ===========================
 
-Check on the "inactive" *Classic* Load Balancer that will have been
-created and then **Migrate** it by clicking the **Launch NLB migration wizard**
-button. From the new page simply click the **Create** button
-to create a **Network Load balancer** (**NLB**), and close the final window upon
+Check on what is probably an "inactive" *Classic* Load Balancer that will have been
+created in your AWS region and then **Migrate** it by clicking the
+**Launch NLB migration wizard** button. From the new page simply click the **Create**
+button to create a **Network Load Balancer** (**NLB**), and close the final window upon
 success.
 
-If you return to the Load Balancers page you will probably find the LB
-**State** to be *Provisioning*. This may take a few minutes so refresh the page
-after a minute or two. When it is *Active* make sure your EKS cluster EC2 instances are
-in the **Listeners Target Group** for the pre-assigned Protocols.
+.. note::
+    If you return to the Load Balancers page you will probably find the LB
+    **State** to be *Provisioning*. This may take a few minutes so refresh the page
+    after a minute or two. When it is *Active* make sure your EKS cluster EC2 instances
+    are in the **Listeners Target Group** for the pre-assigned Protocols.
 
 Domain routing
 ==============
@@ -217,16 +216,16 @@ With the cluster prepared now is the time to arrange for any applicable domain n
 to be re-routed to the assigned DNS name of the **NLB** created for your EKS cluster.
 
 For us we'll need to make sure the following domains are routed to the NLB via a suitable
-*A record*: -
+*A record*::
 
     fragalysis.diamond.ac.uk
-    *.xchem.diamond.ac.uk (for the kycloak server)
+    *.xchem.diamond.ac.uk (for the keycloak server)
 
-the DNS name for the **NLB** will be of the form ``000000-000000.elb.eu-west-2.amazonaws.com``,
-and this should be used as an **A record** (or **A record alias**) for the domains
+The DNS name for the **NLB** will be of the form ``000000-000000.elb.eu-west-2.amazonaws.com``,
+and this should be used as an **A record** (or **A record alias**) for the
 appropriate domains.
 
-Do this as soon as you can as DNS changes may just take a few minutes but they can
+Do this as soon as you can as DNS changes may take a few minutes but they can
 also take several hours.
 
 **************
@@ -234,6 +233,7 @@ Infrastructure
 **************
 
 With the base components installed you can now install the infrastructure.
+
 Because we are recovering the infrastructure database from elsewhere the
 creation of the infrastructure will take several steps: -
 
@@ -243,12 +243,13 @@ creation of the infrastructure will take several steps: -
 
 For our application **Pods** we will need to label the worker nodes in the cluster.
 
-If you've used the example ```cluster.yaml``file you can skip these labelling commands
-and the ``eksctl`` utility will ensure that any nodes it created will have the
+If you've used the example ``cluster.yaml`` file you can skip these labelling commands
+as the ``eksctl`` utility will ensure that any nodes it creates will have the
 appropriate labels applied.
 
-To label nodes we apply them to each node. Run the following for each node in your
-cluster::
+To label nodes we apply them to each node.
+
+Run the following for each node in your cluster::
 
     node=<NODE-NAME>
     kubectl label nodes ${node} informaticsmatters.com/purpose-core=yes
@@ -266,10 +267,12 @@ the recommended version now::
 All the playbooks are controlled by variables that we typically define in a
 YAML *parameter* file. A number of parameter files exist in the root of the
 repository, encrypted using `ansible-vault`_. You will need to create your own
-parameter file and decide whether you want to encrypt it. We suggest you do,
-in case it contains sensitive information.
+parameter file and decide whether you want to encrypt it. You might want to
+if the parameters contain sensitive information (but encryption is not covered here).
 
-Use ``parameters.template`` as a template for your own parameter file.
+.. note::
+    Use ``parameters.template`` in the `ansible-infrastructure`_ repository
+    in as a template for your own parameter file.
 
 Create infrastructure database server
 =====================================
@@ -304,15 +307,16 @@ as appropriate::
     As we're replicating an existing installation be sure to use a different
     admin user and password (``NEW-ADMIN-PASSWORD``).
 
-With parameters set we should now be able to deploy the infrastructure database server::
+With parameters set we should now be able to deploy an "empty" infrastructure
+database server::
 
     ansible-playbook site.yaml -e @parameters.yaml
 
 Restore the database
 ====================
 
-With a new "empty" inFrastructure installed we can now restore the database from
-a backup of the original database. YOu can use the **AWS CLI** and ``kubectl`` to copy
+With a new "empty" infrastructure installed we can now restore the database from
+a backup of the original. You can use the **AWS CLI** and ``kubectl`` to copy
 the backup from S3 to the PostgreSQL Pod's database volume, and then restore the data
 using ``psql`` from within the Database **Pod**.
 
@@ -347,10 +351,7 @@ Installing Keycloak
 With the original database restored we can install Keycloak by adjusting
 our parameter file and re-running the same infrastructure playbook.
 
-Ensure the following parameter values are now set in your parameter file,
-making sure you set the hostname (i.e. ``example.com``) and ``<KEYCLOAK-DB-PASSWORD>``
-and ``<KEYCLOAK-ADMIN-PASSWORD>`` passwords have the values that were used in the
-backup you restored earlier::
+Ensure the following parameter values are now set in your parameter file::
 
     kc_state: present
     kc_version: 10.0.2
@@ -372,7 +373,7 @@ so you will need to clone the recommended version now::
 
     git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
     cd dls-fragalysis-stack-kubernetes
-    git checkout 2023.10
+    git checkout 2023.11
 
 Deploy the database
 ===================
@@ -457,8 +458,8 @@ install the stack against the recovered database.
     AWX server.
 
 Here's a typical set of variables and values but you should always check with the
-production stack. Set your exiting ``stack_skip_deploy`` to ``no`` and then add the
-following to your exiting ``parameters.yaml``, setting an appropriate
+production stack. Set your existing ``stack_skip_deploy`` to ``no`` and then add the
+following to your existing ``parameters.yaml``, setting appropriate values for
 ``<PRODUCTION-TAG>``, ``<ISPYB-USER-PASSWORD>``, and ``<CLIENT-SECRET>``::
 
     stack_image_tag: <PRODUCTION-TAG>
@@ -481,7 +482,7 @@ following to your exiting ``parameters.yaml``, setting an appropriate
 
     stack_oidc_renew_id_token_expiry_minutes: 210
 
-Remember to check all the parameter and check that the ``stack_media_vol_size_g``
+Remember to check all the parameters and check that the ``stack_media_vol_size_g``
 suits your needs.
 
 With suitable values in our revised ``parameters.yaml`` file we can now re-run the
@@ -494,13 +495,14 @@ Populate the media directory
 
 As the media directory resides on a volume in the stack **Pod**, which is a python
 container, it will be faster to copy the media from your chosen S3 bucket
-directly to the ``/code/media`` directory from within the **Pod**.
+directly to the ``/code/media`` directory from within the **Pod** (rather than
+downloading to your control machine and then then uploading into the Pod).
 
 Shell into the **Pod**::
 
     kubectl exec -it stack-0 -n production-stack -- bash
 
-Add suitable AWS credentials::
+Add your AWS credentials (ones that allow you to access the S3 bucket)::
 
     export AWS_ACCESS_KEY_ID=00000000
     export AWS_SECRET_ACCESS_KEY=00000000

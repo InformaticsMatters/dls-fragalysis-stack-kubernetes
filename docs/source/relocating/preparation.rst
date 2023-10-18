@@ -40,9 +40,9 @@ Matters ``im-fragalysis`` bucket::
 
     aws s3 ls s3://im-fragalysis
 
-*****************
-Keycloak database
-*****************
+*********************
+Keycloak database (A)
+*********************
 
 The keycloak database is regularly backed, at 7 minutes past every hour.
 The backup files are written to the ``pg-bu`` NFS **PVC** in the ``im-infra`` **Namespace**.
@@ -65,9 +65,9 @@ into the bucket as the object ``production-keycloak-db/backup-2023-10-16T12:07:0
         hourly/backup-2023-10-16T12\:07\:01Z-dumpall.sql.gz \
         s3://im-fragalysis/production-keycloak-db/
 
-**************************
-Fragalysis django database
-**************************
+******************************
+Fragalysis django database (B)
+******************************
 
 Like the Keycloak PostgreSQL database the production stack Django database is also
 regularly backed up. You should find these hourly backups on the the NFS server
@@ -81,9 +81,9 @@ Pick one and copy this to your chosen S3 bucket::
         hourly/backup-2023-10-16T12\:51\:01Z-dumpall.sql.gz \
         s3://im-fragalysis/production-stack-db/
 
-****************
-Fragalysis media
-****************
+********************
+Fragalysis media (C)
+********************
 
 Like the PostgreSQL databases the production stack **Media** directory is also
 regularly backed up. The production stack's ``/code/media`` directory is synchronized
@@ -103,5 +103,4 @@ The current media directory is large (approximately 149Gi) and copying
 from the NFS server to an AWS S3 bucket will take a long time,
 so expect the copy to take at least 30 minutes or so.
 
-.. _ansible-gizmos: https://github.com/InformaticsMatters/ansible-gizmos
 .. _aws cli: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
