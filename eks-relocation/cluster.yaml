@@ -25,4 +25,3 @@ managedNodeGroups:
     informaticsmatters.com/purpose-core: 'yes'
     informaticsmatters.com/purpose-worker: 'yes'
     informaticsmatters.com/purpose-application: 'yes'
-
