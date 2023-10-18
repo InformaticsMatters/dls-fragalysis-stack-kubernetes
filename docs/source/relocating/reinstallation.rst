@@ -2,13 +2,15 @@
 Installation and recovery
 #########################
 
+..  image:: ../images/frag-actions/frag-actions.019.png
+
 *************
 Prerequisites
 *************
 
 For a Stack **without access to a Graph database** you will need the following: -
 
-*   A ``KUBECONFIG`` file (providing admin access to the cluster)
+*   A ``KUBECONFIG`` file (providing admin access to each cluster)
 *   A compatible kubectl client (i.e. kubectl 1.23)
 *   An ACME/let's encrypt account (for SSL certificates) (`letsencrypt`_)
 *   `Poetry`_
@@ -19,9 +21,12 @@ For a Stack **without access to a Graph database** you will need the following: 
     will probably be no real advantage. AWS EKS is extremely robust and resilient
     and the cost of will ultimately depend on the total cores and RAM you're using.
 
-**********************
-The Kubernetes cluster
-**********************
+*************************
+Installation and recovery
+*************************
+
+Creating an EKS cluster
+=======================
 
 .. warning::
     To avoid the following steps for disturbing any local **KUBECONFIG** file you may
@@ -48,17 +53,17 @@ for our needs::
 
     managedNodeGroups:
     - name: mng-1
-    # The 2xlarge is an 8 core 32Gi instance
-    instanceType: m5.2xlarge
-    minSize: 1
-    maxSize: 1
-    desiredCapacity: 1
-    volumeSize: 80
-    volumeType: gp2
-    labels:
-      informaticsmatters.com/purpose-core: 'yes'
-      informaticsmatters.com/purpose-worker: 'yes'
-      informaticsmatters.com/purpose-application: 'yes'
+      # The 2xlarge is an 8 core 32Gi instance
+      instanceType: m5.2xlarge
+      minSize: 1
+      maxSize: 1
+      desiredCapacity: 1
+      volumeSize: 80
+      volumeType: gp2
+      labels:
+        informaticsmatters.com/purpose-core: 'yes'
+        informaticsmatters.com/purpose-worker: 'yes'
+        informaticsmatters.com/purpose-application: 'yes'
 
 This file can be found in the `dls-fragalysis-stack-kubernetes`_ repository
 (as ``eks-relocation/cluster.yaml``).
@@ -88,9 +93,8 @@ discover one node::
 
     kubectl get nodes
 
-*****************************
-Preparation (core components)
-*****************************
+Core components
+===============
 
 Before installing Keycloak and the Fragalysis Stack you will need to configure and
 install some core components, namely: -
@@ -106,7 +110,7 @@ cluster and our playbooks::
     export KUBECONFIG=/path/to/your/kubeconfig
 
 EBS CSI driver
-==============
+--------------
 
 From EKS 1.23 a Container Storage Interface (CSI) driver is needed in order to get
 your **PersistentVolumeClaims** served by a **PersistentVolume** as you are used to
@@ -125,7 +129,7 @@ Then, use the ``kubectl`` **kustomize** feature to deploy the driver::
     kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.23"
 
 Ingress Controller
-==================
+------------------
 
 Use ``kubectl`` to install a recent NGINX Ingress Controller, used as an in-cluster
 *load balancer* and required by the various application **Ingress** definitions::
@@ -143,7 +147,7 @@ Use ``kubectl`` to install a recent NGINX Ingress Controller, used as an in-clus
         kubectl get pods --namespace ingress-nginx
 
 Certificate Manager
-===================
+-------------------
 
 Use ``kubectl`` to install a recent Certificate Manager, used to automatically
 provision SSL certificates for the kubernetes **Ingress** definitions::
@@ -194,8 +198,8 @@ your cluster::
 
     kubectl apply -f cluster-issuer.yaml
 
-Configure the load balancer
-===========================
+Configure the cluster's load balancer
+-------------------------------------
 
 Check on what is probably an "inactive" *Classic* Load Balancer that will have been
 created in your AWS region and then **Migrate** it by clicking the
@@ -210,7 +214,7 @@ success.
     are in the **Listeners Target Group** for the pre-assigned Protocols.
 
 Domain routing
-==============
+--------------
 
 With the cluster prepared now is the time to arrange for any applicable domain names
 to be re-routed to the assigned DNS name of the **NLB** created for your EKS cluster.
@@ -228,9 +232,8 @@ appropriate domains.
 Do this as soon as you can as DNS changes may take a few minutes but they can
 also take several hours.
 
-**************
-Infrastructure
-**************
+Infrastructure components
+=========================
 
 With the base components installed you can now install the infrastructure.
 
@@ -274,8 +277,8 @@ if the parameters contain sensitive information (but encryption is not covered h
     Use ``parameters.template`` in the `ansible-infrastructure`_ repository
     in as a template for your own parameter file.
 
-Create infrastructure database server
-=====================================
+Infrastructure database server
+------------------------------
 
 For this exercise the following, written to ``parameter.yaml`` (ignored by the
 project gitignore file), should suffice. Replace ``<NEW-ADMIN-PASSWORD>``,
@@ -313,7 +316,7 @@ database server::
     ansible-playbook site.yaml -e @parameters.yaml
 
 Restore the database
-====================
+--------------------
 
 With a new "empty" infrastructure installed we can now restore the database from
 a backup of the original. You can use the **AWS CLI** and ``kubectl`` to copy
@@ -346,7 +349,7 @@ database server::
     kubectl scale statefulset database --replicas=1 -n im-infra
 
 Installing Keycloak
-===================
+-------------------
 
 With the original database restored we can install Keycloak by adjusting
 our parameter file and re-running the same infrastructure playbook.
@@ -363,9 +366,8 @@ And then re-run the infrastructure playbook::
 Verify that you are able to reach the Keycloak server at the hostname you defined
 by appending ``/auth``.
 
-****************
 Production Stack
-****************
+================
 
 From this point we rely on Ansible playbooks that are provided in the
 the Informatics Matters `dls-fragalysis-stack-kubernetes`_ repository,
@@ -376,7 +378,7 @@ so you will need to clone the recommended version now::
     git checkout 2023.11
 
 Deploy the database
-===================
+-------------------
 
 We need a new set of parameters to replicate the database installation. Create
 a ``parameters.yaml`` and populate it with the following. The root user password
@@ -412,7 +414,7 @@ You will need this to run the playbook::
     ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml --ask-vault-password
 
 Restore the database
-====================
+--------------------
 
 Just as we did with the infrastructure database we restore the database from
 a backup of the original production stack.
@@ -445,7 +447,7 @@ database server::
     kubectl scale statefulset database --replicas=1 -n production-stack
 
 Deploy the Stack
-================
+----------------
 
 Now we can adjust our ``parameters.yaml`` so that it can now be re-executed to
 install the stack against the recovered database.
@@ -488,10 +490,11 @@ suits your needs.
 With suitable values in our revised ``parameters.yaml`` file we can now re-run the
 stack playbook::
 
-    ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml --ask-vault-password
+    ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml \
+        --ask-vault-password
 
 Populate the media directory
-============================
+----------------------------
 
 As the media directory resides on a volume in the stack **Pod**, which is a python
 container, it will be faster to copy the media from your chosen S3 bucket

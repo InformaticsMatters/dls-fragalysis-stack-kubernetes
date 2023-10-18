@@ -1,20 +1,22 @@
-##################
-Relocation (basic)
-##################
+#########################
+Relocation to EKS (basic)
+#########################
 
 These instructions cover the process of relocating a *basic* copy of the
-production fragalysis stack to an AWS EKS Kubernetes 1.23 cluster. By relocation
-we mean moving the stack from A *source* cluster to a separate *destination* cluster..
+production fragalysis stack to an AWS EKS Kubernetes 1.23 cluster.
+
+By relocation we mean moving the stack from A *source* cluster to a separate
+*destination* cluster..
 
 *Basic* is meant to imply that the stack is not using any of the optional
 applications like an AWX ansible playbook server, Squonk, Discourse or a Graph Database.
 
-The relocation uses playbooks already employed in the original AWX server but also
+The relocation uses playbooks already employed by the original AWX server but also
 requires some manual effort.
 
 Before you begin you will need: -
 
-*   A compatible kubernetes cluster (i.e. Kubernetes 1.23)
+*   A compatible AWS EKS kubernetes cluster (i.e. Kubernetes 1.23)
 *   Worker nodes, with each that providing at least 18Gi RAM and 8 cores with
     a combined total of at least 25Gi RAM cores and 12 cores.
 *   Kubernetes config files for the source and destination clusters
@@ -23,7 +25,7 @@ Before you begin you will need: -
 *   The Ansible Vault secret for the sensitive stack parameters that are
     encrypted within the `dls-fragalysis-stack-kubernetes`_ repository
 
-In order for the stack to operate it will need the following essential (minimal)
+In order for the stack to operate it will need the following essential
 **core** and **infrastructure** components in the destination cluster: -
 
 *   At least one Persistent volume **StorageClass** (*core*)
@@ -32,24 +34,29 @@ In order for the stack to operate it will need the following essential (minimal)
 *   A keycloak server (*infrastructure*) [#f1]_
 *   A PostgreSQL database for keycloak (*infrastructure*) [#f2]_
 
-There are three basic steps to the relocation: -
+There are four basic steps to the relocation: -
 
-*   Install core components in the destination cluster
-*   Install and recover the infrastructure database
-*   Install and recover the stack
+*   Preparation
+    *   Collect backups of data and media
+*   Installation and recovery, which consisting of: -
+    *   core components in the destination cluster
+    *   Install and recover the infrastructure database
+    *   Install and recover the stack
 
-What follows is a simplified guide to relocating a basic production stack.
+What follows is a simplified guide to relocating the production stack to an AWS EKS
+cluster.
 
-*****************************
-Preparation (collect backups)
-*****************************
+***********
+Preparation
+***********
 
-Prior to relocating the production stack a number of resources need to be backed up.
-This is essentially all the data that is too complex to reproduce.
+Prior to relocating the production stack a we need to collect back-ups of the various
+databases and the fragalysis stack media directory. Basically all the data that is too
+complex to reproduce.
 
 ..  image:: ../images/frag-actions/frag-actions.018.png
 
-It includes: -
+The data includes: -
 
 *   The Keycloak infrastructure database (A)
 *   The fragalysis stack django database (B)
@@ -73,6 +80,18 @@ on the new cluster whilst also restoring the data.
     :maxdepth: 1
 
     reinstallation
+
+****************************
+Deploying new stack versions
+****************************
+
+With a stack running you might want to deploy a new stack version. The following
+instructions cover the process of deploying a new version of the stack.
+
+..  toctree::
+    :maxdepth: 1
+
+    updating-the-stack-image
 
 *******
 Removal

@@ -2,6 +2,8 @@
 Preparing for relocation
 ########################
 
+..  image:: ../images/frag-actions/frag-actions.018.png
+
 .. warning::
     Before going further it would be wise to suspend any user activity on the
     production stack - to prevent the Fragalysis data from changing while the
@@ -13,19 +15,19 @@ Preparing for relocation
     You cannot be using ``kuebectl`` for port forward or be using a kubectl-like
     application (like ``lens``) during this process.
 
-**********************
-The production backups
-**********************
+***************
+Backup location
+***************
 
 The keycloak database is backed up using the STFC cluster's NFS server (``192.168.253.39``).
-This server serves the developer and production clusters and contains dedicated volumes
-for dynamic allocation of NFS volumes for both clusters, another volume for
-production stack database and media replication.
+This server is used by the developer and production clusters and contains dedicated
+volumes for dynamic allocation of NFS volumes for both clusters, one volume for
+production stack database, and another for production media replication.
 
 All volumes are mounted in the server's ``/nfs`` directory.
 
 You will need to select a backup and get this off the STFC cloud so that it is
-accessible to your destination (AWS EKS) cluster (in an AWS S3 bucket).
+accessible to your destination cluster (in an AWS S3 bucket).
 
 You are expected to have `aws cli`_ installed on the NFS server,
 configured with access to a suitable AWS S3 bucket to copy the files to.
@@ -40,9 +42,12 @@ Matters ``im-fragalysis`` bucket::
 
     aws s3 ls s3://im-fragalysis
 
-*********************
+***********
+The backups
+***********
+
 Keycloak database (A)
-*********************
+=====================
 
 The keycloak database is regularly backed, at 7 minutes past every hour.
 The backup files are written to the ``pg-bu`` NFS **PVC** in the ``im-infra`` **Namespace**.
@@ -65,9 +70,8 @@ into the bucket as the object ``production-keycloak-db/backup-2023-10-16T12:07:0
         hourly/backup-2023-10-16T12\:07\:01Z-dumpall.sql.gz \
         s3://im-fragalysis/production-keycloak-db/
 
-******************************
 Fragalysis django database (B)
-******************************
+==============================
 
 Like the Keycloak PostgreSQL database the production stack Django database is also
 regularly backed up. You should find these hourly backups on the the NFS server
@@ -81,11 +85,10 @@ Pick one and copy this to your chosen S3 bucket::
         hourly/backup-2023-10-16T12\:51\:01Z-dumpall.sql.gz \
         s3://im-fragalysis/production-stack-db/
 
-********************
 Fragalysis media (C)
-********************
+====================
 
-Like the PostgreSQL databases the production stack **Media** directory is also
+Like the PostgreSQL databases the production stack **media** directory is also
 regularly backed up. The production stack's ``/code/media`` directory is synchronized
 every morning to the following NFS server directory::
 
