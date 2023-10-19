@@ -22,8 +22,8 @@ Before you begin you will need: -
 *   Kubernetes config files for the source and destination clusters
 *   Access to the production AWX server
 *   An AWS S3 bucket
-*   The Ansible Vault secret for the sensitive stack parameters that are
-    encrypted within the `dls-fragalysis-stack-kubernetes`_ repository
+*   The Ansible Vault secret for the ``roles/fragalysis-stack/vars/sensitive.vault``
+    file that is encrypted in the `dls-fragalysis-stack-kubernetes`_ repository
 
 In order for the stack to operate it will need the following essential
 **core** and **infrastructure** components in the destination cluster: -

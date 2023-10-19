@@ -380,18 +380,20 @@ so you will need to clone the recommended version now::
 Deploy the database
 -------------------
 
-We need a new set of parameters to replicate the database installation. Create
-a ``parameters.yaml`` and populate it with the following. The root user password
-can be any value you like but ``<USER-PASSWORD>`` must be the value assigned to the
-``frag`` database user in the original production stack::
+We need a new set of parameters to replicate the database installation.
+
+You will find a ``parameters.template.yaml`` in the ``eks-relocation`` directory.
+You can use this to create a ``parameters.yaml`` file in the project root
+(which is protected by the ``.gitignore``).
+
+Create a ``parameters.yaml`` and populate it with the following::
 
     ---
     database_image_tag: '12.2'
     database_vol_size_g: 18
     database_vol_storageclass: gp2
     database_root_user: postgres
-    database_root_password: <ROOT-USER-PASSWORD>
-    database_user_password: <USER-PASSWORD>
+    database_root_password: anything-you-like
     database_create_users_and_databases: no
     database_bu_state: present
     database_bu_vol_storageclass: gp2
@@ -403,15 +405,16 @@ can be any value you like but ``<USER-PASSWORD>`` must be the value assigned to 
 
     install_prerequisite_python_modules: no
 
-You will find a ``parameters.template.yaml`` in the ``eks-relocation`` directory.
-You can use this to create a ``parameters.yaml`` file in the project root
-(which is protected by the ``.gitignore``).
+The root user password can be any value you like, the database has no public facing
+surface. Only those with access to the cluster will be able to access it.
 
 And then run the stack playbook. Because we are including sensitive material
 that's encrypted in this repository we'll need to provide a vault password.
-You will need this to run the playbook::
+(more on this later)::
 
-    ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml --ask-vault-password
+    ansible-playbook site-fragalysis-stack.yaml \
+        -e @parameters.yaml \
+        --ask-vault-password
 
 Restore the database
 --------------------
@@ -452,45 +455,33 @@ Deploy the Stack
 Now we can adjust our ``parameters.yaml`` so that it can now be re-executed to
 install the stack against the recovered database.
 
-.. note::
-    The production stack needs a large number of variables to control its behaviour,
-    many of which are used to populate environment variables in the stack's **Pod**.
-    It might be worth inspecting the variables that are used in the
-    **Production Fragalysis Stack (Version Change)** Job Template on the production
-    AWX server.
+Importantly, set your existing ``stack_skip_deploy`` to ``no`` and then add the
+following to your ``parameters.yaml``. The memory and volume sizes are
+correct for the production stack deployed at the time of writing.
 
-Here's a typical set of variables and values but you should always check with the
-production stack. Set your existing ``stack_skip_deploy`` to ``no`` and then add the
-following to your existing ``parameters.yaml``, setting appropriate values for
-``<PRODUCTION-TAG>``, ``<ISPYB-USER-PASSWORD>``, and ``<CLIENT-SECRET>``::
+Set the ``<PRODUCTION-TAG>`` to that used during the database backup::
 
     stack_image_tag: <PRODUCTION-TAG>
-    stack_hostname: fragalysis.diamond.ac.uk
-    stack_cert_issuer: production
-    stack_wait_for_graph: no
-    stack_replicas: 1
-    stack_oidc_keycloak_realm: 'https://keycloak.xchem.diamond.ac.uk/auth/realms/xchem'
-    stack_oidc_op_logout_url_method: fragalysis.views.keycloak_logout
-    stack_oidc_rp_client_id: fragalysis
-    stack_oidc_rp_client_secret: <CLIENT-SECRET>
-    stack_ispyb_user: ispyb_api_fragalysis
-    stack_ispyb_password: <ISPYB-USER-PASSWORD>
-    stack_ispyb_host: ispybdbproxy.diamond.ac.uk
-    stack_ispyb_port: '4306'
     stack_mem_limit: 15Gi
     stack_mem_request: 15Gi
-    stack_media_vol_storageclass: gp2
     stack_media_vol_size_g: 200
+    stack_media_vol_storageclass: gp2
 
-    stack_oidc_renew_id_token_expiry_minutes: 210
+Remember to check that the ``stack_media_vol_size_g`` suits your needs.
 
-Remember to check all the parameters and check that the ``stack_media_vol_size_g``
-suits your needs.
+.. note::
+    A number of crucial Ansible variables and values are also encrypted in the file
+    ``roles/fragalysis-stack/vars/sensitive.vault``, and includes configuration
+    values (suitable for the production stack) for ISPyB, SSH, and others.
 
-With suitable values in our revised ``parameters.yaml`` file we can now re-run the
-stack playbook::
+    You can view the sensitive file, without permanently decrypting, using the command
+    ``ansible-vault view roles/fragalysis-stack/vars/sensitive.vault``.
 
-    ansible-playbook site-fragalysis-stack.yaml -e @parameters.yaml \
+With suitable values in our revised ``parameters.yaml`` file, which will complement
+those in the ``sensitive.vault`` file, we can re-run the stack playbook::
+
+    ansible-playbook site-fragalysis-stack.yaml \
+        -e @parameters.yaml \
         --ask-vault-password
 
 Populate the media directory
@@ -520,7 +511,7 @@ Then install the **AWS CLI** and copy the media from your S3 bucket::
 This is a lot of data, expect it to take a while, with an estimate of approximately
 10 to 15 minutes for 150Gi of data.
 
-Once copied your stack should be ready to use.
+Now your relocated production stack should be ready to use.
 
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 .. _ansible-vault: https://docs.ansible.com/ansible/latest/vault_guide/index.html
