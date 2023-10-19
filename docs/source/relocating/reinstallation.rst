@@ -375,7 +375,7 @@ so you will need to clone the recommended version now::
 
     git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
     cd dls-fragalysis-stack-kubernetes
-    git checkout 2023.11
+    git checkout 2023.12
 
 Deploy the database
 -------------------
