@@ -102,6 +102,9 @@ install some core components, namely: -
 *   Configure Amazon EBS CSI driver to create a GP2 **StorageClass**
 *   Install an NGINX **Ingress Controller**
 *   Install the SSL **Certificate Manager**
+*   Configure the cluster's load balancer
+*   Setup domain routing
+*   Create a cluster admin **ServiceAccount**
 
 But first, if you need to, set the ``KUBECONFIG`` environment variable to point to
 your ``KUBECONFIG`` file. This will be used by the ``kubectl`` client to access your
@@ -213,8 +216,8 @@ success.
     after a minute or two. When it is *Active* make sure your EKS cluster EC2 instances
     are in the **Listeners Target Group** for the pre-assigned Protocols.
 
-Domain routing
---------------
+Setup domain routing
+--------------------
 
 With the cluster prepared now is the time to arrange for any applicable domain names
 to be re-routed to the assigned DNS name of the **NLB** created for your EKS cluster.
@@ -231,6 +234,31 @@ appropriate domains.
 
 Do this as soon as you can as DNS changes may take a few minutes but they can
 also take several hours.
+
+A cluster service account
+-------------------------
+
+To allow users other than the cluster creator to access the cluster you will need
+to add a **ServiceAccount** that will allow you to create a token that can be used
+in the ``KUBECONFIG`` file.
+
+Create the required **Namespace**, **ServiceAccount** and **ClusterRoleBinding** with
+the following command, run from the ``eks-relocation`` directory::
+
+    kubectl create -f im-eks-admin
+
+Now, add the service account and its token as a new user definition
+to the ``KUBECONFIG`` file. You can refer to the documentation for
+`Adding a Service Account`_::
+
+    TOKEN=$(kubectl get secrets -n im-eks-admin \
+        -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='im-eks-admin')].data.token}"\
+        |base64 --decode)
+    kubectl config set-credentials im-eks-admin --token=${TOKEN}
+
+Now you can set the new user for future kubectl commands::
+
+    kubectl config set-context --current --user=im-eks-admin
 
 Infrastructure components
 =========================
@@ -513,6 +541,7 @@ This is a lot of data, expect it to take a while, with an estimate of approximat
 
 Now your relocated production stack should be ready to use.
 
+.. _adding a service account: https://docs.cloud.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengaddingserviceaccttoken.htm
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 .. _ansible-vault: https://docs.ansible.com/ansible/latest/vault_guide/index.html
 .. _dls-fragalysis-stack-kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
