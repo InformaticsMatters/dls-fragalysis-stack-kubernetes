@@ -24,21 +24,19 @@ This server is used by the developer and production clusters and contains dedica
 volumes for dynamic allocation of NFS volumes for both clusters, one volume for
 production stack database, and another for production media replication.
 
-All volumes are mounted in the server's ``/nfs`` directory.
+All volumes served by NFS for the Development and Production clusters are mounted in
+the server's ``/nfs`` directory.
 
-You will need to select a backup and get this off the STFC cloud so that it is
-accessible to your destination cluster (in an AWS S3 bucket).
-
-You are expected to have `aws cli`_ installed on the NFS server,
-configured with access to a suitable AWS S3 bucket to copy the files to.
-To use it you will need to set the standard AWS environment variables:::
+Here, you are expected to have `aws cli`_ installed on the NFS server,
+configured with access to a suitable AWS S3 bucket to copy the files to,
+and so you will need to set the standard AWS environment variables:::
 
     export AWS_ACCESS_KEY_ID=00000000000000
     export AWS_SECRET_ACCESS_KEY=000000000000000000000
     export AWS_DEFAULT_REGION=eu-central-1
 
-With this done you should be able to inspect the content of the Informatics
-Matters ``im-fragalysis`` bucket::
+With credentials for the Informatics Matters bucket you should be able to inspect
+the  ``im-fragalysis`` bucket::
 
     aws s3 ls s3://im-fragalysis
 
@@ -90,7 +88,7 @@ Fragalysis media (C)
 
 Like the PostgreSQL databases the production stack **media** directory is also
 regularly backed up. The production stack's ``/code/media`` directory is synchronized
-every morning to the following NFS server directory::
+every morning (at 4am) to the following NFS server directory::
 
     /nfs/kubernetes-media-replica
 
@@ -103,16 +101,16 @@ following command::
         --recursive
 
 The current media directory is large (approximately 149Gi) and copying
-from the NFS server to an AWS S3 bucket will take a long time,
-so expect the copy to take at least 30 minutes or so.
+from the NFS server to an AWS S3 bucket will take a long time. Expect the copy to
+take at least 30 minutes or so.
 
-****************
-The environments
-****************
+****************************
+Pod (container) environments
+****************************
 
 While the original **Pods** are still running you should also collect and record
 the full set of environment variables just in case you need to refer to them
-once they have been removed.
+after access to the original **Pods** is lost.
 
 Collect the output of the following commands for the stack::
 
