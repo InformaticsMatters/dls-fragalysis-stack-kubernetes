@@ -106,4 +106,22 @@ The current media directory is large (approximately 149Gi) and copying
 from the NFS server to an AWS S3 bucket will take a long time,
 so expect the copy to take at least 30 minutes or so.
 
+****************
+The environments
+****************
+
+While the original **Pods** are still running you should also collect and record
+the full set of environment variables just in case you need to refer to them
+once they have been removed.
+
+Collect the output of the following commands for the stack::
+
+    kubectl exec -it database-0 -n production-stack -- env
+    kubectl exec -it stack-0 -n production-stack -- env
+
+And these for keycloak::
+
+    kubectl exec -it database-0 -n im-infra -- env
+    kubectl exec -it keycloak-0 -n im-infra -- env
+
 .. _aws cli: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html

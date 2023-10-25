@@ -430,6 +430,7 @@ Create a ``parameters.yaml`` and populate it with the following::
     stack_namespace: production-stack
     stack_is_for_developer: no
     stack_skip_deploy: yes
+    stack_discourse_host: ''
 
     install_prerequisite_python_modules: no
 
