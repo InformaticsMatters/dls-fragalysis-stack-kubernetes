@@ -369,11 +369,18 @@ You can now shell into the **Pod**, and decompress and load the backup::
     gzip -d dumpall.sql.gz
     psql -q -U postgres -f dumpall.sql template1
 
+When the load is complete exit the **Pod**::
+
+    exit
+
 With the database restored use the Database **StatefulSet** to scale down the **Pod**
 (to remove it) and then scale it up again (to restart it), essentially rebooting the
 database server::
 
     kubectl scale statefulset database --replicas=0 -n im-infra
+
+Wait for the Pod to terminate and then::
+
     kubectl scale statefulset database --replicas=1 -n im-infra
 
 Installing Keycloak
@@ -462,7 +469,7 @@ and then write it into the database **Pod**::
         database-0:/tmp/dumpall.sql.gz \
         -n production-stack
 
-This is likely to be a large file, so it may take a while to copy.
+This is likely to be a large file, so it may take a while to copy into the **Pod**.
 
 Once done you can shell into the **Pod**, and decompress and load the backup::
 
@@ -471,11 +478,20 @@ Once done you can shell into the **Pod**, and decompress and load the backup::
     gzip -d dumpall.sql.gz
     psql -q -U postgres -f dumpall.sql template1
 
+This is likely to be a large file, so it may take a while to load.
+
+When the load is complete exit the **Pod**::
+
+    exit
+
 With the database restored use the Database **StatefulSet** to scale down the **Pod**
 (to remove it) and then scale it up again (to restart it), essentially rebooting the
 database server::
 
     kubectl scale statefulset database --replicas=0 -n production-stack
+
+Wait for the Pod to terminate and then::
+
     kubectl scale statefulset database --replicas=1 -n production-stack
 
 Deploy the Stack
@@ -537,10 +553,10 @@ Then install the **AWS CLI** and copy the media from your S3 bucket::
     cd /code/media
     aws s3 cp --recursive s3://im-fragalysis/production-stack-media/ .
 
-This is a lot of data, expect it to take a while, with an estimate of approximately
-10 to 15 minutes for 150Gi of data.
+The media directory is likely to consist of a lot of files.
+Expect the copy to take a while, probably 20 to 30 minutes per 150Gi.
 
-Now your relocated production stack should be ready to use.
+***Congratulations!** Your relocated production stack should be ready to use.
 
 .. _adding a service account: https://docs.cloud.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengaddingserviceaccttoken.htm
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure

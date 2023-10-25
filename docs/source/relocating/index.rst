@@ -6,7 +6,7 @@ These instructions cover the process of relocating a *basic* copy of the
 production fragalysis stack to an AWS EKS Kubernetes 1.23 cluster.
 
 By relocation we mean moving the stack from A *source* cluster to a separate
-*destination* cluster..
+*destination* cluster.
 
 *Basic* is meant to imply that the stack is not using any of the optional
 applications like an AWX ansible playbook server, Squonk, Discourse or a Graph Database.
@@ -45,6 +45,13 @@ There are four basic steps to the relocation: -
 
 What follows is a simplified guide to relocating the production stack to an AWS EKS
 cluster.
+
+.. warning::
+    You should reserve at least 4 hours to complete the migration, which
+    includes time to collect the data and media backups. The original stack will
+    be at risk during this process and should not be used. You also need to
+    consider the the time it takes to switch the required domains, which
+    might have a long `TTL`_ (like 8 hours).
 
 ***********
 Preparation
@@ -105,6 +112,7 @@ When we're finished with the destination cluster we can delete it.
     removal
 
 .. _dls-fragalysis-stack-kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
+.. _ttl: https://en.wikipedia.org/wiki/Time_to_live
 
 .. rubric:: Footnotes
 
