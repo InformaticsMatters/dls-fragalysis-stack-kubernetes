@@ -331,6 +331,8 @@ spec:
               name: ssh
               key: security_connector
 {% endif %}
+        - name: ENABLE_SERVICE_STATUS
+          value: '{{ stack_enable_service_status }}'
         - name: LOGGING_FRAMEWORK_ROOT_LEVEL
           value: '{{ stack_logging_framework_root_level }}'
         # The playbook date/time

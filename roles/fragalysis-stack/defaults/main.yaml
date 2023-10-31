@@ -194,6 +194,15 @@ stack_squonk2_unit_billing_day: 3
 stack_oidc_as_client_id: ''
 stack_oidc_dm_client_id: ''
 
+# Stack service status reporting.
+# A colon-separated list of service IDs whose status is expected to be returned
+# by the service status API. This is provided to the container via the
+# ENABLE_SERVICE_STATUS environment variable.
+#
+# A full set of values would include:
+#   discourse:fragmentation_graph:ispyb:keycloak:squonk
+stack_enable_service_status: 'discourse:fragmentation_graph:ispyb:keycloak:squonk'
+
 # Logging framework level
 # A python logging level string
 stack_logging_framework_root_level: INFO
