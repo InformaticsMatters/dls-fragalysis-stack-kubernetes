@@ -10,7 +10,7 @@ The following brief instructions illustrate the process.
 
 With a ``KUBECONFIG`` environment variable set for the *relocated* cluster,
 enter the stack **Pod** and copy the media directory to a new S3 bucket.
-You'l need to install the ``awscli`` package in the **Pod** to do this.
+You'l need to install the ``awscli`` package in the **Pod** to do this::
 
     kubectl exec -it stack-0 -n production-stack -- bash
     pip install awscli
