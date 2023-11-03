@@ -100,6 +100,19 @@ instructions cover the process of deploying a new version of the stack.
 
     updating-the-stack-image
 
+***********
+Moving back
+***********
+
+When we're finished with the destination cluster and you need to move the data
+back to the original cluster you'll need to get new backups and move them back to
+the original stack.
+
+..  toctree::
+    :maxdepth: 1
+
+    moving-back
+
 *******
 Removal
 *******
