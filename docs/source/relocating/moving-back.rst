@@ -50,19 +50,21 @@ Copy the database backup from your local machine to the original database **Pod*
 
     kubectl cp ./aws-stack-frag.sql.gz database-0:/tmp/frag.sql.gz -n production-stack
 
-Then enter the **Pod** and wipe (drop and recreate) and recover the ``frag`` database::
+Then enter the **Pod**, decompress the database backup, wipe (drop and recreate),
+and recover the ``frag`` database::
 
     kubectl exec -it database-0 -n production-stack -- bash
+    gzip -d /tmp/frag.sql.gz
     psql --username=admin template1 -c 'drop database frag;'
     psql --username=admin template1 -c 'create database frag with owner fragalysis;'
-    gzip -d /tmp/frag.sql.gz
     psql --username=admin frag < /tmp/frag.sql
 
-Start the stack **Pod** again::
+Exit the original database **Pod** and then re-start the stack **Pod**::
 
     kubectl scale statefulset --replicas=1 stack -n production-stack
 
-The enter the Pod and restore the media directory from the S3 bucket you just created::
+Enter the stack **Pod** and restore the media directory from the S3 bucket you created
+earlier::
 
     kubectl exec -it stack-0 -n production-stack -- bash
     pip install awscli
