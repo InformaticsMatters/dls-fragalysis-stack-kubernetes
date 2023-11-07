@@ -99,6 +99,7 @@ instructions cover the process of deploying a new version of the stack.
     :maxdepth: 1
 
     updating-the-stack-image
+    notes-for-future-deployments
 
 ***********
 Moving back
