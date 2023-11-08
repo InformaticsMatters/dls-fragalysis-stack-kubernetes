@@ -1,0 +1,29 @@
+---
+
+# See https://redis.io/docs/management/config/
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: redis-conf
+  namespace: {{ stack_namespace }}
+data:
+  redis.conf: |
+    # NETWORK ##########################################################################
+    protected-mode no
+    # GENERAL ##########################################################################
+    always-show-logo yes
+    databases 1
+    logfile ""
+    loglevel {{ redis_conf_loglevel }}
+    # SNAPSHOTTING #####################################################################
+    dir /redis-master-data
+    save 3600 1 300 100 60 10000
+    sanitize-dump-payload yes
+    # MEMORY MANAGEMENT ################################################################
+    maxmemory {{ redis_conf_maxmemory }}
+    maxmemory-policy allkeys-lru
+    maxmemory-samples 10
+    # APPEND ONLY MODE #################################################################
+    appenddirname "append-only-files"
+    appendonly yes

@@ -43,6 +43,7 @@ Then repeat steps **1**, **2** and **5** each time you build the stack.
     cheat-sheets/index
     dummies-dev-setup
     pre-release-testing
+    building-locally
 
 Sensitive Material (Ansible Vault)
 ----------------------------------
@@ -96,20 +97,6 @@ Ingress and namespace
 Your stack is deployed to a Kubernetes `namespace`_ that's unique to you.
 The playbook will display this value at the end of the deployment along with
 the URI that should direct traffic to your stack instance.
-
-Loading target data
-===================
-
-You can load target data into your stack using another AWX **Job Template**.
-You should find a **User (<YOU>) Developer Data Loader** **Job Template**,
-which relies on a loader container image that can synchronise data from the
-internal NFS server that hosts the target data.
-
-When you run the loader job you simply need to ensure that the
-following Job Template variables are appropriately set::
-
-    loader_data_origin
-    stack_name (normally just left at 'default')
 
 Replicating target data (from Production)
 =========================================
