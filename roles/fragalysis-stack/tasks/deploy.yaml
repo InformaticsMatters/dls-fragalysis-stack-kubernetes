@@ -5,13 +5,18 @@
 # required for all plays have been set. Here we're
 # just concerned with those required to play.
 
-- name: Assert variables
+- name: Assert database variables
+  assert:
+    that:
+    - database_root_password|string != 'SetMe'
+    - database_user_password|string != 'SetMe'
+
+- name: Assert stack variables
   assert:
     that:
     - stack_hostname|string|length > 0
     - stack_replicas|int > 0
-    - database_root_password|string != 'SetMe'
-    - database_user_password|string != 'SetMe'
+  when: not stack_skip_deploy|bool
 
 # Include sensitive (encrypted) material.
 

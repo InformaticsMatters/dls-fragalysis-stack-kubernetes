@@ -145,6 +145,7 @@
     - openshift==0.10.0
     - jmespath==0.9.4
     extra_args: --user
+  when: install_prerequisite_python_modules|bool
 
 # Collect and display freeze result
 
@@ -172,3 +173,4 @@
     k8s_auth_host: "{{ lookup('env', 'K8S_AUTH_HOST') }}"
     k8s_auth_api_key: "{{ lookup('env', 'K8S_AUTH_API_KEY') }}"
     k8s_auth_verify_ssl: "{{ lookup('env', 'K8S_AUTH_VERIFY_SSL') }}"
+    k8s_kubeconfig: "{{ lookup('env', 'KUBECONFIG') }}"

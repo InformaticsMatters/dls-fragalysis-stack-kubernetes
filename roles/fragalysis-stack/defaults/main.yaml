@@ -47,7 +47,7 @@ stack_namespace: ''
 # This will be a URL directed at the cluster.
 #
 # Developer stacks will prepend a unique value to to make the route
-# specific for that developer they wil get somethign like
+# specific for that developer they wil get something like
 # https://{{ id }}-{{ stack_name }}.{{ stack_hostname }}.
 #
 # Production stacks must provide an explicit `stack_hostname` here,
@@ -206,6 +206,9 @@ stack_enable_service_status: 'discourse:fragmentation_graph:ispyb:keycloak:squon
 # Logging framework level
 # A python logging level string
 stack_logging_framework_root_level: INFO
+
+# Wait for the neo4j graph to become ready before starting the stack?
+stack_wait_for_graph: yes
 
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,

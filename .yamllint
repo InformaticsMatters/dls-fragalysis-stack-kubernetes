@@ -12,6 +12,7 @@ ignore: |
   roles/database-replicator/templates/job-database-backup.yaml.j2
   roles/database-replicator/templates/job-database-recovery.yaml.j2
   roles/database-replicator/templates/cronjob-database-backup.yaml.j2
+  roles/fragalysis-stack/templates/configmap-postgres-init.yaml.j2
   roles/fragalysis-stack/templates/deployment-redis.yaml.j2
   roles/fragalysis-stack/templates/deployment-beat.yaml.j2
   roles/fragalysis-stack/templates/statefulset-database.yaml.j2

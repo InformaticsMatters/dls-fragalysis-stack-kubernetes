@@ -55,6 +55,7 @@ spec:
         - '-c'
         - 'until nslookup database; do echo waiting for database; sleep 1; done;'
         terminationMessagePolicy: FallbackToLogsOnError
+{% if stack_wait_for_graph|bool %}
       - name: wait-for-graph
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
@@ -62,6 +63,7 @@ spec:
         - '-c'
         - 'until nslookup {{ graph_hostname }}; do echo waiting for neo4j; sleep 1; done;'
         terminationMessagePolicy: FallbackToLogsOnError
+{% endif %}
       - name: wait-for-redis
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:

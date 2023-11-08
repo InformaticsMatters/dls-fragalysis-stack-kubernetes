@@ -1,0 +1,27 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: fragalysis-production
+  region: eu-west-2
+  version: '1.23'
+
+availabilityZones:
+- eu-west-2a
+- eu-west-2b
+- eu-west-2c
+
+managedNodeGroups:
+- name: mng-1
+  # The 2xlarge is an 8 core 32Gi instance
+  instanceType: m5.2xlarge
+  minSize: 1
+  maxSize: 1
+  desiredCapacity: 1
+  volumeSize: 80
+  volumeType: gp2
+  labels:
+    informaticsmatters.com/purpose-core: 'yes'
+    informaticsmatters.com/purpose-worker: 'yes'
+    informaticsmatters.com/purpose-application: 'yes'

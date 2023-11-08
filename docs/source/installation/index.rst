@@ -6,36 +6,38 @@ These instructions cover deployment of a basic production-grade
 Fragalysis Stack (without custom authentication).
 
 The Fragalysis Stack application consists of a **Stack** and a **Fragment Graph**.
-These application rely on additional *infrastructure* software in order to
-operate, specifically: -
+These applications rely on additional *infrastructure* components in order to
+operate.
 
 You can rely on our *built-in* infrastructure components (which come with
 a number of cluster pre-requisites) that are handled by our
-`ansible-infrastructure`_ repository, which installs the following: -
+`ansible-infrastructure`_ repository. Out infrastructure recommendation
+if to include AWX and a Keycloak server
 
 *   An NGINX ingress controller and associated Network Load balancer
 *   A RWX storage class (AWS EFS in our case)
 *   Pod Security Policies
 *   Certificate management
-*   `AWX`_ (the open-source upstream distribution of
-    RedHat's Ansible `Tower`_)
+*   `AWX`_ (the open-source upstream distribution of RedHat's Ansible `Tower`_)
 *   A PostgreSQL database
 *   An optional `Keycloak`_ server.
+*   Node labels
 
 Once the infrastructure is installed, deployment of the Graph-based fragment
-database and Fragalysis Stack is achieved through the use of *Jobs* that are
-configured on the infrastructure AWX server.
+database and Fragalysis Stack is achieved through the use of *Jobs* that you
+configure on the infrastructure AWX server.
 
 If you cannot install our infrastructure (i.e. you're on a secure or limited
-*on-prem* cluster) you must provide, at the very least: -
+*on-prem* cluster) you must provide: -
 
 *   An NGINX ingress controller and associated Network Load balancer
-*   A RWX storage class (AWS EFS in our case)
-*   Pod Security Policies
+*   A RWX storage class
+*   Pod Security Policies (if using Kubernetes 1.24 or earlier)
 *   Certificate management
+*   Node labels
 
 In addition to the application cluster you will need to provide an AWS S3
-bucket (or buckets) from whcih you can serve the graph and stack data - the
+bucket (or buckets) from which you can serve the graph and stack data - the
 applications will not work without any background data.
 
 What follows is a simplified guide to setting up a basic [#f1]_ deployment of

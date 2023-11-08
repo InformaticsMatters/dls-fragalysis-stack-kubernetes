@@ -125,7 +125,7 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         # Admin/superuser name and password
         - name: POSTGRES_USER
-          value: admin
+          value: {{ database_root_user }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
