@@ -15,8 +15,8 @@ Fragalysis Stack (Kubernetes)
     :maxdepth: 3
     :caption: Release process
 
-    architecture/ci-logic
     architecture/release-process
+    architecture/ci-logic
 
 ..  toctree::
     :maxdepth: 3
@@ -24,7 +24,7 @@ Fragalysis Stack (Kubernetes)
 
     architecture/index
     development/index
-    backups/index
+    database-backups/index
     production-replication/index
 
 ..  toctree::

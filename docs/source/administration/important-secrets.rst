@@ -25,11 +25,6 @@ defined in each repository that needs them as **repository** secrets.
 Repositories that trigger other repositories are ``fragalysis-frontend`` and
 ``fragalysis-backend``.
 
-..  note::
-
-    ``LOADER_`` variables relate to the legacy loader repository and its build.
-    These are no longer used and can be removed.
-
 *********
 DockerHub
 *********
@@ -56,15 +51,20 @@ Deployment Secrets
 ******************
 
 A number of secrets are passed to the stack image through its environment
-at run-time in Kubernetes. The following secrets, of particular importance,
-because they may be related to accounts of "real" users, will be held/defined
-in the AWX server.
+at run-time in Kubernetes. Most secrets are written  to the stack's **Namespace**
+using a **Secret** object. You should find the following **Secrets**, amongst others: -
 
-- ``ISPYB_USER``
-- ``ISPYB_PASSWORD``
-- ``SSH_USER``
-- ``SSH_PASSWORD``
+- ``database``
+- ``django``
+- ``ispyb``
+- ``ssh``
+- ``xchem``
 
+the origin of these secrets will either be found in the corresponding AWX Job Template
+(in the ``EXTRA VARIABLES`` section) or in this repository's
+``roles/fragalysis-stack/vars/sensitive.vault`` file (an `Ansible Vault`_` file).
+
+.. _ansible vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
 .. _access token: https://docs.docker.com/docker-hub/access-tokens
 .. _encrypted secrets: https://docs.github.com/en/actions/security-guides/encrypted-secrets
 .. _personal access token: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token

@@ -2,7 +2,7 @@
 The Rancher Server
 ##################
 
-The **DEVELOPMENT** and **PRODUCTION** clusters have been created with
+The **DEVELOPMENT** and **PRODUCTION** clusters have been created with,
 and are managed by `Rancher`_, deployed to the STFC/OpenStack cluster
 on a dedicated kubernetes cluster configured using `RKE`_: -
 

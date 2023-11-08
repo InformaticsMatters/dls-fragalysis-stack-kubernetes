@@ -6,6 +6,6 @@ Development Architecture
     :maxdepth: 2
     :caption: Architecture
 
-    new-branch-policy
+    branch-policy
     development-ci
     development-cd
