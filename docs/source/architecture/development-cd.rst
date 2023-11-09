@@ -45,6 +45,12 @@ be seen illustrated in the following diagram and described below: -
 
 ..  image:: ../images/frag-actions/frag-actions.009.png
 
+When deployed into Kubernetes the Fragalysis Stack manifests itself as a stack **Pod**
+(running the Django application) along with a database and a number of other objects,
+summarised in the following diagram: -
+
+..  image:: ../images/frag-actions/frag-actions.020.png
+
 Deployment actions (from commits)
 =================================
 

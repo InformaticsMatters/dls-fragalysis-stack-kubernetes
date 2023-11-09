@@ -53,6 +53,12 @@ fragalysis-stack
     `Docker Hub`_, and is based on the content of both the
     frontend and backend images.
 
+When deployed into a Kubernetes **Namespace** the the Fragalysis Stack manifests
+itself as a stack **Pod** (running the Django application) along with a database and a
+number of other objects, summarised in the following diagram: -
+
+..  image:: ../images/frag-actions/frag-actions.020.png
+
 ****************************
 Build example (stack master)
 ****************************
