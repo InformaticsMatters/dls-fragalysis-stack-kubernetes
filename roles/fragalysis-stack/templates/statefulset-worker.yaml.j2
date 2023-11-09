@@ -2,20 +2,20 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: stack
+  name: worker
   namespace: {{ stack_namespace }}
 spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      name: stack
-  serviceName: stack
-  replicas: {{ stack_replicas }}
+      name: worker
+  serviceName: worker
+  replicas: {{ worker_replicas }}
   template:
     metadata:
-      name: stack
+      name: worker
       labels:
-        name: stack
+        name: worker
     spec:
       serviceAccountName: stack
 
@@ -55,7 +55,6 @@ spec:
         - '-c'
         - 'until nslookup database; do echo waiting for database; sleep 1; done;'
         terminationMessagePolicy: FallbackToLogsOnError
-{% if stack_wait_for_graph|bool %}
       - name: wait-for-graph
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
@@ -63,7 +62,6 @@ spec:
         - '-c'
         - 'until nslookup {{ graph_hostname }}; do echo waiting for neo4j; sleep 1; done;'
         terminationMessagePolicy: FallbackToLogsOnError
-{% endif %}
       - name: wait-for-redis
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
@@ -73,7 +71,7 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError
 
       containers:
-      - name: stack
+      - name: worker
         image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
 {% if stack_image_pull_policy %}
         imagePullPolicy: {{ stack_image_pull_policy }}
@@ -92,26 +90,11 @@ spec:
           requests:
             cpu: {{ stack_cpu_request }}
             memory: {{ stack_mem_request }}
-        # Expect the earliest that the container can be ready is 60 seconds.
-        # But check every 15 seconds and permit 36 failures before
-        # considering the startup to have failed (that's about 10 minutes).
-        readinessProbe:
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 10
-          tcpSocket:
-            port: 80
-        # Consider the container dead if the port is not open
-        # after 4 attempts over a 1 minute period after about 4 minutes.
-        livenessProbe:
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 10
-          tcpSocket:
-            port: 80
         env:
+        # This container's role is a (celery) worker...
+        # Otherwise everything else is configured just like the Stack container.
+        - name: CONTAINER_ROLE
+          value: worker
         - name: CELERY_BROKER_URL
           value: redis://redis:6379/0
         - name: CELERY_RESULT_BACKEND
@@ -333,8 +316,6 @@ spec:
               name: ssh
               key: security_connector
 {% endif %}
-        - name: ENABLE_SERVICE_STATUS
-          value: '{{ stack_enable_service_status }}'
         - name: LOGGING_FRAMEWORK_ROOT_LEVEL
           value: '{{ stack_logging_framework_root_level }}'
         # The playbook date/time
@@ -349,6 +330,7 @@ spec:
         - name: media
           mountPath: /code/media
 {% if stack_log_vol_storageclass %}
+        volumeMounts:
         - name: log
           mountPath: /code/logs
 {% endif %}

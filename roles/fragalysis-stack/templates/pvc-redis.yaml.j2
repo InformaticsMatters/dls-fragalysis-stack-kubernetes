@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: media
+  name: redis
   namespace: {{ stack_namespace }}
 spec:
   accessModes:
-  - ReadWriteMany
-  storageClassName: '{{ stack_media_vol_storageclass }}'
+  - ReadWriteOnce
+  storageClassName: '{{ redis_vol_storageclass }}'
   resources:
     requests:
-      storage: '{{ stack_media_vol_size_g }}Gi'
+      storage: '{{ redis_vol_size_g }}Gi'

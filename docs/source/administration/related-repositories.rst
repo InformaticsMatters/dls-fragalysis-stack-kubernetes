@@ -23,7 +23,6 @@ GitHub account.
 *   docker-neo4j-ansible
 *   docker-volume-replicator
 *   trigger-awx
-*   trigger-travis
 
 The following repositories are employed to generate neo4j-compliant
 fragmentation data: -
@@ -34,7 +33,6 @@ Cluster formation (using STFC OpenStack) resources are managed by the
 following repositories: -
 
 *   ansible-bastion
-*   ansible-galaxy-cloud [#f1]_
 
 ******************
 XChem Repositories
@@ -44,22 +42,20 @@ Repositories hosted on the `XChem <https://github/xchem/>`_
 GitHub account.
 
 *   fragalysis
+*   fragalysis-api
 *   fragalysis-backend
 *   fragalysis-frontend
-*   fragalysis-loader
 *   fragalysis-stack
 
 **********************
 3rd Party Repositories
 **********************
 
-Repositories hosted on `GitHub <https://github/>`_ that we
-rely on but have little or no control over: -
+Repositories hosted on GitHub that we rely on but have little or
+no control over: -
 
-*   kubernetes/ingress-nginx
+*   `ingress-nginx`_
+*   `cert-manager`_
 
-.. rubric:: Footnotes
-
-.. [#f1] This repository creates a Nextflow/Slurm/Munge/Pulsar cluster
-         that can be used but it was not employed to create the existing
-         Galaxy/Condor cluster, which created independently of our tools.
+.. _cert-manager: https://github.com/cert-manager/cert-manager
+.. _ingress-nginx: https://github.com/kubernetes/ingress-nginx

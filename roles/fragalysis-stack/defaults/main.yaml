@@ -7,6 +7,11 @@ stack_image_registry: docker.io
 stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
 stack_replicas: 2
+worker_replicas: 2
+
+# Run the celery 'beat' Pod?
+enable_beat_pod: yes
+
 # Deploy the nery service?
 stack_deploy_nery: no
 # Include the 'sensitive.yaml' file?
@@ -66,6 +71,7 @@ stack_name: default
 # If integrating with a Discourse server
 # you will need an API key and (optionally) an alternative host.
 # If the host is left unset an internal default may be chosen.
+# The host should be a URL, e.g. 'https://discourse.example.com'.
 stack_discourse_api_key: ''
 stack_discourse_host: ''
 
@@ -168,6 +174,10 @@ database_bu_use_rsync: no
 # Typically set to 'no' when the DB is to be used for recovery.
 database_use_init_file: yes
 
+# The redis Pod
+redis_vol_storageclass: ' '
+redis_vol_size_g: 1
+
 # Squonk/2 material, unset by default.
 # User can provide UI, DM and AS API URLs.
 # There are URLs to the services, i.e. https://example.com/data-manager-api/api
@@ -183,6 +193,15 @@ stack_squonk2_unit_billing_day: 3
 # The Client ID (known to Keycloak)
 stack_oidc_as_client_id: ''
 stack_oidc_dm_client_id: ''
+
+# Stack service status reporting.
+# A colon-separated list of service IDs whose status is expected to be returned
+# by the service status API. This is provided to the container via the
+# ENABLE_SERVICE_STATUS environment variable.
+#
+# A full set of values would include:
+#   discourse:fragmentation_graph:ispyb:keycloak:squonk
+stack_enable_service_status: 'discourse:fragmentation_graph:ispyb:keycloak:squonk'
 
 # Logging framework level
 # A python logging level string

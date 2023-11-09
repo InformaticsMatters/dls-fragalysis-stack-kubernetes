@@ -131,7 +131,7 @@
 
   - name: Check namespace value (non-developer)
     assert:
-      that: stack_namespace in ['staging-stack', 'production-stack']
+      that: stack_namespace in ['staging-stack', 'staging-stack-legacy', 'production-stack', 'production-stack-legacy']
 
   when: not stack_is_for_developer|bool
 

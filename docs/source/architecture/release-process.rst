@@ -10,27 +10,17 @@ by the stack's ``Dockerfile``.
 ***************************
 Releasing stacks to staging
 ***************************
-Whenever the ``staging`` or ``production`` branch of the **backend** is built
-it triggers a build of the **stack**, producing a stack image labelled ``latest``.
-These ``latest`` images are manually deployed to the designated Kubernetes
+
+Whenever the ``staging`` or ``production`` branch of the **backend** (or **frontend**)
+is built it triggers a build of the **stack**, producing a stack image labelled ``latest``.
+These ``latest`` images are automatically deployed to the designated Kubernetes
 namespace using a production cluster AWX Job Template.
 
 .. epigraph::
 
-    You *normally* do not need to build the stack, a ``latest`` version should
+    You *normally* do not need to build the stack. A ``latest`` version should
     have been built automatically from the most recent activity in either the
-    **frontend** or **backed**.
-
-When done deploy the stack using the appropriate AWX **Job Template**,
-this is likely to be the template **Staging Fragalysis Stack (Version Change)**.
-The ``stack_image_tag`` should already be set to ``latest``, the image
-just built.
-
-.. epigraph::
-
-    An expert user could also simply delete the corresponding **Pod**
-    (in the `staging-stack` **Namespace**) which will force Kubernetes to pull
-    the new (``latest``) container image before starting running it.
+    **frontend** or **backed** ``staging`` branches
 
 ******************************
 Releasing stacks to production
@@ -46,13 +36,13 @@ to ensure that the action has completed successfully before moving to the next s
 Releasing production code takes time. Currently the time-consuming actions
 (July 2023) are: -
 
--   3-4 minutes for a **backend** build to complete
-    (which happens when you tag it)
--   10-15 minutes for a **stack** build to complete
-    (which happens when you tag the backend and when you tag the stack)
+-   3-4 minutes for a typical **backend** build
+-   5-6 minutes for a typical **frontend** build
+-   10-15 minutes for a typical **stack** build
 -   "N" minutes your time to verify the production stack is behaving as you expect
 
-So set aside at least 45 minutes of your time to make and check a production release
+In summary, you should set aside at least 45 minutes of your time in order
+to make and check a production release of the fragalysis stack.
 
 When you are ready to release a production version of the **stack** you **MUST**: -
 
@@ -66,7 +56,7 @@ When you are ready to release a production version of the **stack** you **MUST**
 
     #.  Replace the value of the ``env`` variable ``BE_IMAGE_TAG``
         with your chosen version of the backend container image
-    #.  Replace the ``FE_BRANCH`` with your chosen version of the
+    #.  Replace the ``FE_IMAGE_TAG`` with your chosen version of the
         frontend code (the variable is a GitHub *reference* and can
         be a set to a tag as well as a branch name)
 
@@ -83,12 +73,13 @@ production Kubernetes cluster.
 
 Example
 *******
+
 To deploy a new production **stack** version ``2023.06.2`` based
 on **backend** ``2023.05.1`` and **frontend** ``2023.05.4`` set the
 workflow file variables to this::
 
     BE_IMAGE_TAG: 2023.05.1
-    FE_BRANCH: 2023.05.4
+    FE_IMAGE_TAG: 2023.05.4
 
 Commit the change and then (when the build passes) tag the stack repository's
 ``master`` branch with the value ``2023.06.2``.

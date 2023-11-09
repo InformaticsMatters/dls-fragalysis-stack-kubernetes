@@ -1,5 +1,5 @@
 ######################
-Continuous Development
+Continuous Integration
 ######################
 
 .. epigraph::
@@ -14,22 +14,19 @@ build, test and deploy the Fragalysis Stack container images.
 
 We have added facilities to *chain* builds (for one GitHub repository
 to trigger another) using our custom `trigger-ci-action`_
-GitHub Action and to also deploy container images to the cluster using
-pre-deployed AWX Template Jobs using our custom `trigger-awx-action`_
+GitHub Action. We deploy container images to the cluster using
+pre-configured AWX **Job Templates** using our custom `trigger-awx-action`_
 GitHub Action.
 
 *****************************
 Fragalysis Stack Repositories
 *****************************
 
-The stack is distributed as two container images, a *Loader* and
-a *Stack*. There are five GitHub repositories involved in the build of these
-two images::
+There are four GitHub repositories involved in the build of the stack image::
 
     fragalysis
     fragalysis-backend
     fragalysis-frontend
-    fragalysis-loader (deprecated)
     fragalysis-stack
 
 The by-product of each repository is: -
@@ -41,71 +38,64 @@ fragalysis
 
 fragalysis-backend
     The output of the ``fragalysis-backend`` is a container image, written to
-    `Docker Hub`_. This image is used as a ``FROM`` image in both the
-    *Loader* and *Stack*. The backend ``FROM`` image is based on
-    ``informaticsmatters/rdkit-python-debian:latest``.
+    `Docker Hub`_. This image is used as a ``FROM`` image in the
+    *Stack* `multi-stage build`_. The backend is based on a **Python**
+    "slim-bullseye" image.
 
 fragalysis-frontend
-    The output of the ``fragalysis-frontend`` is nothing. The code is instead
-    *cloned* into the container image of the ``fragalysis-stack`` when the
-    stack is built.
-
-fragalysis-loader (deprecated)
-    The output of the ``fragalysis-loader`` is a container image, written to
-    `Docker Hub`_. It uses the image produced by the ``fragalysis-backend``
-    as its ``FROM`` image.
+    The output of the ``fragalysis-frontend`` is a container image, written to
+    `Docker Hub`_. This image is used as a ``FROM`` image in the
+    *Stack* `multi-stage build`_. The frontend is based on a **Node**
+    "bullseye" image.
 
 fragalysis-stack
     The output of the ``fragalysis-stack`` is a container image, written to
-    `Docker Hub`_. Like the *Loader* it uses the image produced by the
-    ``fragalysis-backend`` as its ``FROM`` image.
+    `Docker Hub`_, and is based on the content of both the
+    frontend and backend images.
 
-**********************
-Build example (master)
-**********************
+When deployed into a Kubernetes **Namespace** the the Fragalysis Stack manifests
+itself as a stack **Pod** (running the Django application) along with a database and a
+number of other objects, summarised in the following diagram: -
 
-Let's see how **GitHin Actions** work for the Fragalysis Stack by exploring
-a simple example, where a user-change to a repository's *master* branch
+..  image:: ../images/frag-actions/frag-actions.020.png
+
+****************************
+Build example (stack master)
+****************************
+
+Let's see how **GitHub Actions** work for the Fragalysis Stack by exploring
+a simple example, where a user-change to a repository's *staging* branch
 results in the stack being re-built, illustrated by the following diagram.
 
 ..  image:: ../images/frag-actions/frag-actions.001.png
 
 The diagram illustrates a *user* making a change (**A**) to the
-``master`` branch of ``fragalysis-backend`` repository. The following steps
+``staging`` branch of ``fragalysis-backend`` repository. The following steps
 occur, in approximate order: -
 
-1.  **GitHub Actions** detect the change and create a VM on which the build
-    (and testing) takes place. The result of the build is a **docker push**
-    to `Docker Hub`_. The image pushed is ``xchem/fragalysis-backend:latest``
-    where the docker *user* is ``xchem``, the project is ``fragalysis-backend``
-    and the tag is ``latest`` (the significance of these values will become
-    important later).
+1.  **GitHub Actions** detect the change and a build takes place
+    that results in a backend image build pushed to `Docker Hub`_.
+    The image pushed is ``xchem/fragalysis-backend:latest``.
 
-2.  At the end of the build of ``fragalysis-backend`` the **Action** is configured
-    to *trigger* a build in the remote repository ``fragalysis-stack``.
-    There's a new *backend* image so the stack, which depends on it, is
-    instructed to build. It uses our `trigger-ci-action`_ Action to do this.
+2.  At the end of the backend build the **Action** *triggers* a build in the remote
+    repository ``fragalysis-stack``. It uses our `trigger-ci-action`_ Action to do this.
 
-3.  As the *Loader* also depends on the output of this build **Actions**
-    also *trigger** the ``fragalysis-loader`` to build.
+3.  The ``fragalysis-stack`` **Actions** (triggered by the
+    *backend* changes above) runs a build and its image is pushed to Docker Hub.
+    The backend image is based on the contents of both the backend and frontend
+    container images. The image pushed is ``xchem/fragalysis-stack:latest``.
 
-4.  The ``fragalysis-loader`` **Actions** session (triggered by the *backend*)
-    builds and, as its output is a container image, the image is pushed to
-    Docker Hub. The image pushed is ``xchem/fragalysis-loader:latest``
-
-5.  The ``fragalysis-stack`` **Actions** session (also triggered by the
-    *backend* changes above) builds and its image is pushed to Docker Hub.
-    The image pushed is ``xchem/fragalysis-stack:latest``
+Importantly, there is only one branch in the stack repository, ``master``.
 
 ********************************
 More scenarios (here be Dragons)
 ********************************
 
-That's a simplistic illustration of a *build chain* from one ``master``
-branch rippling through the dependent builds on the ``master`` branch.
+That's a simplistic illustration of a *build chain* from one ``staging``
+branch rippling through the dependent repositories.
 
 But software development's more complicated than just changes to the
-``master`` branch and, in these cases, **GitHub Actions** will need some help.
+``staging`` branch and, in these cases, **GitHub Actions** will need some help.
 
 How does the Action know which repos to trigger?
 ================================================
@@ -123,23 +113,22 @@ repositories, the author has to know which repositories depend on their code.
 How does a repo know what container tag to use?
 ===============================================
 
-By convention, in a CI/CD sense, automated builds on ``master`` produce
+By convention, in a CI/CD sense, automated builds on ``staging`` produce
 container images tagged ``latest``. The **Action** build can be easily
-organised to produce a tag that is the branch name if the build is on a branch.
-Branch ``1-defect`` might therefore produce images that are pushed to docker
-using the tag ``1-defect``
+configured to produce any tag but we tend to use ``latest`` or
+the tag used when a repository **Release** or **Tag** is created.
 
 How do I instruct the downstream to use my image?
 =================================================
 
-In our example we've assumed the branch being manipulated is ``master``
-and in this *very simple* workflow we want all the dependent ``master``
-branches to build resulting in their own ``latest`` images.
+In our example we've assumed the branch being manipulated is ``staging``
+and in this *very simple* workflow we want all the dependent ``staging``
+branches to build, resulting in their own ``latest`` images.
 
 But what if you're working on a defect on the *backend*, on a branch
-called ``1-defect``? Do you want to trigger a rebuild of the *Stack*'s
+called ``issue-1178.1``? Do you want to trigger a rebuild of the *Stack*'s
 ``latest`` image from ``fragalysis-backend:latest``? No, you want the
-stack to use ``fragalysis-backend:1-defect`` as its ``FROM``.
+stack to use ``fragalysis-backend:issue-1178.1`` as its ``FROM``.
 
 So this is where the `trigger-ci-action`_ Acton, calling the **GitHub** REST API
 and your **workflow** file in both your *upstream* and *downstream*
@@ -152,29 +141,32 @@ There are default values, namely: -
 
 *   ``BE_NAMESPACE`` AND ``BE_IMAGE_TAG`` (defaulting to ``xchem``
     and ``latest``)
-*   ``FE_NAMESPACE`` AND ``FE_BRANCH`` (defaulting to ``xchem``
-    and ``master``)
+*   ``FE_NAMESPACE`` AND ``FE_IMAGE_TAG`` (defaulting to ``xchem``
+    and ``latest``)
 
-All the *upstream* repository's **workflow** has to do is ensure that
-it *injects* its own value for these variables using the
+All the *upstream* repository's **workflow** file has to do is ensure that
+it *injects* appropriate values for these variables using the
 `trigger-ci-action`_. For this example we'd set the variables::
 
     with:
       ci-inputs: >-
-        be_namespace=1-defect
+        be_namespace=issue-1178.1
         be_image_tag=xchem
 
-and the triggered build will produce for us a Stack image based on our
-``1-defect`` backend image.
+With this setup the triggered build will produce a Stack image based on our
+``issue-1178.1`` backend image.
 
 Brilliant!
 
-But hold on - the stack will be based on ``1-defect`` while producing
-a ``latest``.
+But hold on - the stack will be based on ``issue-1178.1`` while producing
+its own ``latest`` image.
 
-We can add more variables to our *downstream* repository's ``workflow_dispatch``
-handler so that the tag it uses is actually based on the tag found in the
-variable ``stack_namespace`` value.
+The stack's *downstream* repository's ``workflow_dispatch``
+handler also accommodates the variables ``stack_namespace`` and ``stack_version``.
+If you set these in your trigger action you can build a stack image
+``alanbchristie/fragalysis-stack:issue-1178.1`` by setting the variables
+``stack_namespace`` and ``stack_version`` to ``alanbchristie`` and
+``issue-1178.1`` respectively.
 
 Simple ... ish
 
@@ -192,8 +184,8 @@ What if I want to trigger a non-master downstream branch?
 
     That's a very good question.
 
-If I have a ``1-defect`` branch in the *upstream* build and I want to trigger
-the ``1-defect`` branch in the *downstream* project?
+If I have a ``issue-1178.1`` branch in the *upstream* build and I want to trigger
+the ``issue-1178.1`` branch in the *downstream* project?
 
 It's solved by the `trigger-ci-action`_ Action, which allows you to pass in
 a ``ci-ref`` definition so that **GitHub** builds the branch you name rather than
@@ -223,28 +215,6 @@ to trigger the build of a branch in the fork of another repository...
 Mmmmm
     We're starting to sink deeper into a very complicated world.
 
-Hold on - **Jenkins** seemed fine. Have we lost something useful?
-
-Yes ... but that usefulness came with significant cost: -
-
-**Jenkins** could do this easily because it was cloning the repositories and
-building them, while pushing to Docker registries while armed with keys to the
-xchem Docker Hub account. We had the secrets safely stored in **Jenkins**.
-That is something we cannot achieve in the **GitHub** world - we can;t give
-everyone a key, that's not secure.
-
-Also, creating OpenShift deployments per developer and configuring Jenkins
-takes several hours, probably half a day.
-
-So here we have a situation that was easily solved in **Jenkins** and
-OpenShift that becomes enormously complicated (and probably impossible or at
-the very least extremely undesirable) in the **GitHub** World.
-
-It's here we have to think about how developers develop code for the
-Fragalysis Stack and Kubernetes.
-
-We need an altogether simpler approach.
-
 **************************
 Development Recommendation
 **************************
@@ -254,12 +224,12 @@ we...
 
 1.  ...utilise **trigger-ci-action** actions in the main ``xchem`` repositories.
     The build triggers are used *exclusively* for the automatic production of
-    ``latest`` images on the ``master`` branch.
+    ``latest`` images on the ``master`` branch of the stack.
 
 2.  Similarly, GitHub builds tagged images on the main ``xchem`` repositories
     based on the presence of a release (or tag) in the repository.
-    ``fragalysis-backend:1.0.0`` is automatically produced when the owner
-    applies the tag ``1.0.0`` to the ``fragalysis-backend`` repository.
+    ``fragalysis-backend:2023.11.1`` is automatically produced when the owner
+    applies the tag ``2023.11.1`` to the ``fragalysis-backend`` repository.
 
 The main stack deployment is therefore automatic, continuous, fast but,
 above all, simple.
@@ -272,18 +242,18 @@ Individual developers...
 4.  No images are automatically produced from changes to branches or forks.
 
 5.  Developers are responsible for building their own container images
-    and for pushing them to Docker Hub. **Tina** working on branch ``1-defect``
+    and for pushing them to Docker Hub. **Tina** working on branch ``issue-1178.1``
     in a *fork* of the ``fragalysis-frontend`` repository is responsible
     for producing the corresponding ``stack`` image by (ideally) also forking
     and manipulating the ``fragalysis-stack`` repository so that it clones her
     frontend code rather than the code from ``xchem/fragalysis-frontend``.
 
-6.  In order to deploy their project to Kubernetes (the subject of another Guide),
+6.  In order to deploy their project to Kubernetes (the subject of another guide),
     users may push their container image to any Docker Hub namespace, project
-    or tag. **Tina** can push her image as ``xyz/stack-tina:1-defect`` if she
+    or tag. **Tina** can push her image as ``xyz/stack-tina:issue-1178.1`` if she
     chooses. This works because she will have deployed her project to
     Kubernetes (now a developer responsibility) configured tso her cloud
-    deployment's stack should run using the image ``xyz/stack-tina:1-defect``
+    deployment's stack should run using the image ``xyz/stack-tina:issue-1178.1``
     (rather than the default ``xchem/fragalysis-stack:latest``). **Tina**
     can also select the version of the database she wants to use and the URL
     of the graph database. When she's done she destroys the Kubernetes project.
@@ -418,18 +388,6 @@ This is essentially a combination of the three prior scenarios.
     repositories are made in order to propagate the changes back to the XChem
     repos.
 
-*********************************
-Development Prep and Cheat-Sheets
-*********************************
-
-The following documents provide helpful start-up guides for development,
-the debugging of your deployed applications.
-
-..  toctree::
-    :maxdepth: 1
-
-    stack-loader
-
 .. rubric:: Footnotes
 
 .. [#f1] Publishing to PyPi does not currently result in a trigger of the
@@ -443,9 +401,10 @@ the debugging of your deployed applications.
 .. [#f5] Automation fo the image project from the project fork should be
          possible so the user may not have to specify anything in this case.
 
+.. _actions: https://github.com/features/actions
 .. _current: https://github.com/pavol-brunclik-m2ms/fragalysis-frontend/tree/develop
 .. _docker hub: https://hub.docker.com/search?q=xchem&type=image
-.. _pypi: https://pypi.org/project/fragalysis/
-.. _actions: https://github.com/features/actions
+.. _multi-stage build: https://docs.docker.com/build/building/multi-stage
+.. _pypi: https://pypi.org/project/fragalysis
 .. _trigger-ci-action: https://github.com/InformaticsMatters/trigger-ci-action
 .. _trigger-awx-action: https://github.com/InformaticsMatters/trigger-awx-action

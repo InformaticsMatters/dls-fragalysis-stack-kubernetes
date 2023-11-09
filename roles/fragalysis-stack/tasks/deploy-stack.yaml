@@ -189,8 +189,15 @@
     wait: yes
   loop:
   - statefulset-stack
+  - statefulset-worker
   - service-stack
   - ingress-stack
+
+- name: Deploy beat
+  k8s:
+    definition: "{{ lookup('template', 'deployment-beat.yaml.j2') }}"
+    wait: yes
+  when: enable_beat_pod|bool
 
 - name: Deploy nery
   k8s:

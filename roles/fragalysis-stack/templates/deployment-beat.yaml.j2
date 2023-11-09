@@ -1,0 +1,125 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: beat
+  namespace: {{ stack_namespace }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: beat
+  template:
+    metadata:
+      labels:
+        name: beat
+    spec:
+      serviceAccountName: stack
+
+      # Pod Node Affinity.
+      # Prefer 'core' before 'application'
+      # then try anything other than 'worker before finally trying 'worker'
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 40
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-core
+                operator: Exists
+          - weight: 30
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-application
+                operator: Exists
+          - weight: 20
+            preference:
+              matchExpressions:
+              - key: informaticsmatters.com/purpose-worker
+                operator: DoesNotExist
+
+{% if all_image_preset_pullsecret_name|string|length > 0 %}
+      imagePullSecrets:
+      - name: {{ all_image_preset_pullsecret_name }}
+{% endif %}
+          
+      initContainers:
+      - name: wait-for-database
+        image: {{ busybox_image_registry }}/library/busybox:1.28.0
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nslookup database; do echo waiting for database; sleep 1; done;'
+        terminationMessagePolicy: FallbackToLogsOnError
+      - name: wait-for-redis
+        image: {{ busybox_image_registry }}/library/busybox:1.28.0
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nslookup redis; do echo waiting for redis; sleep 1; done;'
+        terminationMessagePolicy: FallbackToLogsOnError
+
+      containers:
+      - name: beat
+        image: '{{ stack_image_registry }}/{{ stack_image }}:{{ stack_image_tag }}'
+{% if stack_image_pull_policy %}
+        imagePullPolicy: {{ stack_image_pull_policy }}
+{% elif stack_image_tag in ['latest', 'stable'] %}
+        imagePullPolicy: Always
+{% else %}
+        imagePullPolicy: IfNotPresent
+{% endif %}
+        resources:
+          limits:
+            cpu: 250m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        env:
+        # This container's role is a (celery) beat scheduler...
+        - name: CONTAINER_ROLE
+          value: beat
+        - name: CELERY_BROKER_URL
+          value: redis://redis:6379/0
+        - name: CELERY_RESULT_BACKEND
+          value: redis://redis:6379/0
+        - name: WEB_DJANGO_SUPERUSER_NAME
+          value: admin
+        - name: WEB_DJANGO_SUPERUSER_EMAIL
+          value: noone@example.com
+        - name: WEB_DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: django
+              key: secret_key
+        - name: WEB_DJANGO_SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: django
+              key: superuser_password
+        # Extracted from database secrets...
+        #
+        - name: POSTGRESQL_DATABASE
+          value: frag
+        - name: POSTGRESQL_USER
+          value: fragalysis
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: user_password
+        - name: POSTGRESQL_HOST
+          value: '{{ database_host_fact|default('database', true) }}'
+        - name: POSTGRESQL_PORT
+          value: '{{ database_port_fact|default('5432', true) }}'
+        # The playbook date/time
+        # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
+        # This is used in situations where the origin image's tag may not
+        # have changed (e.g. it's 'latest' or 'stable') but a new build is
+        # expected to be available. Without changing something in the
+        # StatefulSet spec a roll-out will not occur if the tag has not changed.
+        - name: ANSIBLE_DATE_TIME_ISO8601_MICRO
+          value: '{{ ansible_date_time.iso8601_micro }}'

@@ -102,7 +102,7 @@ Setting up GitHub Actions for CI/CD
 In this deployment, we use GitHub `Actions`_ to run our CI/CD process.
 
 Intro to how the CI/CD works
-----------------------------
+============================
 
 This is a cumbersome but worthwhile step. First of all, you should decide which
 repositories you want to work on and fork them.

@@ -81,6 +81,12 @@ database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_
 # via the postgres-init ConfigMap.
 database_create_users_and_databases: yes
 
+redis_image: redis
+redis_image_tag: '7.2.0-alpine3.18'
+# Redis configuration (ConfigMap) values
+redis_conf_loglevel: notice
+redis_conf_maxmemory: 256mb
+
 # General variables -----------------------------------------------------------
 
 # General timeout, used within the k8s module for wait duration

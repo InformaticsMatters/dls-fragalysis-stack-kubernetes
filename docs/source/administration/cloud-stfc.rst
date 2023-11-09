@@ -9,9 +9,9 @@ Instance base image
 *******************
 
 The cluster nodes are based on a refined image called
-``ubuntu-bionic-xchem-noupdate4-noquattor`` [#f1]_. This special Ubuntu image
-(prepared by the STFC team) is also pre-configured to disable automated system
-updates driven by the provider's use fo the `Quattor`_ toolkit
+``rke-k8s-base-ubuntu-docker-20.10.24-b`` [#f1]_. This special Ubuntu image
+is also pre-configured to disable automated system
+updates driven by the provider's use of the `Quattor`_ toolkit
 (see the provider's `NoQuattor`_ notes).
 
 If the automated updates are not disabled there's a risk that the node's
@@ -32,4 +32,4 @@ notes on how to disable automated updates.
 
 .. rubric:: Footnotes
 
-.. [#f1] ID: 12cd22a2-637f-490e-b703-681dace0f761
+.. [#f1] ID: 7bbd2921-624a-4fab-ba94-85c6b6247f81
