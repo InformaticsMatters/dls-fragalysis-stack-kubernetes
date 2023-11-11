@@ -105,6 +105,8 @@ spec:
           value: {{ graph_hostname }}
         - name: NEO4J_AUTH
           value: 'neo4j/{{ graph_password }}'
+        - name: WORKER_CONCURRENCY
+          value: '{{ worker_concurrency }}'
         # Extracted from stack secrets...
         #
         - name: WEB_DJANGO_SUPERUSER_NAME

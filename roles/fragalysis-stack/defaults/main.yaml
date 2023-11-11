@@ -6,8 +6,12 @@
 stack_image_registry: docker.io
 stack_image: xchem/fragalysis-stack
 stack_image_tag: latest
+# Stack and worker replicas (Pods)
 stack_replicas: 2
 worker_replicas: 2
+# Stack and worker concurrency (Processes/threads)
+stack_concurrency: 4
+worker_concurrency: 4
 
 # Run the celery 'beat' Pod?
 enable_beat_pod: yes
