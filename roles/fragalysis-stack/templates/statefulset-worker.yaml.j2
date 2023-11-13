@@ -85,11 +85,11 @@ spec:
         - containerPort: 80
         resources:
           limits:
-            cpu: {{ stack_cpu_limit }}
-            memory: {{ stack_mem_limit }}
+            cpu: {{ worker_cpu_limit }}
+            memory: {{ worker_mem_limit }}
           requests:
-            cpu: {{ stack_cpu_request }}
-            memory: {{ stack_mem_request }}
+            cpu: {{ worker_cpu_request }}
+            memory: {{ worker_mem_request }}
         env:
         # This container's role is a (celery) worker...
         # Otherwise everything else is configured just like the Stack container.

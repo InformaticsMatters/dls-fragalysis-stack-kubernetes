@@ -41,10 +41,10 @@ stack_sa_psp: im-core-unrestricted
 # If blank ('') there will be no certificate.
 stack_cert_issuer: staging
 
-stack_cpu_limit: 8000m
-stack_mem_limit: 10Gi
+stack_cpu_limit: 4000m
+stack_mem_limit: 16Gi
 stack_cpu_request: 250m
-stack_mem_request: 4Gi
+stack_mem_request: 16Gi
 
 # The Django app's media directory.
 # To hold map and pdb target data, which
@@ -54,10 +54,17 @@ stack_media_vol_size_g: 8
 stack_django_secret_key: "{{ lookup('password', '/dev/null length=50 chars=ascii_letters') }}"
 stack_django_superuser_password: "{{ lookup('password', '/dev/null length=22 chars=ascii_letters') }}"
 
+# Worker configuration --------------------------------------------------------
+
+worker_cpu_limit: 4000m
+worker_mem_limit: 16Gi
+worker_cpu_request: 250m
+worker_mem_request: 16Gi
+
 # Database configuration ------------------------------------------------------
 
 # Database Pod CPU and Memory resources
-database_cpu_limit: 2000m
+database_cpu_limit: 4000m
 database_mem_limit: 2Gi
 database_cpu_request: 10m
 database_mem_request: 400Mi
