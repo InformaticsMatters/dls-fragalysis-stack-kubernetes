@@ -50,18 +50,6 @@
       that: result.resources|length > 0
       fail_msg: Namespace '{{ stack_namespace }}' does not exist
 
-  - name: Get expected StatefulSet
-    k8s_info:
-      kind: StatefulSet
-      name: stack
-      namespace: "{{ stack_namespace }}"
-    register: result
-
-  - name: Assert stack exists
-    assert:
-      that: result.resources|length > 0
-      fail_msg: Stack's StatefulSet does not exist
-
   - name: Check database secrets
     k8s_info:
       kind: Secret
