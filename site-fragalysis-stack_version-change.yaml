@@ -1,7 +1,0 @@
----
-
-- hosts: localhost
-  tasks:
-  - include_role:
-      name: fragalysis-stack
-      tasks_from: version-change.yaml
