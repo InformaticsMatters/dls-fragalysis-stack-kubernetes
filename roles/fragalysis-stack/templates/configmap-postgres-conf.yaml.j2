@@ -6,10 +6,4 @@ metadata:
   namespace: {{ stack_namespace }}
 data:
   postgresql.conf: |
-    #--------------------------------------------------------------------------
-    # CONNECTIONS AND AUTHENTICATION
-    #--------------------------------------------------------------------------
-    listen_addresses = '*'
-    max_connections = {{ database_conf.max_connections }}
-    shared_buffers = {{ database_conf.shared_buffers }}
-    work_mem = {{ database_conf.work_mem }}
+    {{ database_conf }}

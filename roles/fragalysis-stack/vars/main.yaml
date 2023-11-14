@@ -74,13 +74,14 @@ database_image: library/postgres
 database_image_tag: '12.16'
 database_port: 5432
 
-# Configuration of the DB server.
-# Values written to the postgres-conf ConfigMap.
-# Values written here should be the typical default.
-database_conf:
-  max_connections: 100
-  shared_buffers: 128MB
-  work_mem: 4MB
+# Configuration of the DB server. Content written to the postgres-conf ConfigMap.
+# Values defined here should be typical defaults for the default database_image_tag.
+# If users want to change the values they must provide a replacement of
+# the entire configuration file.
+database_conf: |
+  max_connections = 100
+  shared_buffers = 128MB
+  work_mem = 4MB
 
 # For the django application database.
 # Needs at least 400MB, size it accordingly.
