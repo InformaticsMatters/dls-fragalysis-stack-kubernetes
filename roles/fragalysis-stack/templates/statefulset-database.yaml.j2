@@ -53,7 +53,7 @@ spec:
       - name: {{ all_image_preset_pullsecret_name }}
 {% endif %}
 
-      initontainers:
+      initContainers:
       - name: copy-conf
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
         command:
