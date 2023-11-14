@@ -53,21 +53,21 @@ spec:
       - name: {{ all_image_preset_pullsecret_name }}
 {% endif %}
 
-      initContainers:
-      - name: copy-conf
-        image: {{ busybox_image_registry }}/library/busybox:1.28.0
-        command:
-        - '/bin/sh'
-        - '-c'
-        - 'mkdir -p /var/lib/postgresql/data/pgdata && cp /tmp/postgresql.conf /var/lib/postgresql/data/pgdata'
-        volumeMounts:
-        # Persistent volume for data
-        - mountPath: /var/lib/postgresql/data
-          name: database-volume
-        - mountPath: /tmp/postgresql.conf
-          name: postgres-conf
-          subPath: postgresql.conf
-          readOnly: true
+#      initContainers:
+#      - name: copy-conf
+#        image: {{ busybox_image_registry }}/library/busybox:1.28.0
+#        command:
+#        - '/bin/sh'
+#        - '-c'
+#        - 'mkdir -p /var/lib/postgresql/data/pgdata && cp /tmp/postgresql.conf /var/lib/postgresql/data/pgdata'
+#        volumeMounts:
+#        # Persistent volume for data
+#        - mountPath: /var/lib/postgresql/data
+#          name: database-volume
+#        - mountPath: /tmp/postgresql.conf
+#          name: postgres-conf
+#          subPath: postgresql.conf
+#          readOnly: true
 
       containers:
       - name: database
