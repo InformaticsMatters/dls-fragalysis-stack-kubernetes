@@ -59,7 +59,7 @@ spec:
         command:
         - '/bin/sh'
         - '-c'
-        - 'mkdir -p /var/lib/postgresql/data/pgdata && cp $_'
+        - 'mkdir -p /var/lib/postgresql/data/pgdata && cp /etc/postgresql/postgresql.conf $_'
         volumeMounts:
         # Persistent volume for data
         - mountPath: /var/lib/postgresql/data
