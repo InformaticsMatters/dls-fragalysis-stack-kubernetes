@@ -79,6 +79,7 @@ database_port: 5432
 # If users want to change the values they must provide a replacement of
 # the entire configuration file.
 database_conf: |
+  listen_addresses = '*'
   max_connections = 100
   shared_buffers = 128MB
   work_mem = 4MB
