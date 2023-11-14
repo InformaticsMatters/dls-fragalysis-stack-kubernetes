@@ -121,6 +121,10 @@ spec:
         # Persistent volume for data
         - mountPath: /var/lib/postgresql/data
           name: database-volume
+        - mountPath: /var/lib/postgresql/data/pgdata/postgresql.conf
+          name: postgres-conf
+          subPath: postgresql.conf
+          readOnly: true
         env:
         # PGDATA - the location of persisted database files.
         # Normally a sub-directory of '/var/lib/postgresql/data'.
