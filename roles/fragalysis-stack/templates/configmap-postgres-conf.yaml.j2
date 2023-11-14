@@ -5,5 +5,4 @@ metadata:
   name: postgres-conf
   namespace: {{ stack_namespace }}
 data:
-  postgresql.conf:
-    {{ database_conf }}
+  postgresql.conf: {{ toYaml database_conf | indent 2 }}
