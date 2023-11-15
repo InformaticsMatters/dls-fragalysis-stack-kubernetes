@@ -18,26 +18,26 @@ In the ``fragalysis-backend`` repository build a backend image
 values for ``BE_NAMESPACE`` and ``BE_IMAGE_TAG``::
 
     export BE_NAMESPACE=alanbchristie
-    export BE_IMAGE_TAG=1.0.0-rc.1
+    export BE_IMAGE_TAG=latest
     docker build . -t ${BE_NAMESPACE}/fragalysis-backend:${BE_IMAGE_TAG}
 
 In the ``fragalysis-frontend`` repository build a frontend image
 (this does not have to be pushed to Docker Hub), by running the following, using your own
 values for ``FE_NAMESPACE`` and ``FE_IMAGE_TAG``::
 
-    export BE_NAMESPACE=alanbchristie
-    export BE_IMAGE_TAG=1.0.0-rc.1
+    export FE_NAMESPACE=alanbchristie
+    export FE_IMAGE_TAG=latest
     docker build . -t ${FE_NAMESPACE}/fragalysis-frontend:${FE_IMAGE_TAG}
 
 Then, from within the ``fragalysis-stack`` clone, combine your preexisting or newly built
 images::
 
     export BE_NAMESPACE=alanbchristie
-    export BE_IMAGE_TAG=1.0.0-rc.1
+    export BE_IMAGE_TAG=latest
     export FE_NAMESPACE=alanbchristie
-    export FE_IMAGE_TAG=1.0.0-rc.1
+    export FE_IMAGE_TAG=latest
     export STACK_NAMESPACE=alanbchristie
-    export STACK_IMAGE_TAG=1.0.0-rc.1
+    export STACK_IMAGE_TAG=latest
     docker build . --no-cache -t ${STACK_NAMESPACE}/fragalysis-stack:${STACK_IMAGE_TAG} \
         --build-arg BE_NAMESPACE=${BE_NAMESPACE} \
         --build-arg BE_IMAGE_TAG=${BE_IMAGE_TAG} \
@@ -52,5 +52,5 @@ Push it to Docker Hub with::
 
     docker push ${STACK_NAMESPACE}/fragalysis-stack:${STACK_IMAGE_TAG}
 
-Once pushed you can then run your AWX *Version Change* playbook **Template**
+Once pushed you can then run your chosen AWX playbook **Job Template**
 to deploy the new image to your stack in the Developer Cluster.
