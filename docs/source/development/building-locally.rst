@@ -10,6 +10,11 @@ A full build relies on a backend container image, frontend container image and t
 stack image that combines the two. You m ay n ot need to build the frontend or backend,
 that's a decision you have to make.
 
+You will need: -
+
+- `poetry`_ (for the backend build)
+- `docker`_
+
 With clones of the appropriate repository/branch you can build and push a stack image
 with the following commands: -
 
@@ -19,6 +24,7 @@ values for ``BE_NAMESPACE`` and ``BE_IMAGE_TAG``::
 
     export BE_NAMESPACE=alanbchristie
     export BE_IMAGE_TAG=latest
+    poetry export --without-hashes --without dev --output requirements.txt
     docker build . -t ${BE_NAMESPACE}/fragalysis-backend:${BE_IMAGE_TAG}
 
 In the ``fragalysis-frontend`` repository build a frontend image
@@ -54,3 +60,6 @@ Push it to Docker Hub with::
 
 Once pushed you can then run your chosen AWX playbook **Job Template**
 to deploy the new image to your stack in the Developer Cluster.
+
+.. _poetry: https://python-poetry.org/
+.. _docker: https://www.docker.com/
