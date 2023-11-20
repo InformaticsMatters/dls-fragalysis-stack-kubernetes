@@ -18,25 +18,25 @@ You will need: -
 With clones of the appropriate repository/branch you can build and push a stack image
 with the following commands: -
 
-In the ``fragalysis-backend`` repository build a backend image
-(this does not have to be pushed to Docker Hub), by running the following, using your own
-values for ``BE_NAMESPACE`` and ``BE_IMAGE_TAG``::
+In the ``fragalysis-backend`` repository, where we typically have ``staging`` and ``production``
+branches, build your backend image (this does not have to be pushed to Docker Hub),
+by running the following, using your own values for ``BE_NAMESPACE`` and ``BE_IMAGE_TAG``::
 
     export BE_NAMESPACE=alanbchristie
     export BE_IMAGE_TAG=latest
     poetry export --without-hashes --without dev --output requirements.txt
     docker build . -t ${BE_NAMESPACE}/fragalysis-backend:${BE_IMAGE_TAG}
 
-In the ``fragalysis-frontend`` repository build a frontend image
-(this does not have to be pushed to Docker Hub), by running the following, using your own
-values for ``FE_NAMESPACE`` and ``FE_IMAGE_TAG``::
+In the ``fragalysis-frontend`` repository, where we also have ``staging`` and ``production``
+branches, build a frontend image (this does not have to be pushed to Docker Hub),
+by running the following, using your own values for ``FE_NAMESPACE`` and ``FE_IMAGE_TAG``::
 
     export FE_NAMESPACE=alanbchristie
     export FE_IMAGE_TAG=latest
     docker build . -t ${FE_NAMESPACE}/fragalysis-frontend:${FE_IMAGE_TAG}
 
-Then, from within the ``fragalysis-stack`` clone, combine your preexisting or newly built
-images::
+Then, from within the ``fragalysis-stack`` clone, combine your backend and frontend
+images. The ``fragalysis-stack`` repo traditionally only has a ``master`` branch::
 
     export BE_NAMESPACE=alanbchristie
     export BE_IMAGE_TAG=latest
