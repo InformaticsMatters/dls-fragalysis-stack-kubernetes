@@ -155,6 +155,10 @@ spec:
           value: '{{ database_host_fact|default('database', true) }}'
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact|default('5432', true) }}'
+{% if stack_legacy_url %}
+        - name: LEGACY_URL
+          value: '{{ stack_legacy_url }}'
+{% endif %}
 {% if stack_discourse_host %}
         - name: DISCOURSE_HOST
           value: '{{ stack_discourse_host }}'

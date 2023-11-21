@@ -58,6 +58,10 @@ stack_namespace: ''
 # i.e. 'fragalysis.diamond.ac.uk'
 stack_hostname: ''
 
+# A URL for a prior/legacy stack.
+# If set this is passed to the frontend via the DJANGO_CONTEXT.
+stack_legacy_url: ''
+
 # A symbolic name for your stack, used if you do not provide your own
 # 'stack_namespace' value. When you do not provide a namespace the stack
 # namespace you're given is automatic and based on your AWX user ID.
