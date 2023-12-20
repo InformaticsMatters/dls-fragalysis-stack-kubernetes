@@ -45,7 +45,7 @@ there are two kinds of jobs:
     media components into your own stack
 *   **User [...]** - these jobs are for deploying or destroying the stack
 
-If Rachael hasn't already run the first stack job for you, here's how to do it:
+If someone hasn't already run the first stack job for you, here's how to do it:
 
 1. Run the **User (<name>) Developer Fragalysis Stack** job
 
@@ -91,7 +91,12 @@ For example, an ID called ``fragalysis-{developer}-default-xchem-dev`` with: -
     - http://fragalysis-{developer}-default.xchem-dev.diamond.ac.uk/viewer/react/landing
     - http://fragalysis-{developer}-default.xchem-dev.diamond.ac.uk/oidc/callback/
 
-Provide the developer with the **Client ID** and its **Secret**.
+Provide the developer with the **Client ID** and its **Secret**. These are then
+used to provide values to the stack Pod's environment through the following AWX
+Job Template variables for the corresponding user stack: -
+
+-   ``stack_oidc_rp_client_id``
+-   ``stack_oidc_rp_client_secret``
 
 .. _keycloak: https://keycloak.xchem-dev.diamond.ac.uk/auth
 
