@@ -153,6 +153,10 @@ stack_email_user: ''
 # This can be used to pre-condition the Database.
 stack_skip_deploy: no
 
+# A comma-separated list of Public Target Access Strings.
+# If set it is used to set the stack's PUBLIC_TAS environment variable.
+stack_public_tas: ''
+
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank ('') a database will be created specifically for the stack.
